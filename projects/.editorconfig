@@ -1,0 +1,14 @@
+root = false
+
+# Unity project-specific settings
+[**/packages.config]
+indent_size = 2
+indent_style = space
+
+[**/NuGet.config]
+indent_size = 2
+indent_style = space
+
+[**/Packages/manifest.json]
+indent_size = 2
+indent_style = space

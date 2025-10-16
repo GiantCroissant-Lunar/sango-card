@@ -39,3 +39,7 @@ indent_size = 4
 #          Build.UnityBuild.cs has "partial class Build : IUnityBuild"
 # Interface members should be implemented in the interface-specific partial file
 # Note: This is a convention enforced by code review and analyzer (see R-CODE-090)
+
+[*.asmdef]
+indent_size = 4
+indent_style = space
