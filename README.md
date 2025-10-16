@@ -13,6 +13,8 @@ Sango Card is organised as a multi-project workspace with scripted build automat
 - **Unity Editor** matching the version specified inside `projects/client/ProjectSettings/ProjectVersion.txt` once populated.
 - **Git LFS** if large assets are introduced in `projects/client/Assets/`.
 - **Task** (optional but recommended) - Modern task runner for simplified workflows. See [Task Documentation](docs/task/) for installation.
+- **[uv](https://docs.astral.sh/uv/)** (optional for spec-driven development) - Package manager for Python-based tooling.
+- **[specify-cli](https://github.com/github/spec-kit)** (optional) - Spec-Driven Development toolkit. See [Spec-Driven Development](#spec-driven-development) section below.
 
 ## Getting started
 1. Clone the repository and restore submodules if added in the future.
@@ -51,6 +53,42 @@ task ci             # Full CI pipeline (clean + setup + build + test)
 ```
 
 For all available tasks, run `task --list` or see [Task Documentation](docs/task/).
+
+## Spec-Driven Development
+
+This project has adopted [GitHub's spec-kit](https://github.com/github/spec-kit) for structured, specification-driven development. Spec-kit provides a methodology for building features through well-defined phases: establishing principles, creating specifications, planning implementation, breaking down tasks, and executing with precision.
+
+### Quick Start with Spec-Kit
+
+The spec-kit integration adds custom slash commands to GitHub Copilot and other supported AI coding agents:
+
+1. **`/speckit.constitution`** - Establish or update project governing principles
+2. **`/speckit.specify`** - Create feature specifications (what you want to build)
+3. **`/speckit.plan`** - Generate technical implementation plans with your tech stack
+4. **`/speckit.tasks`** - Break down the plan into actionable tasks
+5. **`/speckit.implement`** - Execute the tasks to build the feature
+
+### Optional Quality Enhancement Commands
+
+- **`/speckit.clarify`** - Ask structured questions about underspecified areas (recommended before `/speckit.plan`)
+- **`/speckit.analyze`** - Verify cross-artifact consistency and coverage (run after `/speckit.tasks`, before `/speckit.implement`)
+- **`/speckit.checklist`** - Generate quality checklists that validate completeness, clarity, and consistency
+
+### Structure
+
+All spec-kit artifacts are organized under `.specify/`:
+- **`.specify/memory/`** - Project constitution and principles
+- **`.specify/scripts/`** - Automation scripts for feature workflow
+- **`.specify/templates/`** - Templates for specs, plans, and tasks
+- **`.github/prompts/`** - Slash command definitions for GitHub Copilot
+
+Specification files for individual features are stored in `.specify/specs/{feature-number}-{feature-name}/`.
+
+### Learn More
+
+- **[Spec-Kit Documentation](https://github.com/github/spec-kit)** - Complete methodology and reference
+- **[Spec-Driven Development Guide](https://github.com/github/spec-kit/blob/main/spec-driven.md)** - Deep dive into the full process
+- **[Installing specify-cli](https://github.com/github/spec-kit#-get-started)** - CLI tool for bootstrapping projects
 
 ## Contributing
 - Create feature branches from the default branch and open pull requests with clear descriptions.

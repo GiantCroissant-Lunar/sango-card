@@ -1,5 +1,19 @@
 {
     "editor.fontSize": 16,
     "window.zoomLevel": 2,
-    "workbench.colorTheme": "Paper Contrast"
+
+    "workbench.colorTheme": "Paper Contrast",
+
+    "chat.promptFilesRecommendations": {
+        "speckit.constitution": true,
+        "speckit.specify": true,
+        "speckit.plan": true,
+        "speckit.tasks": true,
+        "speckit.implement": true
+    },
+    "chat.tools.terminal.autoApprove": {
+        ".specify/scripts/bash/": true,
+        ".specify/scripts/powershell/": true
+    }
 }
+

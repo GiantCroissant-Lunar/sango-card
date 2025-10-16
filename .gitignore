@@ -6,3 +6,16 @@ output/
 # Build artifacts (Task/Nuke)
 bin/
 obj/
+
+# Spec-kit - Protect AI agent credentials and tokens
+# The .github/prompts/ directory contains slash command definitions (safe to commit)
+# But .github/copilot/ may contain auth tokens (excluded below)
+.github/copilot/
+.agent/
+.specify/specs/*/secrets/
+
+# Spec-kit - Allow structure but protect sensitive data
+!.specify/
+!.specify/memory/
+!.specify/scripts/
+!.specify/templates/
