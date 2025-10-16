@@ -131,34 +131,36 @@ R-BLD-060: **Unity Project Isolation** - The Unity project at `projects/client` 
 - Build process MUST perform `git reset --hard` in `projects/client` before building to ensure clean state.
 - The Unity project is read-only from agent perspective except during build execution.
 R-BLD-070: **Versioned Build Artifacts** - Build outputs MUST be organized by version using GitVersion.
-- Artifacts directory: `build/_artifacts/{version}/`
+- Artifacts directory: `build/_artifacts/{version}/unity-output/{Platform}/`
 - Version format determined by GitVersion (e.g., `1.0.0-beta.1`, `1.2.3`)
 - **NEVER** place artifacts directly in `build/_artifacts/` root
 - Each build creates a new versioned subdirectory with organized subfolders
 - **Subdirectory Structure** for versioned artifacts:
-  - `Android/` - Android builds (.apk, .aab) and intermediate Gradle projects
-  - `iOS/` - iOS builds (.ipa) and intermediate Xcode projects
-  - `StandaloneWindows64/` - Windows 64-bit builds (.exe and data folders)
-  - `StandaloneLinux64/` - Linux 64-bit builds
-  - `WebGL/` - WebGL builds
+  - `unity-output/` - Container for all Unity build outputs
+    - `unity-output/Android/` - Android builds (.apk, .aab)
+    - `unity-output/iOS/` - iOS builds (.ipa)
+    - `unity-output/StandaloneWindows64/` - Windows 64-bit builds (.exe and data folders)
+    - `unity-output/StandaloneLinux64/` - Linux 64-bit builds
+    - `unity-output/WebGL/` - WebGL builds
   - `logs/` - Build logs, Unity logs, compiler output
   - `intermediate/` - Intermediate build artifacts (Gradle, Xcode projects, IL2CPP output)
   - `version.json` - Version manifest file at root of version directory
 - Build scripts MUST:
   - Query GitVersion for current version
   - Create versioned output directory with appropriate subfolders before building
-  - Output platform-specific builds to `build/_artifacts/{version}/{Platform}/`
+  - Output platform-specific builds to `build/_artifacts/{version}/unity-output/{Platform}/`
   - Save build logs to `build/_artifacts/{version}/logs/`
   - Generate version manifest file at `build/_artifacts/{version}/version.json`
-- To run built executables, always use the full versioned path with platform folder
+- To run built executables, always use the full versioned path with unity-output and platform folder
 - Example paths:
-  - ✅ `build/_artifacts/1.0.0/Android/SangoCard.apk`
-  - ✅ `build/_artifacts/1.0.0-beta.1/StandaloneWindows64/SangoCard.exe`
-  - ✅ `build/_artifacts/1.0.0/iOS/SangoCard.ipa`
+  - ✅ `build/_artifacts/1.0.0/unity-output/Android/SangoCard.apk`
+  - ✅ `build/_artifacts/1.0.0-beta.1/unity-output/StandaloneWindows64/SangoCard.exe`
+  - ✅ `build/_artifacts/1.0.0/unity-output/iOS/SangoCard.ipa`
   - ✅ `build/_artifacts/1.0.0/logs/unity-build.log`
   - ✅ `build/_artifacts/1.0.0/intermediate/gradle/` (Android intermediate)
   - ❌ `build/_artifacts/SangoCard.apk` (no version)
-  - ❌ `build/_artifacts/1.0.0/SangoCard.apk` (no platform folder)
+  - ❌ `build/_artifacts/1.0.0/Android/SangoCard.apk` (missing unity-output folder)
+  - ❌ `build/_artifacts/1.0.0/unity-output/SangoCard.apk` (no platform folder)
   - ❌ `output/build.exe` (wrong location)
 
 ## Process

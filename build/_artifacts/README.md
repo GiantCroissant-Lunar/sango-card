@@ -10,21 +10,21 @@ build/_artifacts/
 ├── README.md
 └── {version}/                           # e.g., 1.0.0, 1.0.0-beta.1, 0.1.0-alpha.5
     ├── version.json                     # Version manifest
-    ├── Android/                         # Android builds
-    │   ├── SangoCard.apk                # APK build
-    │   ├── SangoCard.aab                # Android App Bundle
-    │   └── gradle/                      # Gradle project (intermediate)
-    ├── iOS/                             # iOS builds
-    │   ├── SangoCard.ipa                # iOS App Archive
-    │   └── xcode/                       # Xcode project (intermediate)
-    ├── StandaloneWindows64/             # Windows 64-bit builds
-    │   ├── SangoCard.exe                # Windows executable
-    │   └── SangoCard_Data/              # Unity data folder
-    ├── StandaloneLinux64/               # Linux 64-bit builds
-    │   └── SangoCard.x86_64             # Linux executable
-    ├── WebGL/                           # WebGL builds
-    │   ├── index.html
-    │   └── Build/
+    ├── unity-output/                    # Unity build outputs
+    │   ├── Android/                     # Android builds
+    │   │   ├── SangoCard.apk            # APK build
+    │   │   └── SangoCard.aab            # Android App Bundle
+    │   ├── iOS/                         # iOS builds
+    │   │   ├── SangoCard.ipa            # iOS App Archive
+    │   │   └── dSYMs/                   # Debug symbols
+    │   ├── StandaloneWindows64/         # Windows 64-bit builds
+    │   │   ├── SangoCard.exe            # Windows executable
+    │   │   └── SangoCard_Data/          # Unity data folder
+    │   ├── StandaloneLinux64/           # Linux 64-bit builds
+    │   │   └── SangoCard.x86_64         # Linux executable
+    │   └── WebGL/                       # WebGL builds
+    │       ├── index.html
+    │       └── Build/
     ├── logs/                            # Build logs
     │   ├── unity-build.log              # Unity build log
     │   ├── gradle-build.log             # Gradle build log (Android)
@@ -82,17 +82,17 @@ When building, scripts **MUST**:
 2. Create versioned directory with subfolders:
    ```bash
    VERSION="1.0.0-beta.1"
-   mkdir -p build/_artifacts/${VERSION}/{Android,iOS,StandaloneWindows64,logs,intermediate}
+   mkdir -p build/_artifacts/${VERSION}/unity-output/{Android,iOS,StandaloneWindows64,logs,intermediate}
    ```
 
 3. Build to platform-specific path:
    ```bash
    # Unity Android build outputs to:
-   build/_artifacts/1.0.0-beta.1/Android/SangoCard.apk
+   build/_artifacts/1.0.0-beta.1/unity-output/Android/SangoCard.apk
    
    # Unity Windows build outputs to:
-   build/_artifacts/1.0.0-beta.1/StandaloneWindows64/SangoCard.exe
-   build/_artifacts/1.0.0-beta.1/StandaloneWindows64/SangoCard_Data/
+   build/_artifacts/1.0.0-beta.1/unity-output/StandaloneWindows64/SangoCard.exe
+   build/_artifacts/1.0.0-beta.1/unity-output/StandaloneWindows64/SangoCard_Data/
    
    # Build logs go to:
    build/_artifacts/1.0.0-beta.1/logs/unity-build.log
@@ -110,11 +110,11 @@ When building, scripts **MUST**:
      "branch": "release/1.0",
      "platforms": {
        "Android": {
-         "apk": "Android/SangoCard.apk",
+         "apk": "unity-output/Android/SangoCard.apk",
          "buildLog": "logs/gradle-build.log"
        },
        "StandaloneWindows64": {
-         "executable": "StandaloneWindows64/SangoCard.exe",
+         "executable": "unity-output/StandaloneWindows64/SangoCard.exe",
          "buildLog": "logs/unity-build.log"
        }
      }
@@ -123,14 +123,17 @@ When building, scripts **MUST**:
 
 ## Running Built Executables
 
-**Always** use the full versioned path with platform folder:
+**Always** use the full versioned path with unity-output and platform folder:
 
 ```bash
-# ✅ Correct - with platform subfolder
+# ✅ Correct - with unity-output and platform subfolder
+./build/_artifacts/1.0.0/unity-output/StandaloneWindows64/SangoCard.exe
+
+# ❌ Wrong - no unity-output folder
 ./build/_artifacts/1.0.0/StandaloneWindows64/SangoCard.exe
 
 # ❌ Wrong - no platform subfolder
-./build/_artifacts/1.0.0/SangoCard.exe
+./build/_artifacts/1.0.0/unity-output/SangoCard.exe
 
 # ❌ Wrong - no version
 ./build/_artifacts/SangoCard.exe
@@ -140,21 +143,21 @@ When building, scripts **MUST**:
 
 ```bash
 # Android
-build/_artifacts/{version}/Android/SangoCard.apk
-adb install build/_artifacts/1.0.0/Android/SangoCard.apk
+build/_artifacts/{version}/unity-output/Android/SangoCard.apk
+adb install build/_artifacts/1.0.0/unity-output/Android/SangoCard.apk
 
 # iOS
-build/_artifacts/{version}/iOS/SangoCard.ipa
-xcrun simctl install booted build/_artifacts/1.0.0/iOS/SangoCard.ipa
+build/_artifacts/{version}/unity-output/iOS/SangoCard.ipa
+xcrun simctl install booted build/_artifacts/1.0.0/unity-output/iOS/SangoCard.ipa
 
 # Windows
-build/_artifacts/{version}/StandaloneWindows64/SangoCard.exe
+build/_artifacts/{version}/unity-output/StandaloneWindows64/SangoCard.exe
 
 # Linux
-build/_artifacts/{version}/StandaloneLinux64/SangoCard.x86_64
+build/_artifacts/{version}/unity-output/StandaloneLinux64/SangoCard.x86_64
 
 # WebGL (serve directory)
-cd build/_artifacts/{version}/WebGL && python -m http.server
+cd build/_artifacts/{version}/unity-output/WebGL && python -m http.server
 ```
 
 ## Example Usage
@@ -164,20 +167,20 @@ cd build/_artifacts/{version}/WebGL && python -m http.server
 VERSION=$(dotnet gitversion /showvariable SemVer)
 
 # Run Windows build
-./build/_artifacts/${VERSION}/StandaloneWindows64/SangoCard.exe
+./build/_artifacts/${VERSION}/unity-output/StandaloneWindows64/SangoCard.exe
 
 # Install Android build to device
-adb install build/_artifacts/${VERSION}/Android/SangoCard.apk
+adb install build/_artifacts/${VERSION}/unity-output/Android/SangoCard.apk
 
 # Check build logs
 cat build/_artifacts/${VERSION}/logs/unity-build.log
 
 # Compare versions (Windows)
-./build/_artifacts/1.0.0/StandaloneWindows64/SangoCard.exe &     # Old
-./build/_artifacts/1.0.1/StandaloneWindows64/SangoCard.exe &     # New
+./build/_artifacts/1.0.0/unity-output/StandaloneWindows64/SangoCard.exe &     # Old
+./build/_artifacts/1.0.1/unity-output/StandaloneWindows64/SangoCard.exe &     # New
 
 # Archive specific platform
-tar -czf archives/1.0.0-android.tar.gz build/_artifacts/1.0.0/Android/
+tar -czf archives/1.0.0-android.tar.gz build/_artifacts/1.0.0/unity-output/Android/
 
 # Archive all platforms for version
 tar -czf archives/1.0.0-all.tar.gz build/_artifacts/1.0.0/

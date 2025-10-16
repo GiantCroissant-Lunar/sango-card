@@ -90,12 +90,12 @@ When user asks about building:
 - Suggest `task build` not direct `dotnet` or Unity commands (R-BLD-010).
 - Remind about local verification: `task clean && task build` (R-BLD-030).
 - **Versioned Artifacts** (R-BLD-070):
-  - Build outputs: `build/_artifacts/{version}/{Platform}/`
-  - Platforms: Android/, iOS/, StandaloneWindows64/, logs/, intermediate/
+  - Build outputs: `build/_artifacts/{version}/unity-output/{Platform}/`
+  - Unity builds in unity-output/, logs in logs/, intermediate in intermediate/
   - Suggest querying GitVersion for current version
-  - Executable paths: `build/_artifacts/{version}/StandaloneWindows64/app.exe`
+  - Executable paths: `build/_artifacts/{version}/unity-output/StandaloneWindows64/app.exe`
   - Log paths: `build/_artifacts/{version}/logs/build.log`
-  - Example: `build/_artifacts/1.0.0/Android/SangoCard.apk`
+  - Example: `build/_artifacts/1.0.0/unity-output/Android/SangoCard.apk`
 - **CRITICAL**: Never modify `projects/client` Unity project outside build operations (R-BLD-060).
   - This directory is a standalone Git repo managed only during builds.
   - Do not view, edit, suggest changes, or commit anything in this directory.

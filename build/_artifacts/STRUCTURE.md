@@ -8,25 +8,26 @@ It serves as a reference for build scripts and CI/CD pipelines.
 ```
 build/_artifacts/1.0.0/
 ├── version.json
-├── Android/
-│   ├── SangoCard.apk
-│   ├── SangoCard.aab
-│   └── symbols/
-├── iOS/
-│   ├── SangoCard.ipa
-│   └── dSYMs/
-├── StandaloneWindows64/
-│   ├── SangoCard.exe
-│   ├── SangoCard_Data/
-│   ├── UnityCrashHandler64.exe
-│   └── UnityPlayer.dll
-├── StandaloneLinux64/
-│   ├── SangoCard.x86_64
-│   └── SangoCard_Data/
-├── WebGL/
-│   ├── index.html
-│   ├── Build/
-│   └── TemplateData/
+├── unity-output/
+│   ├── Android/
+│   │   ├── SangoCard.apk
+│   │   ├── SangoCard.aab
+│   │   └── symbols/
+│   ├── iOS/
+│   │   ├── SangoCard.ipa
+│   │   └── dSYMs/
+│   ├── StandaloneWindows64/
+│   │   ├── SangoCard.exe
+│   │   ├── SangoCard_Data/
+│   │   ├── UnityCrashHandler64.exe
+│   │   └── UnityPlayer.dll
+│   ├── StandaloneLinux64/
+│   │   ├── SangoCard.x86_64
+│   │   └── SangoCard_Data/
+│   └── WebGL/
+│       ├── index.html
+│       ├── Build/
+│       └── TemplateData/
 ├── logs/
 │   ├── unity-build.log
 │   ├── unity-android.log
@@ -46,22 +47,22 @@ build/_artifacts/1.0.0/
 ## Platform-Specific Notes
 
 ### Android
-- **Final Output**: Android/SangoCard.apk or Android/SangoCard.aab
-- **Intermediate**: intermediate/gradle/ (Gradle project)
-- **Logs**: logs/unity-android.log, logs/gradle-build.log
+- **Final Output**: `unity-output/Android/SangoCard.apk` or `unity-output/Android/SangoCard.aab`
+- **Intermediate**: `intermediate/gradle/` (Gradle project)
+- **Logs**: `logs/unity-android.log`, `logs/gradle-build.log`
 
 ### iOS
-- **Final Output**: iOS/SangoCard.ipa
-- **Intermediate**: intermediate/xcode/ (Xcode project)
-- **Logs**: logs/unity-ios.log, logs/xcode-build.log
+- **Final Output**: `unity-output/iOS/SangoCard.ipa`
+- **Intermediate**: `intermediate/xcode/` (Xcode project)
+- **Logs**: `logs/unity-ios.log`, `logs/xcode-build.log`
 
 ### Windows Standalone
-- **Final Output**: StandaloneWindows64/SangoCard.exe + data folder
-- **Logs**: logs/unity-windows.log
+- **Final Output**: `unity-output/StandaloneWindows64/SangoCard.exe` + data folder
+- **Logs**: `logs/unity-windows.log`
 
 ### WebGL
-- **Final Output**: WebGL/ directory (served as-is)
-- **Logs**: logs/unity-webgl.log
+- **Final Output**: `unity-output/WebGL/` directory (served as-is)
+- **Logs**: `logs/unity-webgl.log`
 
 ## Version Manifest (version.json)
 
