@@ -4,7 +4,7 @@ This directory contains versioned build artifacts following **R-BLD-070**.
 
 ## Structure
 
-```
+```text
 build/_artifacts/
 ├── .gitkeep
 ├── README.md
@@ -74,34 +74,38 @@ git commit -m "docs: update README +semver:none"
 When building, scripts **MUST**:
 
 1. Query GitVersion for current version:
+
    ```bash
    dotnet gitversion /showvariable SemVer
    # Output: 1.0.0-beta.1
    ```
 
 2. Create versioned directory with subfolders:
+
    ```bash
    VERSION="1.0.0-beta.1"
    mkdir -p build/_artifacts/${VERSION}/unity-output/{Android,iOS,StandaloneWindows64,logs,intermediate}
    ```
 
 3. Build to platform-specific path:
+
    ```bash
    # Unity Android build outputs to:
    build/_artifacts/1.0.0-beta.1/unity-output/Android/SangoCard.apk
-   
+
    # Unity Windows build outputs to:
    build/_artifacts/1.0.0-beta.1/unity-output/StandaloneWindows64/SangoCard.exe
    build/_artifacts/1.0.0-beta.1/unity-output/StandaloneWindows64/SangoCard_Data/
-   
+
    # Build logs go to:
    build/_artifacts/1.0.0-beta.1/logs/unity-build.log
-   
+
    # Intermediate Gradle project (Android):
    build/_artifacts/1.0.0-beta.1/intermediate/gradle/
    ```
 
 4. Generate version manifest at root of version directory:
+
    ```json
    {
      "version": "1.0.0-beta.1",
@@ -202,4 +206,4 @@ rm -rf build/_artifacts/1.0.0/logs/
 
 - **Rule**: R-BLD-070 in `.agent/base/20-rules.md`
 - **Config**: `GitVersion.yml` in repository root
-- **Docs**: https://gitversion.net/docs/
+- **Docs**: <https://gitversion.net/docs/>

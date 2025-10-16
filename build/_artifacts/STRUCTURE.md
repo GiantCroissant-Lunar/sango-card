@@ -5,7 +5,7 @@ It serves as a reference for build scripts and CI/CD pipelines.
 
 ## Directory Tree Example
 
-```
+```text
 build/_artifacts/1.0.0/
 ├── version.json
 ├── unity-output/
@@ -47,20 +47,24 @@ build/_artifacts/1.0.0/
 ## Platform-Specific Notes
 
 ### Android
+
 - **Final Output**: `unity-output/Android/SangoCard.apk` or `unity-output/Android/SangoCard.aab`
 - **Intermediate**: `intermediate/gradle/` (Gradle project)
 - **Logs**: `logs/unity-android.log`, `logs/gradle-build.log`
 
 ### iOS
+
 - **Final Output**: `unity-output/iOS/SangoCard.ipa`
 - **Intermediate**: `intermediate/xcode/` (Xcode project)
 - **Logs**: `logs/unity-ios.log`, `logs/xcode-build.log`
 
 ### Windows Standalone
+
 - **Final Output**: `unity-output/StandaloneWindows64/SangoCard.exe` + data folder
 - **Logs**: `logs/unity-windows.log`
 
 ### WebGL
+
 - **Final Output**: `unity-output/WebGL/` directory (served as-is)
 - **Logs**: `logs/unity-webgl.log`
 

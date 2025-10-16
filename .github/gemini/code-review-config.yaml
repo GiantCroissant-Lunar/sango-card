@@ -1,67 +1,66 @@
 # Gemini Code Assist - Code Review Configuration
 # See: https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github
-
 # Project context
 project_name: "Sango Card"
 project_type: "Unity Mobile Card Game"
 language: "C#"
 framework: "Unity 2022.3 LTS"
-
 # Code review preferences
+
 code_review:
   # Enable automatic code review on pull requests
   enabled: true
-
   # Review focus areas
+
   focus_areas:
     - performance
     - security
     - best_practices
     - code_style
     - testing
-
   # Unity-specific checks
+
   unity_checks:
     - check_serialized_fields
     - check_component_caching
     - check_object_pooling
     - check_addressables_usage
     - check_ui_toolkit_usage
-
   # Security checks
+
   security_checks:
     - check_hardcoded_credentials
     - check_pii_logging
     - check_save_file_encryption
     - check_input_validation
-
   # Performance checks
+
   performance_checks:
     - check_per_frame_allocations
     - check_getcomponent_in_loops
     - check_linq_in_hot_paths
     - check_texture_compression
-
   # Code style
+
   code_style:
     naming_conventions:
       public_members: "PascalCase"
       private_fields: "_camelCase"
       constants: "PascalCase"
-
     # Partial class pattern enforcement (R-CODE-090)
+
     partial_class_rules:
       enabled: true
       description: "Multi-interface classes must use partial class pattern"
-
   # Architecture patterns
+
   architecture:
     - prefer_scriptable_objects_for_data
     - separate_logic_from_monobehaviours
     - use_dependency_injection
     - prefer_composition_over_inheritance
-
   # Testing requirements
+
   testing:
     min_coverage: 70
     require_tests_for:
@@ -69,57 +68,57 @@ code_review:
       - card_rules
       - deck_validation
       - combat_systems
-
 # Custom rules from project
-custom_rules_path: ".agent/base/20-rules.md"
 
+custom_rules_path: ".agent/base/20-rules.md"
 # Constitution and project memory
+
 project_context_paths:
   - ".specify/memory/constitution.md"
   - ".agent/base/"
   - "CONTRIBUTING.md"
-
 # Files to always review
+
 critical_paths:
   - "packages/**/*.cs"
   - "build/**/*.cs"
   - "scripts/**/*.ps1"
-
 # Files to skip review
+
 exclude_paths:
-  - "projects/client/**/*"  # Unity project is isolated (R-BLD-060)
+  - "projects/client/**/*" # Unity project is isolated (R-BLD-060)
   - "**/node_modules/**"
   - "**/Library/**"
   - "**/Temp/**"
   - "**/*.meta"
   - "**/*.asset"
-
 # Review comment style
+
 comment_style:
   tone: "constructive"
   severity_levels:
-    - "critical"   # Security issues, breaking changes
-    - "warning"    # Performance issues, anti-patterns
+    - "critical" # Security issues, breaking changes
+    - "warning" # Performance issues, anti-patterns
     - "suggestion" # Style improvements, refactoring opportunities
-
   # Include rule references in comments
+
   include_rule_references: true
   rule_format: "R-{category}-{number}"
-
 # Integration with spec-kit workflow
+
 spec_kit:
   enforce_workflow: true
   require_spec_reference: true
   spec_format: "#{spec-number}"
-
 # Commit message validation
+
 commit_validation:
   enforce_conventional_commits: true
-  require_body_from_file: true  # R-GIT-010, R-GIT-060
+  require_body_from_file: true # R-GIT-010, R-GIT-060
   max_subject_length: 72
   require_co_authorship: true
-
 # Build system integration
+
 build_system:
-  prefer_task_runner: true  # R-BLD-010
+  prefer_task_runner: true # R-BLD-010
   validate_build_before_merge: true

@@ -45,6 +45,9 @@ rules:
     max-spaces-inside: 1
 ignore: |
   .github/workflows/
+  .github/gemini/code-review-config.yaml
+  .pre-commit-config.yaml
+  .yamllint.yaml
   projects/client/
   projects/code-quality/
   node_modules/

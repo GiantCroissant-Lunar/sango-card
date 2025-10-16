@@ -24,7 +24,7 @@ repos:
       - id: check-case-conflict
       - id: mixed-line-ending
         args: ['--fix=lf']
-        exclude: '\.bat$|\.cmd$|\.ps1$' # Keep CRLF for Windows scripts
+        exclude: '\.bat$|\.cmd$|\.ps1$|\.yaml$|\.yml$' # Keep CRLF for Windows scripts, skip YAML
       - id: detect-private-key
         exclude: 'test.*|mock.*|dummy.*'
   - repo: https://github.com/Yelp/detect-secrets
@@ -73,7 +73,7 @@ repos:
     rev: 2.7.3
     hooks:
       - id: editorconfig-checker
-        exclude: '\.meta$|\.asset$|\.unity$|\.md$'
+        exclude: '\.meta$|\.asset$|\.unity$|\.md$|\.github/gemini/code-review-config\.yaml$|\.pre-commit-config\.yaml$|\.yamllint\.yaml$'
   - repo: local
     # C# partial class pattern validation (R-CODE-090)
 
