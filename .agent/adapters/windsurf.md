@@ -24,6 +24,12 @@ Windsurf (powered by Codeium) is an AI-native IDE with agentic coding capabiliti
 - Follow C# conventions: PascalCase public, _camelCase private (R-CODE-030)
 - Use `[SerializeField]` for Unity inspector fields (R-CODE-040)
 - Respect project structure; avoid orphaned files (R-CODE-050)
+- **Partial classes for multiple interfaces** (R-CODE-090):
+  - Split classes with multiple interfaces into partial files
+  - `ClassName.cs`: base class inheritance only
+  - `ClassName.InterfaceName.cs`: each interface separately (without 'I' prefix)
+  - Interface members in interface-specific file
+  - Suggest this pattern when creating build components or multi-interface classes
 
 ## Unity-Specific Behavior
 - **Data**: ScriptableObjects for all game data (cards, abilities, configs) (R-UNITY-010)
@@ -78,6 +84,10 @@ Windsurf (powered by Codeium) is an AI-native IDE with agentic coding capabiliti
   - `task test` - Run tests
   - `task clean` - Clean artifacts
 - Verify build locally: `task clean && task build` (R-BLD-030)
+- **CRITICAL**: Unity project at `projects/client` is isolated (R-BLD-060):
+  - Never modify, view, edit, or suggest changes to files in `projects/client` outside build operations.
+  - This directory is a standalone Git repo managed only during builds.
+  - Build tasks must `git reset --hard` this directory before building.
 
 ## Documentation
 - Only create docs when explicitly requested (R-DOC-010)

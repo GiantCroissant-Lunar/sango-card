@@ -29,3 +29,13 @@ indent_size = 2
 [*.ps1]
 indent_style = space
 indent_size = 4
+
+# C# Code Style Rules
+[*.cs]
+# Partial class organization (R-CODE-090)
+# When implementing multiple interfaces, use separate partial class files
+# File naming: ClassName.InterfaceName.cs (without 'I' prefix from interface name)
+# Example: Build.cs has "partial class Build : NukeBuild"
+#          Build.UnityBuild.cs has "partial class Build : IUnityBuild"
+# Interface members should be implemented in the interface-specific partial file
+# Note: This is a convention enforced by code review and analyzer (see R-CODE-090)

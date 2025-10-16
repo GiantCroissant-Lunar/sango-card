@@ -12,6 +12,12 @@ GitHub Copilot provides code suggestions in editor and chat-based assistance. Th
 - Use `[SerializeField]` for Unity inspector fields (R-CODE-040).
 - Suggest object pooling for frequently instantiated objects (R-UNITY-040).
 - Cache component references, avoid GetComponent in loops (R-UNITY-030).
+- **Partial classes for multiple interfaces** (R-CODE-090):
+  - Suggest separate files for each interface implementation
+  - Base file: `ClassName.cs` with parent class only
+  - Interface files: `ClassName.InterfaceName.cs` (without 'I' prefix) for each interface
+  - Example: `Build.cs` → `partial class Build : NukeBuild`, `Build.UnityBuild.cs` → `partial class Build : IUnityBuild`
+  - Interface members should be implemented in the interface-specific file
 
 ## Unity Patterns
 When suggesting Unity code:
@@ -57,6 +63,10 @@ When user mentions feature work:
 When user asks about building:
 - Suggest `task build` not direct `dotnet` or Unity commands (R-BLD-010).
 - Remind about local verification: `task clean && task build` (R-BLD-030).
+- **CRITICAL**: Never modify `projects/client` Unity project outside build operations (R-BLD-060).
+  - This directory is a standalone Git repo managed only during builds.
+  - Do not view, edit, suggest changes, or commit anything in this directory.
+  - Build tasks must `git reset --hard` this directory before building.
 
 ## Inline Chat Guidance
 When providing explanations in chat:

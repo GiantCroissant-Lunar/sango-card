@@ -11,6 +11,13 @@ R-CODE-050: Respect existing project structure. Do not create orphaned files out
 R-CODE-060: Separate business logic from MonoBehaviours when practical for testability.
 R-CODE-070: Use dependency injection patterns for complex component interactions to enable testing.
 R-CODE-080: Prefer composition over inheritance in Unity Component design.
+R-CODE-090: **Partial Class Interface Separation** - When a class implements multiple interfaces, organize using partial classes:
+  - Base file (`ClassName.cs`) contains ONLY direct parent class inheritance (e.g., `partial class Build : NukeBuild`)
+  - Each interface implementation in separate file named `ClassName.InterfaceName.cs` using interface name WITHOUT 'I' prefix (e.g., `Build.UnityBuild.cs` for IUnityBuild interface with `partial class Build : IUnityBuild`)
+  - This applies to build scripts, component systems, and any class with multiple interface implementations
+  - Interface members (properties, methods) should be implemented in the interface-specific partial file, not the base file
+  - Improves code organization, testability, and separation of concerns per interface contract
+  - Example: `Build.cs` → `partial class Build : NukeBuild`, `Build.UnityBuild.cs` → `partial class Build : IUnityBuild` with interface-specific implementations
 
 ## Unity-Specific Rules
 R-UNITY-010: ScriptableObjects for static game data (cards, abilities, configurations). Never hardcode game data in scripts.
@@ -88,6 +95,12 @@ R-BLD-020: Build commands:
 R-BLD-030: Verify build succeeds locally before committing: `task clean && task build`.
 R-BLD-040: Unity builds MUST be reproducible. No manual Build Settings changes - configure via build scripts.
 R-BLD-050: Nuke build targets for CI/CD. Task targets for developer convenience.
+R-BLD-060: **Unity Project Isolation** - The Unity project at `projects/client` is a standalone Git repository. 
+  - **NEVER** modify, add, or remove files in `projects/client` outside of build operations.
+  - **NEVER** commit changes to `projects/client` from the parent repository.
+  - **NEVER** view, edit, or suggest changes to files within `projects/client` unless explicitly part of a build task.
+  - Build process MUST perform `git reset --hard` in `projects/client` before building to ensure clean state.
+  - The Unity project is read-only from agent perspective except during build execution.
 
 ## Process
 R-PRC-010: When uncertain about architectural decisions, propose options rather than implementing immediately.

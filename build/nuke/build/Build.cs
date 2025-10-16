@@ -8,10 +8,18 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.EnvironmentInfo;
-using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 
-class Build : NukeBuild, IUnityBuild
+/// <summary>
+/// Main build orchestration class.
+/// 
+/// ARCHITECTURE NOTE (R-CODE-090):
+/// This class uses partial class pattern for interface segregation.
+/// - Build.cs: Contains base NukeBuild inheritance only
+/// - Build.UnityBuild.cs: Contains IUnityBuild interface implementation
+/// Each interface is implemented in its own partial class file for better organization.
+/// </summary>
+partial class Build : NukeBuild
 {
     /// Support plugins are available for:
     ///   - JetBrains ReSharper        https://nuke.build/resharper

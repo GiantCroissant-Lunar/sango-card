@@ -21,6 +21,12 @@ References base rule set in `.agent/base/`. The base canon prevails on conflict.
 - Do not fabricate implementation details (R-CODE-020).
 - Follow existing project structure; avoid orphaned files (R-CODE-050).
 - Separate game logic from MonoBehaviours for testability (R-CODE-060).
+- **Partial classes for multiple interfaces** (R-CODE-090):
+  - When creating/modifying classes with multiple interfaces, use separate partial files
+  - Base file contains only direct parent class inheritance
+  - Each interface in its own `ClassName.InterfaceName.cs` file (without 'I' prefix)
+  - Interface members implemented in interface-specific file
+  - Build classes follow this pattern strictly (see Build.cs + Build.UnityBuild.cs)
 
 ## Unity-Specific Behavior
 - Use ScriptableObjects for all game data: cards, abilities, configs (R-UNITY-010).
@@ -68,6 +74,10 @@ References base rule set in `.agent/base/`. The base canon prevails on conflict.
   - `task test` - Run tests
   - `task clean` - Clean artifacts
 - Verify build locally before committing: `task clean && task build` (R-BLD-030).
+- **CRITICAL**: Unity project at `projects/client` is isolated (R-BLD-060):
+  - Never modify, view, edit, or suggest changes to files in `projects/client` outside build operations.
+  - This directory is a standalone Git repo managed only during builds.
+  - Build tasks must `git reset --hard` this directory before building.
 
 ## Documentation
 - Only create docs when explicitly requested (R-DOC-010).

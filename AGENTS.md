@@ -62,6 +62,10 @@ All agents must:
 - Never commit secrets (R-SEC-020, R-GIT-020)
 - Respect Unity 6000.x patterns (R-UNITY-xxx)
 - Cite rule IDs when explaining constraints
+- **NEVER modify `projects/client` outside build operations (R-BLD-060)**
+  - The Unity project at `projects/client` is a standalone Git repository
+  - It is read-only except during build execution
+  - Build process must perform `git reset --hard` before building
 
 ## Adding New Agents
 

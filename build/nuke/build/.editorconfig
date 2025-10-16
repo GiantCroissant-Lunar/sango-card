@@ -9,3 +9,11 @@ csharp_style_expression_bodied_methods = true:silent
 csharp_style_expression_bodied_properties = true:warning
 csharp_style_expression_bodied_indexers = true:warning
 csharp_style_expression_bodied_accessors = true:warning
+
+# Partial Class Organization (R-CODE-090)
+# Each interface implementation should be in a separate partial class file
+# File naming: ClassName.InterfaceName.cs (without 'I' prefix)
+# Base file (Build.cs): partial class Build : NukeBuild
+# Interface file (Build.UnityBuild.cs): partial class Build : IUnityBuild
+# Interface members implemented in interface-specific file
+# Enforced by: Code review, future Roslyn analyzer, pre-commit hooks
