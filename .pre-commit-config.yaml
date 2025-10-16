@@ -73,7 +73,7 @@ repos:
     rev: 2.7.3
     hooks:
       - id: editorconfig-checker
-        exclude: '\.meta$|\.asset$|\.unity$'
+        exclude: '\.meta$|\.asset$|\.unity$|\.md$'
   - repo: local
     # C# partial class pattern validation (R-CODE-090)
 

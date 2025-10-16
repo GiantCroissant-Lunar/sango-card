@@ -6,33 +6,43 @@
 
 R-CODE-010: Prefer editing existing files over creating new ones unless explicitly required.
 R-CODE-020: Do not fabricate file contents. If unsure about implementation details, request clarification.
-R-CODE-030: Follow C# naming conventions: PascalCase for public members, camelCase with underscore prefix for private fields (e.g., `_myField`).
+R-CODE-030: Follow C# naming conventions: PascalCase for public members, camelCase with underscore
+prefix for private fields (e.g., `_myField`).
 R-CODE-040: Unity-specific: Use `[SerializeField]` for inspector-visible private fields; avoid public fields except for constants.
 R-CODE-050: Respect existing project structure. Do not create orphaned files outside the workspace hierarchy.
 R-CODE-060: Separate business logic from MonoBehaviours when practical for testability.
 R-CODE-070: Use dependency injection patterns for complex component interactions to enable testing.
 R-CODE-080: Prefer composition over inheritance in Unity Component design.
-R-CODE-100: **Scoped Configuration Files** - When creating configuration files that support scoping, ALWAYS prefer scoped/local configurations:
+R-CODE-100: **Scoped Configuration Files** - When creating configuration files that support scoping,
+ALWAYS prefer scoped/local configurations:
 
 - `.gitignore`: Create local `.gitignore` files in subdirectories rather than bloating root `.gitignore`
-- `.editorconfig`: Create scoped `.editorconfig` files in project/language-specific directories (e.g., `projects/client/.editorconfig` for Unity C#, `packages/spec-kit/.editorconfig` for Node.js)
+- `.editorconfig`: Create scoped `.editorconfig` files in project/language-specific directories
+    (e.g., `projects/client/.editorconfig` for Unity C#, `packages/spec-kit/.editorconfig` for Node.js)
 - ESLint/Prettier configs: Use directory-level configs (`.eslintrc.json`, `.prettierrc`) in specific package directories
-- Tool configs: Place tool-specific configs near the files they affect (e.g., `tsconfig.json` in TypeScript packages, `pytest.ini` in Python packages)
+- Tool configs: Place tool-specific configs near the files they affect
+    (e.g., `tsconfig.json` in TypeScript packages, `pytest.ini` in Python packages)
 - Benefits: Better maintainability, clearer ownership, prevents config conflicts between different project types
 - Root configs should only contain truly global/repository-wide settings
-R-CODE-090: **Partial Class Interface Separation** - When a class implements multiple interfaces, organize using partial classes:
+R-CODE-090: **Partial Class Interface Separation** - When a class implements multiple interfaces,
+organize using partial classes:
 
 - Base file (`ClassName.cs`) contains ONLY direct parent class inheritance (e.g., `partial class Build : NukeBuild`)
-- Each interface implementation in separate file named `ClassName.InterfaceName.cs` using interface name WITHOUT 'I' prefix (e.g., `Build.UnityBuild.cs` for IUnityBuild interface with `partial class Build : IUnityBuild`)
+- Each interface implementation in separate file named `ClassName.InterfaceName.cs` using interface name
+    WITHOUT 'I' prefix (e.g., `Build.UnityBuild.cs` for IUnityBuild interface with
+    `partial class Build : IUnityBuild`)
 - This applies to build scripts, component systems, and any class with multiple interface implementations
 - Interface members (properties, methods) should be implemented in the interface-specific partial file, not the base file
 - Improves code organization, testability, and separation of concerns per interface contract
-- Example: `Build.cs` → `partial class Build : NukeBuild`, `Build.UnityBuild.cs` → `partial class Build : IUnityBuild` with interface-specific implementations
+- Example: `Build.cs` → `partial class Build : NukeBuild`, `Build.UnityBuild.cs` →
+    `partial class Build : IUnityBuild` with interface-specific implementations
 
 ## Unity-Specific Rules
 
-R-UNITY-010: ScriptableObjects for static game data (cards, abilities, configurations). Never hardcode game data in scripts.
-R-UNITY-020: Use Unity's lifecycle correctly: Awake for internal setup, Start for external dependencies, OnEnable/OnDisable for event subscriptions.
+R-UNITY-010: ScriptableObjects for static game data (cards, abilities, configurations).
+Never hardcode game data in scripts.
+R-UNITY-020: Use Unity's lifecycle correctly: Awake for internal setup, Start for external dependencies,
+OnEnable/OnDisable for event subscriptions.
 R-UNITY-030: Cache component references in Awake or Start. Never use `GetComponent<>()` in Update loop.
 R-UNITY-040: Use object pooling for frequently instantiated objects (card visuals, particle effects, projectiles).
 R-UNITY-050: UI must use Unity UI Toolkit (UIElements) for performance. Legacy uGUI only for compatibility.
@@ -93,7 +103,7 @@ R-GIT-010: Commit bodies MUST be authored from a file and passed via `git commit
 - Subject line ≤ 72 chars; then a blank line; then Markdown body.
 - Include co-authorship footer:
 
-    ```
+    ```text
     🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
     Co-Authored-By: Claude <noreply@anthropic.com>
@@ -110,6 +120,13 @@ R-GIT-060: **Always use temporary commit message files.** When creating commits:
 - Clean up the temporary file after committing
 - Never use multiple `-m` flags or long command-line arguments for commit messages
 - This ensures proper formatting, multi-line messages, and avoids shell escaping issues
+
+R-GIT-070: **Never bypass pre-commit hooks.** When committing:
+
+- Never use `--no-verify` or `-n` flags with `git commit`
+- Pre-commit hooks enforce code quality, linting, and validation
+- If a pre-commit hook fails, fix the underlying issue rather than bypassing the check
+- This ensures consistent code quality and prevents broken code from being committed
 
 ## Build System
 
@@ -151,8 +168,7 @@ R-BLD-070: **Versioned Build Artifacts** - Build outputs MUST be organized by ve
   - Output platform-specific builds to `build/_artifacts/{version}/unity-output/{Platform}/`
   - Save build logs to `build/_artifacts/{version}/logs/`
   - Generate version manifest file at `build/_artifacts/{version}/version.json`
-- To run built executables, always use the full versioned path with unity-output and platform folder
-- Example paths:
+- To run built executables, always use the full versioned path with unity-output and platform folder. Example paths:
   - ✅ `build/_artifacts/1.0.0/unity-output/Android/SangoCard.apk`
   - ✅ `build/_artifacts/1.0.0-beta.1/unity-output/StandaloneWindows64/SangoCard.exe`
   - ✅ `build/_artifacts/1.0.0/unity-output/iOS/SangoCard.ipa`
