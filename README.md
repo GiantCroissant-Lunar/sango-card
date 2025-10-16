@@ -15,6 +15,7 @@ Sango Card is organised as a multi-project workspace with scripted build automat
 - **Task** (optional but recommended) - Modern task runner for simplified workflows. See [Task Documentation](docs/task/) for installation.
 - **[uv](https://docs.astral.sh/uv/)** (optional for spec-driven development) - Package manager for Python-based tooling.
 - **[specify-cli](https://github.com/github/spec-kit)** (optional) - Spec-Driven Development toolkit. See [Spec-Driven Development](#spec-driven-development) section below.
+- **[pre-commit](https://pre-commit.com/)** (recommended) - Git hooks framework for code quality. Install with `pip install pre-commit` or `uv tool install pre-commit`.
 
 ## Getting started
 1. Clone the repository and restore submodules if added in the future.

@@ -88,7 +88,7 @@ Does NOT apply to:
 | Agent Rules | ✅ Active | R-CODE-090 in `.agent/base/20-rules.md` |
 | EditorConfig | ✅ Active | Documented in `.editorconfig` with comments |
 | Code Review | ✅ Active | Manual review process |
-| Pre-commit Hook | 🔄 Planned | Will validate file structure before commit |
+| Pre-commit Hook | ✅ Active | Framework-managed via `.pre-commit-config.yaml` |
 | Roslyn Analyzer | 🔄 Planned | Compile-time enforcement (see below) |
 
 ### Future: Roslyn Analyzer
@@ -106,14 +106,29 @@ A custom Roslyn analyzer will be developed to enforce this pattern at compile ti
 
 ### Pre-commit Hook
 
-The pre-commit hook will:
-1. Scan for classes implementing multiple interfaces
-2. Verify each interface has a corresponding `ClassName.IInterfaceName.cs` file
-3. Fail commit if pattern is violated
-4. Provide clear error message with expected file structure
+The pre-commit hook validates the pattern automatically before commit:
 
-**Hook Location**: `scripts/git-hooks/pre-commit` (symlinked to `.git/hooks/pre-commit` via `task setup`)
-**Implementation**: PowerShell script for cross-platform compatibility
+```bash
+# Install pre-commit framework
+pip install pre-commit
+# OR
+uv tool install pre-commit
+
+# Setup hooks
+task setup:hooks
+# OR
+pre-commit install
+```
+
+**What it checks**:
+1. Scans staged C# files for classes implementing multiple interfaces
+2. Verifies each interface has a corresponding `ClassName.InterfaceName.cs` file
+3. Fails commit if pattern is violated with clear error messages
+4. Shows expected file structure for corrections
+
+**Hook Location**: Managed by `.pre-commit-config.yaml`  
+**Script**: `scripts/git-hooks/pre-commit.ps1`  
+**Documentation**: `docs/PRE-COMMIT.md`
 
 ### Migration Guide
 

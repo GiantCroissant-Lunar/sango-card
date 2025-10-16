@@ -1,0 +1,95 @@
+# Pre-commit hooks configuration
+# See https://pre-commit.com for more information
+# Installation: pip install pre-commit OR uv tool install pre-commit
+# Setup: pre-commit install
+# Run manually: pre-commit run --all-files
+
+default_language_version:
+  python: python3.11
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+        exclude: '\.meta$'  # Unity meta files
+      - id: check-yaml
+        exclude: '\.unity$'  # Unity scene files
+      - id: check-json
+        exclude: '\.meta$|\.asmdef$'  # Unity files use JSON5
+      - id: check-added-large-files
+        args: ['--maxkb=2048']
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+        exclude: '\.bat$|\.cmd$|\.ps1$'  # Keep CRLF for Windows scripts
+      - id: detect-private-key
+        exclude: 'test.*|mock.*|dummy.*'
+
+  # Secrets detection
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: 'test.*|mock.*|\.lock$'
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        args: ['--fix']
+        exclude: 'CHANGELOG.md|node_modules/'
+
+  # YAML formatting
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.11.0
+    hooks:
+      - id: yamlfmt
+        exclude: '\.github/workflows/|\.unity$'
+
+  # EditorConfig enforcement
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 2.7.3
+    hooks:
+      - id: editorconfig-checker
+        exclude: '\.meta$|\.asset$|\.unity$'
+
+  # C# partial class pattern validation (R-CODE-090)
+  - repo: local
+    hooks:
+      - id: partial-class-interface-separation
+        name: Partial Class Interface Separation (R-CODE-090)
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/git-hooks/pre-commit.ps1
+        language: system
+        files: '\.cs$'
+        exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$'
+        pass_filenames: false
+        description: Validates partial class pattern for multi-interface classes
+
+  # Commit message validation
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.1.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [--strict, --force-scope]
+        description: Enforce Conventional Commits format
+
+# CI-specific configuration
+ci:
+  autofix_commit_msg: |
+    chore: auto-fixes from pre-commit hooks
+
+    [skip ci]
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: 'chore: update pre-commit hooks'
+  autoupdate_schedule: quarterly
+  skip:
+    - partial-class-interface-separation  # Skip PowerShell hook in CI

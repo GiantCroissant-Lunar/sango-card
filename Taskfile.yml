@@ -23,6 +23,7 @@ tasks:
     cmds:
       - task: setup:dotnet
       - task: setup:unity
+      - task: setup:hooks
       - echo "✓ Setup complete!"
 
   setup:dotnet:
@@ -40,6 +41,32 @@ tasks:
     cmds:
       - echo "Checking Unity project at {{.UNITY_PROJECT}}"
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\ProjectSettings\ProjectVersion.txt" (type "{{.UNITY_PROJECT}}\ProjectSettings\ProjectVersion.txt") else (echo Unity project not initialized){{else}}if [ -f "{{.UNITY_PROJECT}}/ProjectSettings/ProjectVersion.txt" ]; then cat "{{.UNITY_PROJECT}}/ProjectSettings/ProjectVersion.txt"; else echo "Unity project not initialized"; fi{{end}}'
+
+  setup:hooks:
+    desc: Install git hooks (pre-commit framework)
+    cmds:
+      - |
+        {{if eq OS "windows"}}
+        where pre-commit >nul 2>&1 && (
+          echo "Installing pre-commit hooks..."
+          pre-commit install
+          pre-commit install --hook-type commit-msg
+          echo "✓ Pre-commit hooks installed"
+        ) || (
+          echo "⚠ pre-commit not found. Install with: pip install pre-commit OR uv tool install pre-commit"
+          echo "  Then run: task setup:hooks"
+        )
+        {{else}}
+        if command -v pre-commit >/dev/null 2>&1; then
+          echo "Installing pre-commit hooks..."
+          pre-commit install
+          pre-commit install --hook-type commit-msg
+          echo "✓ Pre-commit hooks installed"
+        else
+          echo "⚠ pre-commit not found. Install with: pip install pre-commit OR uv tool install pre-commit"
+          echo "  Then run: task setup:hooks"
+        fi
+        {{end}}
 
   # Clean tasks
   clean:

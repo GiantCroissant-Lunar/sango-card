@@ -47,15 +47,30 @@ partial class Build : IDockerBuild
 
 ## Installation
 
-Git hooks are installed automatically when running:
+### Recommended: Pre-commit Framework
+
+The project uses [pre-commit](https://pre-commit.com/) for managing git hooks:
 
 ```bash
-task setup
+# Install pre-commit (choose one)
+pip install pre-commit
+# OR
+uv tool install pre-commit
+
+# Setup hooks (done automatically by `task setup`)
+task setup:hooks
+# OR manually
+pre-commit install
+pre-commit install --hook-type commit-msg
 ```
 
-This creates a symlink from `.git/hooks/pre-commit` to `scripts/git-hooks/pre-commit.ps1`.
+This approach provides:
+- ✅ Cross-platform compatibility
+- ✅ Automatic hook updates
+- ✅ Multiple hook integration (linting, formatting, secrets detection)
+- ✅ Configuration via `.pre-commit-config.yaml`
 
-### Manual Installation
+### Alternative: Direct Hook Installation
 
 **Windows (PowerShell as Administrator)**:
 ```powershell
@@ -80,7 +95,20 @@ git commit --no-verify
 
 ## Testing Hooks
 
-Run the pre-commit hook manually:
+### With pre-commit framework
+
+```bash
+# Run all hooks on all files
+pre-commit run --all-files
+
+# Run specific hook
+pre-commit run partial-class-interface-separation --all-files
+
+# Run on staged files only (normal pre-commit behavior)
+pre-commit run
+```
+
+### Direct script execution
 
 ```powershell
 pwsh scripts/git-hooks/pre-commit.ps1 -Verbose
