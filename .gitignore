@@ -11,8 +11,14 @@ obj/
 # The .github/prompts/ directory contains slash command definitions (safe to commit)
 # But .github/copilot/ may contain auth tokens (excluded below)
 .github/copilot/
-.agent/
 .specify/specs/*/secrets/
+
+# Agent rules - Allow base rules and adapters, but exclude local overrides
+!.agent/
+!.agent/base/
+!.agent/adapters/
+!.agent/meta/
+.agent/local/
 
 # Spec-kit - Allow structure but protect sensitive data
 !.specify/
