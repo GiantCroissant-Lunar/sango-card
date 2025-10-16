@@ -1,0 +1,48 @@
+/*
+
+!.gitignore
+
+# Unity Special Folders
+!Editor Default Resources
+Editor Default Resources/**
+!Editor Default Resources/
+!Editor Default Resources/.gitkeep
+!Editor Default Resources.meta
+!Gizmos
+Gizmos/**
+!Gizmos/.gitkeep
+!Gizmos.meta
+!Plugins
+Plugins/**
+!Plugins.meta
+!Plugins/Editor/
+!Plugins/Editor/.gitkeep
+!Plugins/Editor.meta
+!Resources
+Resources/**
+!Resources.meta
+!Samples
+Samples/**
+!Samples.meta
+!Standard Assets
+Standard Assets/**
+!Standard Assets.meta
+!StreamingAssets
+StreamingAssets/**
+!StreamingAssets.meta
+
+# Package/Plugin Settings
+!Settings/
+!Settings.meta
+
+# Default Input System Action
+!InputSystem_Actions.inputactions
+!InputSystem_Actions.inputactions.meta
+
+!_
+!_.meta
+
+!NuGet.config
+!NuGet.config.meta
+!packages.config
+!packages.config.meta

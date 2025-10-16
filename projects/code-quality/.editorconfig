@@ -1,0 +1,16 @@
+root = false
+
+# Unity project specific settings
+[*]
+indent_size = 2
+indent_style = space
+
+[*.cs]
+# C# Unity scripts
+indent_size = 4
+indent_style = space
+
+[*.{xml,config,rsp}]
+# Unity XML configs and response files
+indent_size = 2
+indent_style = space
