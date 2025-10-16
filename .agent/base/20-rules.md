@@ -1,0 +1,26 @@
+{
+    "name": "com.contractwork.sangocard.build",
+    "displayName": "CW Sango Card 6571 Build",
+    "description": "Sango Card Build",
+    "version": "0.1.0",
+    "unity": "6000.0",
+    "keywords": [
+        "Unity",
+        "Sango",
+        "Card",
+        "Build"
+    ],
+    "category": "",
+    "dependencies": {
+    },
+    "hideInEditor": false,
+    "author": {
+        "name": "GiantCroissant",
+        "email": "apprentice@giantcroissant.com",
+        "url": "https://giantcroissant.io/"
+    },
+    "repository": {
+        "url": "git@github.com:GiantCroissant-Lunar/sango-card.git",
+        "type": "git"
+    }
+}

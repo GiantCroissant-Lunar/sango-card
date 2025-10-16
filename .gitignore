@@ -1,0 +1,8 @@
+
+# Task runner output
+.task/
+output/
+
+# Build artifacts (Task/Nuke)
+bin/
+obj/

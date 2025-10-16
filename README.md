@@ -12,20 +12,45 @@ Sango Card is organised as a multi-project workspace with scripted build automat
 - **.NET SDK** compatible with the Nuke build (follow `_build.csproj` target framework).
 - **Unity Editor** matching the version specified inside `projects/client/ProjectSettings/ProjectVersion.txt` once populated.
 - **Git LFS** if large assets are introduced in `projects/client/Assets/`.
+- **Task** (optional but recommended) - Modern task runner for simplified workflows. See [Task Documentation](docs/task/) for installation.
 
 ## Getting started
 1. Clone the repository and restore submodules if added in the future.
 2. Install the prerequisites listed above.
-3. Run the platform-specific build script from `build/`:
+3. **Quick start with Task (recommended)**:
+   ```bash
+   # Install Task (see docs/task/ for platform-specific instructions)
+   task --version
+   
+   # Setup and build
+   task setup
+   task build
+   ```
+   
+   **Or use Nuke directly**:
    - PowerShell: `./build.ps1`
    - Bash: `./build.sh`
    - Windows CMD: `build.cmd`
 4. Open `projects/client/` in Unity for client-side development.
 
 ## Development workflow
-- Use the Nuke pipeline (`build/`) to keep builds reproducible and CI friendly.
+- **Use Task for convenience**: `task dev` (clean + restore + build) or `task ci` (full CI pipeline). See [Task Documentation](docs/task/) for all available tasks.
+- **Use the Nuke pipeline** (`build/`) directly for advanced scenarios to keep builds reproducible and CI friendly.
 - Unity-generated code artifacts (e.g., Entitas, Jenny) are configured via the `.properties` files under `projects/client/`.
 - Add documentation and onboarding notes for each subproject inside its own `README.md` (see `projects/client/README.md` as a starting point to replace).
+
+### Common workflows with Task
+```bash
+task setup          # Initial setup and dependency restore
+task build          # Build the project
+task build:unity    # Build Unity project for Windows
+task test           # Run all tests
+task clean          # Clean build artifacts
+task dev            # Complete dev workflow (clean + setup + build)
+task ci             # Full CI pipeline (clean + setup + build + test)
+```
+
+For all available tasks, run `task --list` or see [Task Documentation](docs/task/).
 
 ## Contributing
 - Create feature branches from the default branch and open pull requests with clear descriptions.

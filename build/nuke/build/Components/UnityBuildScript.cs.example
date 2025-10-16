@@ -1,0 +1,123 @@
+using UnityEditor;
+using UnityEngine;
+using System.Linq;
+
+/// <summary>
+/// Example Unity build script to be placed in your Unity project under Editor folder
+/// This script is called by the Nuke build component
+/// Place this file at: Assets/Editor/BuildScript.cs
+/// </summary>
+public static class BuildScript
+{
+    /// <summary>
+    /// Main build method called from command line
+    /// </summary>
+    public static void Build()
+    {
+        // Get build target from command line arguments
+        string[] args = System.Environment.GetCommandLineArgs();
+        string buildPath = GetArg(args, "-buildPath", "Build");
+        string buildTarget = GetArg(args, "-buildTarget", "StandaloneWindows64");
+        
+        BuildTarget target = ParseBuildTarget(buildTarget);
+        
+        // Get all scenes in build settings
+        string[] scenes = EditorBuildSettings.scenes
+            .Where(scene => scene.enabled)
+            .Select(scene => scene.path)
+            .ToArray();
+
+        if (scenes.Length == 0)
+        {
+            Debug.LogError("No scenes found in build settings!");
+            EditorApplication.Exit(1);
+            return;
+        }
+
+        // Determine build path and extension
+        string extension = GetBuildExtension(target);
+        string fullBuildPath = $"{buildPath}/Game{extension}";
+
+        Debug.Log($"Building for {target} to {fullBuildPath}");
+        Debug.Log($"Scenes: {string.Join(", ", scenes)}");
+
+        // Build options
+        BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = scenes,
+            locationPathName = fullBuildPath,
+            target = target,
+            options = BuildOptions.None
+        };
+
+        // Perform the build
+        var report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        if (report.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.Log($"Build succeeded: {report.summary.totalSize} bytes");
+            EditorApplication.Exit(0);
+        }
+        else
+        {
+            Debug.LogError($"Build failed: {report.summary.result}");
+            EditorApplication.Exit(1);
+        }
+    }
+
+    /// <summary>
+    /// Get command line argument value
+    /// </summary>
+    private static string GetArg(string[] args, string name, string defaultValue)
+    {
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == name && i + 1 < args.Length)
+            {
+                return args[i + 1];
+            }
+        }
+        return defaultValue;
+    }
+
+    /// <summary>
+    /// Parse build target string to BuildTarget enum
+    /// </summary>
+    private static BuildTarget ParseBuildTarget(string target)
+    {
+        return target switch
+        {
+            "StandaloneWindows" => BuildTarget.StandaloneWindows,
+            "StandaloneWindows64" => BuildTarget.StandaloneWindows64,
+            "StandaloneOSX" => BuildTarget.StandaloneOSX,
+            "StandaloneLinux64" => BuildTarget.StandaloneLinux64,
+            "iOS" => BuildTarget.iOS,
+            "Android" => BuildTarget.Android,
+            "WebGL" => BuildTarget.WebGL,
+            "WSAPlayer" => BuildTarget.WSAPlayer,
+            "PS4" => BuildTarget.PS4,
+            "XboxOne" => BuildTarget.XboxOne,
+            "tvOS" => BuildTarget.tvOS,
+            "Switch" => BuildTarget.Switch,
+            _ => BuildTarget.StandaloneWindows64
+        };
+    }
+
+    /// <summary>
+    /// Get the appropriate file extension for the build target
+    /// </summary>
+    private static string GetBuildExtension(BuildTarget target)
+    {
+        return target switch
+        {
+            BuildTarget.StandaloneWindows => ".exe",
+            BuildTarget.StandaloneWindows64 => ".exe",
+            BuildTarget.StandaloneOSX => ".app",
+            BuildTarget.StandaloneLinux64 => ".x86_64",
+            BuildTarget.iOS => "",
+            BuildTarget.Android => ".apk",
+            BuildTarget.WebGL => "",
+            _ => ""
+        };
+    }
+}

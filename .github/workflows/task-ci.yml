@@ -1,0 +1,113 @@
+name: CI with Task
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            install_cmd: 'sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin'
+          - os: windows-latest
+            install_cmd: 'choco install go-task'
+          - os: macos-latest
+            install_cmd: 'brew install go-task/tap/go-task'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Install Task
+      run: |
+        ${{ matrix.install_cmd }}
+      shell: bash
+      continue-on-error: false
+    
+    - name: Verify Task installation
+      run: task --version
+    
+    - name: Show Task info
+      run: task info
+    
+    - name: Run CI pipeline
+      run: task ci
+      env:
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    
+    - name: Upload build artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ matrix.os }}
+        path: |
+          output/
+          build/nuke/build/bin/
+          build/nuke/build/obj/
+        retention-days: 7
+        if-no-files-found: ignore
+
+  unity-build:
+    runs-on: ubuntu-latest
+    # This job requires Unity to be set up - uncomment and configure when ready
+    if: false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Unity
+      uses: game-ci/unity-builder@v4
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      with:
+        targetPlatform: StandaloneWindows64
+    
+    - name: Install Task
+      run: |
+        sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+    
+    - name: Build Unity project
+      run: task build:unity
+    
+    - name: Upload Unity build
+      uses: actions/upload-artifact@v4
+      with:
+        name: unity-build
+        path: output/
+        retention-days: 7
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Install Task
+      run: |
+        sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+    
+    - name: Restore dependencies
+      run: task setup:dotnet
+    
+    # Add your linting tasks here
+    - name: Run linter (placeholder)
+      run: echo "Add your linting commands here"

@@ -1,0 +1,141 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Task: Setup",
+      "type": "shell",
+      "command": "task",
+      "args": ["setup"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: Build",
+      "type": "shell",
+      "command": "task",
+      "args": ["build"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Task: Build Unity (Windows)",
+      "type": "shell",
+      "command": "task",
+      "args": ["build:unity"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: Build Unity (Android)",
+      "type": "shell",
+      "command": "task",
+      "args": ["build:unity:android"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: Test",
+      "type": "shell",
+      "command": "task",
+      "args": ["test"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: Clean",
+      "type": "shell",
+      "command": "task",
+      "args": ["clean"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: Dev Workflow",
+      "type": "shell",
+      "command": "task",
+      "args": ["dev"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: CI Pipeline",
+      "type": "shell",
+      "command": "task",
+      "args": ["ci"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: Rebuild",
+      "type": "shell",
+      "command": "task",
+      "args": ["rebuild"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: List All",
+      "type": "shell",
+      "command": "task",
+      "args": ["--list"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task: Info",
+      "type": "shell",
+      "command": "task",
+      "args": ["info"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
