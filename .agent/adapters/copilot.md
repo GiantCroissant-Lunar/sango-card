@@ -4,7 +4,7 @@ Base-Version-Expected: 1.0.0
 References base rule set in `.agent/base/`. The base canon prevails on conflict.
 
 ## Copilot Context
-GitHub Copilot provides code suggestions in editor and chat-based assistance. This adapter configures how Copilot should behave in the Sango Card project.
+GitHub Copilot provides code suggestions in editor and chat-based assistance. This adapter configures how Copilot should behave in the Sango Card Unity 6000.2.x project.
 
 ## Code Suggestions
 - Prefer editing existing code over generating new files (R-CODE-010).

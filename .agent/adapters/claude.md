@@ -10,7 +10,7 @@ References base rule set in `.agent/base/`. The base canon prevails on conflict.
 - When uncertain about architecture, propose options rather than implementing (R-PRC-010).
 
 ## Unity & C# Context
-- This is a Unity 2022.3 LTS mobile card game project.
+- This is a Unity 6000.2.x mobile card game project.
 - Respect Unity and C# naming conventions (R-CODE-030, R-CODE-040).
 - Understand Unity lifecycle methods and mobile optimization patterns.
 - Target .NET Standard 2.1 compatibility.

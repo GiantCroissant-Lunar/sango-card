@@ -3,7 +3,7 @@ Version: 1.0.0
 Source of Truth for all automated assistant behavior in Sango Card project.
 
 ## Project Context
-- **Type**: Unity card game project (Unity 2022.3 LTS, C#, .NET Standard 2.1)
+- **Type**: Unity card game project (Unity 6000.2.x, C#, .NET Standard 2.1)
 - **Phase**: Active development with rapid iteration
 - **Focus**: Mobile-first card game with performant UI, data-driven design, and spec-driven development methodology
 - **Build System**: Nuke (.NET build automation) + Task (Go-based task runner)
