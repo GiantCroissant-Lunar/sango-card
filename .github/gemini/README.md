@@ -22,3 +22,7 @@ Gemini Code Assist will automatically:
 5. Verify spec-kit workflow compliance
 
 All rules reference the project's canonical rules in `.agent/base/20-rules.md`.
+
+## Setup
+
+To enable Gemini Code Assist for this repository, follow the setup instructions in the [official documentation](https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github).

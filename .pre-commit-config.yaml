@@ -43,7 +43,7 @@ repos:
       - id: gitleaks
         name: Gitleaks (secret scanning)
         description: Scan for secrets and sensitive information
-        entry: gitleaks detect --source . --verbose --no-git --redact
+        entry: gitleaks detect --source . --verbose --no-git --redact --config .gitleaks.toml
         language: system
         pass_filenames: false
   - repo: https://github.com/igorshubovych/markdownlint-cli
