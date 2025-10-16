@@ -36,6 +36,20 @@ organize using partial classes:
 - Improves code organization, testability, and separation of concerns per interface contract
 - Example: `Build.cs` → `partial class Build : NukeBuild`, `Build.UnityBuild.cs` →
     `partial class Build : IUnityBuild` with interface-specific implementations
+R-CODE-110: **Cross-Platform Path Handling** - Always prefer relative paths over absolute paths for cross-platform compatibility:
+
+- Use relative paths for all file references in code, configuration, and documentation
+- Use forward slashes (`/`) as path separators, which work on Windows, macOS, and Linux
+- Use `Path.Combine()` in C# or equivalent path joining methods in other languages for dynamic path construction
+- Never hardcode absolute paths (e.g., `C:\Users\...`, `/home/user/...`)
+- For build scripts and tooling, use workspace-relative paths or environment variables
+- Examples:
+  - ✅ `Assets/Features/DeckBuilder/CardUI.prefab`
+  - ✅ `Path.Combine("build", "_artifacts", version, "unity-output")`
+  - ✅ `./scripts/setup.sh`
+  - ❌ `D:\lunar-snake\constract-work\card-projects\sango-card\Assets\...`
+  - ❌ `/Users/dev/projects/sango-card/build/...`
+- Ensures code portability across Windows, macOS, and Linux development environments
 
 ## Unity-Specific Rules
 
@@ -178,6 +192,35 @@ R-BLD-070: **Versioned Build Artifacts** - Build outputs MUST be organized by ve
   - ❌ `build/_artifacts/1.0.0/Android/SangoCard.apk` (missing unity-output folder)
   - ❌ `build/_artifacts/1.0.0/unity-output/SangoCard.apk` (no platform folder)
   - ❌ `output/build.exe` (wrong location)
+
+## CI/CD & GitHub Actions
+
+R-CICD-010: **GitHub Runner Selection** - Prefer Ubuntu runners for cost efficiency:
+
+- Use `runs-on: ubuntu-latest` for all non-platform-specific jobs (linting, testing, building non-Unity projects)
+- Ubuntu runners are more cost-effective than Windows or macOS runners on GitHub Actions
+- Only use Windows (`windows-latest`) or macOS (`macos-latest`) when platform-specific features are required
+- Examples:
+  - ✅ Linting, code quality checks, documentation builds → `ubuntu-latest`
+  - ✅ .NET builds, Node.js builds, Docker builds → `ubuntu-latest`
+  - ✅ Cross-platform testing → matrix with `ubuntu-latest`, `windows-latest`, `macos-latest`
+  - ❌ Generic builds on `windows-latest` or `macos-latest` (unnecessary cost)
+
+R-CICD-020: **Unity Build Runners** - Always use self-hosted runners for Unity builds:
+
+- Unity builds MUST run on `runs-on: self-hosted` runners, never GitHub-hosted runners
+- GitHub-hosted runners lack Unity licenses and have insufficient resources for Unity builds
+- Self-hosted runners provide:
+  - Pre-installed Unity Editor with activated licenses
+  - Better performance and build times
+  - Access to platform-specific SDKs (Android SDK, iOS build tools)
+  - Cost savings for compute-intensive Unity builds
+- Tag self-hosted runners appropriately (e.g., `[self-hosted, unity, windows]` or `[self-hosted, unity, linux]`)
+- Examples:
+  - ✅ `runs-on: [self-hosted, unity, windows]` for Unity Windows builds
+  - ✅ `runs-on: [self-hosted, unity, linux]` for Unity Linux/Android builds
+  - ❌ `runs-on: ubuntu-latest` for Unity builds (no Unity license, will fail)
+  - ❌ `runs-on: windows-latest` for Unity builds (no Unity license, expensive)
 
 ## Process
 
