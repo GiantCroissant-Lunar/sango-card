@@ -155,12 +155,17 @@ R-BLD-020: Build commands:
 R-BLD-030: Verify build succeeds locally before committing: `task clean && task build`.
 R-BLD-040: Unity builds MUST be reproducible. No manual Build Settings changes - configure via build scripts.
 R-BLD-050: Nuke build targets for CI/CD. Task targets for developer convenience.
-R-BLD-060: **Unity Project Isolation** - The Unity project at `projects/client` is a standalone Git repository.
-- **NEVER** modify, add, or remove files in `projects/client` outside of build operations.
-- **NEVER** commit changes to `projects/client` from the parent repository.
-- **NEVER** view, edit, or suggest changes to files within `projects/client` unless explicitly part of a build task.
-- Build process MUST perform `git reset --hard` in `projects/client` before building to ensure clean state.
-- The Unity project is read-only from agent perspective except during build execution.
+R-BLD-060: **Unity Project Management** - Different Unity projects have different commit policies:
+- **`projects/client`** - Standalone Git repository (submodule or separate repo):
+  - **NEVER** modify, add, or remove files in `projects/client` outside of build operations
+  - **NEVER** commit changes to `projects/client` from the parent repository
+  - **NEVER** view, edit, or suggest changes to files within `projects/client` unless explicitly part of a build task
+  - Build process MUST perform `git reset --hard` in `projects/client` before building to ensure clean state
+  - Read-only from agent perspective except during build execution
+- **`projects/code-quality`** - Part of main repository:
+  - Normal commit workflow applies - changes should be committed to the parent repository
+  - Used for code quality checks, linting, and validation
+  - Unity project files (manifest.json, packages, assets) are tracked in main repo
 R-BLD-070: **Versioned Build Artifacts** - Build outputs MUST be organized by version using GitVersion.
 - Artifacts directory: `build/_artifacts/{version}/unity-output/{Platform}/`
 - Version format determined by GitVersion (e.g., `1.0.0-beta.1`, `1.2.3`)
