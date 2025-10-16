@@ -89,6 +89,10 @@ When user asks about building:
 
 - Suggest `task build` not direct `dotnet` or Unity commands (R-BLD-010).
 - Remind about local verification: `task clean && task build` (R-BLD-030).
+- **Versioned Artifacts** (R-BLD-070):
+  - Build outputs: `build/_artifacts/{version}/`
+  - Suggest querying GitVersion for current version
+  - Executable paths: `build/_artifacts/{version}/app.exe`
 - **CRITICAL**: Never modify `projects/client` Unity project outside build operations (R-BLD-060).
   - This directory is a standalone Git repo managed only during builds.
   - Do not view, edit, suggest changes, or commit anything in this directory.

@@ -1,0 +1,93 @@
+# GitVersion Configuration
+# See: https://gitversion.net/docs/reference/configuration
+
+# Version scheme
+mode: ContinuousDelivery
+# mode: ContinuousDeployment  # Alternative: increment on every commit
+
+# Branch configuration
+branches:
+  main:
+    regex: ^main$
+    mode: ContinuousDelivery
+    tag: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    source-branches: ['develop', 'release']
+    tracks-release-branches: false
+    is-release-branch: true
+    is-mainline: true
+    pre-release-weight: 55000
+  develop:
+    regex: ^dev(elop)?(ment)?$
+    mode: ContinuousDeployment
+    tag: alpha
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    source-branches: []
+    tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 0
+  feature:
+    regex: ^features?[/-]
+    mode: ContinuousDelivery
+    tag: useBranchName
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    source-branches: ['develop', 'main', 'release']
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
+  release:
+    regex: ^releases?[/-]
+    mode: ContinuousDelivery
+    tag: beta
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    source-branches: ['develop', 'main']
+    tracks-release-branches: false
+    is-release-branch: true
+    is-mainline: false
+    pre-release-weight: 30000
+  hotfix:
+    regex: ^hotfix(es)?[/-]
+    mode: ContinuousDelivery
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    source-branches: ['main']
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
+# Tag prefix
+tag-prefix: 'v'
+# Major/Minor/Patch versioning
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+# No bump message
+no-bump-message: '\+semver:\s?(none|skip)'
+# Commit message increment mode
+commit-message-incrementing: Enabled
+# Initial version
+next-version: 0.1.0
+# Assembly versioning
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatchTag
+assembly-informational-format: '{InformationalVersion}'
+# Ignore commits
+ignore:
+  sha: []
+  commits-before: 2020-01-01T00:00:00
+# Merge message formats
+merge-message-formats: {}
+# Update build number
+update-build-number: true

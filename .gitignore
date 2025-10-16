@@ -6,6 +6,8 @@ output/
 # Build artifacts (Task/Nuke)
 bin/
 obj/
+build/_artifacts/*  # Versioned artifacts (R-BLD-070)
+!build/_artifacts/.gitkeep
 
 # Spec-kit - Protect AI agent credentials and tokens
 # The .github/prompts/ directory contains slash command definitions (safe to commit)

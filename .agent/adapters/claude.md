@@ -98,6 +98,12 @@ References base rule set in `.agent/base/`. The base canon prevails on conflict.
   - Never modify, view, edit, or suggest changes to files in `projects/client` outside build operations.
   - This directory is a standalone Git repo managed only during builds.
   - Build tasks must `git reset --hard` this directory before building.
+- **Versioned Artifacts** (R-BLD-070):
+  - All build outputs go to `build/_artifacts/{version}/`
+  - Version determined by GitVersion
+  - Query version before building, create versioned directory
+  - Run executables from versioned path: `build/_artifacts/{version}/app.exe`
+  - Never place artifacts in root `build/_artifacts/` directory
 
 ## Documentation
 

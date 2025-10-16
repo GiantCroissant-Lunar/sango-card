@@ -111,6 +111,11 @@ Windsurf (powered by Codeium) is an AI-native IDE with agentic coding capabiliti
   - Never modify, view, edit, or suggest changes to files in `projects/client` outside build operations.
   - This directory is a standalone Git repo managed only during builds.
   - Build tasks must `git reset --hard` this directory before building.
+- **Versioned Artifacts** (R-BLD-070):
+  - All build outputs to `build/_artifacts/{version}/`
+  - Version from GitVersion
+  - Create versioned directory before each build
+  - Run executables from: `build/_artifacts/{version}/app.exe`
 
 ## Documentation
 

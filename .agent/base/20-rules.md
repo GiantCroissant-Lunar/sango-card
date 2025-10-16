@@ -130,6 +130,22 @@ R-BLD-060: **Unity Project Isolation** - The Unity project at `projects/client` 
 - **NEVER** view, edit, or suggest changes to files within `projects/client` unless explicitly part of a build task.
 - Build process MUST perform `git reset --hard` in `projects/client` before building to ensure clean state.
 - The Unity project is read-only from agent perspective except during build execution.
+R-BLD-070: **Versioned Build Artifacts** - Build outputs MUST be organized by version using GitVersion.
+- Artifacts directory: `build/_artifacts/{version}/`
+- Version format determined by GitVersion (e.g., `1.0.0-beta.1`, `1.2.3`)
+- **NEVER** place artifacts directly in `build/_artifacts/` root
+- Each build creates a new versioned subdirectory
+- To run built executables, always use the versioned path: `build/_artifacts/{version}/executable.exe`
+- Build scripts MUST:
+  - Query GitVersion for current version
+  - Create versioned output directory before building
+  - Output all artifacts to `build/_artifacts/{version}/`
+  - Generate version manifest file in artifact directory
+- Example paths:
+  - ✅ `build/_artifacts/1.0.0/SangoCard.apk`
+  - ✅ `build/_artifacts/1.0.0-beta.1/SangoCard-StandaloneWindows64.exe`
+  - ❌ `build/_artifacts/SangoCard.apk` (no version)
+  - ❌ `output/build.exe` (wrong location)
 
 ## Process
 
