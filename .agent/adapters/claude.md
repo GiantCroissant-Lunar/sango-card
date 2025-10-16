@@ -99,11 +99,13 @@ References base rule set in `.agent/base/`. The base canon prevails on conflict.
   - This directory is a standalone Git repo managed only during builds.
   - Build tasks must `git reset --hard` this directory before building.
 - **Versioned Artifacts** (R-BLD-070):
-  - All build outputs go to `build/_artifacts/{version}/`
+  - All build outputs go to `build/_artifacts/{version}/{Platform}/`
+  - Platform folders: Android/, iOS/, StandaloneWindows64/, logs/, intermediate/
   - Version determined by GitVersion
-  - Query version before building, create versioned directory
-  - Run executables from versioned path: `build/_artifacts/{version}/app.exe`
-  - Never place artifacts in root `build/_artifacts/` directory
+  - Query version before building, create versioned directory with subfolders
+  - Run executables: `build/_artifacts/{version}/StandaloneWindows64/app.exe`
+  - Save logs to: `build/_artifacts/{version}/logs/`
+  - Never place artifacts directly in version root without platform folder
 
 ## Documentation
 

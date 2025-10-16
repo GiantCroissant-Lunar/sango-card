@@ -134,17 +134,31 @@ R-BLD-070: **Versioned Build Artifacts** - Build outputs MUST be organized by ve
 - Artifacts directory: `build/_artifacts/{version}/`
 - Version format determined by GitVersion (e.g., `1.0.0-beta.1`, `1.2.3`)
 - **NEVER** place artifacts directly in `build/_artifacts/` root
-- Each build creates a new versioned subdirectory
-- To run built executables, always use the versioned path: `build/_artifacts/{version}/executable.exe`
+- Each build creates a new versioned subdirectory with organized subfolders
+- **Subdirectory Structure** for versioned artifacts:
+  - `Android/` - Android builds (.apk, .aab) and intermediate Gradle projects
+  - `iOS/` - iOS builds (.ipa) and intermediate Xcode projects
+  - `StandaloneWindows64/` - Windows 64-bit builds (.exe and data folders)
+  - `StandaloneLinux64/` - Linux 64-bit builds
+  - `WebGL/` - WebGL builds
+  - `logs/` - Build logs, Unity logs, compiler output
+  - `intermediate/` - Intermediate build artifacts (Gradle, Xcode projects, IL2CPP output)
+  - `version.json` - Version manifest file at root of version directory
 - Build scripts MUST:
   - Query GitVersion for current version
-  - Create versioned output directory before building
-  - Output all artifacts to `build/_artifacts/{version}/`
-  - Generate version manifest file in artifact directory
+  - Create versioned output directory with appropriate subfolders before building
+  - Output platform-specific builds to `build/_artifacts/{version}/{Platform}/`
+  - Save build logs to `build/_artifacts/{version}/logs/`
+  - Generate version manifest file at `build/_artifacts/{version}/version.json`
+- To run built executables, always use the full versioned path with platform folder
 - Example paths:
-  - ✅ `build/_artifacts/1.0.0/SangoCard.apk`
-  - ✅ `build/_artifacts/1.0.0-beta.1/SangoCard-StandaloneWindows64.exe`
+  - ✅ `build/_artifacts/1.0.0/Android/SangoCard.apk`
+  - ✅ `build/_artifacts/1.0.0-beta.1/StandaloneWindows64/SangoCard.exe`
+  - ✅ `build/_artifacts/1.0.0/iOS/SangoCard.ipa`
+  - ✅ `build/_artifacts/1.0.0/logs/unity-build.log`
+  - ✅ `build/_artifacts/1.0.0/intermediate/gradle/` (Android intermediate)
   - ❌ `build/_artifacts/SangoCard.apk` (no version)
+  - ❌ `build/_artifacts/1.0.0/SangoCard.apk` (no platform folder)
   - ❌ `output/build.exe` (wrong location)
 
 ## Process

@@ -8,13 +8,31 @@ This directory contains versioned build artifacts following **R-BLD-070**.
 build/_artifacts/
 ├── .gitkeep
 ├── README.md
-├── {version}/          # e.g., 1.0.0, 1.0.0-beta.1, 0.1.0-alpha.5
-│   ├── SangoCard.apk   # Android build
-│   ├── SangoCard.exe   # Windows standalone
-│   ├── version.json    # Version manifest
-│   └── ...
-└── {version}/
-    └── ...
+└── {version}/                           # e.g., 1.0.0, 1.0.0-beta.1, 0.1.0-alpha.5
+    ├── version.json                     # Version manifest
+    ├── Android/                         # Android builds
+    │   ├── SangoCard.apk                # APK build
+    │   ├── SangoCard.aab                # Android App Bundle
+    │   └── gradle/                      # Gradle project (intermediate)
+    ├── iOS/                             # iOS builds
+    │   ├── SangoCard.ipa                # iOS App Archive
+    │   └── xcode/                       # Xcode project (intermediate)
+    ├── StandaloneWindows64/             # Windows 64-bit builds
+    │   ├── SangoCard.exe                # Windows executable
+    │   └── SangoCard_Data/              # Unity data folder
+    ├── StandaloneLinux64/               # Linux 64-bit builds
+    │   └── SangoCard.x86_64             # Linux executable
+    ├── WebGL/                           # WebGL builds
+    │   ├── index.html
+    │   └── Build/
+    ├── logs/                            # Build logs
+    │   ├── unity-build.log              # Unity build log
+    │   ├── gradle-build.log             # Gradle build log (Android)
+    │   └── xcode-build.log              # Xcode build log (iOS)
+    └── intermediate/                    # Intermediate build artifacts
+        ├── il2cpp/                      # IL2CPP output
+        ├── gradle/                      # Android Gradle intermediate files
+        └── xcode/                       # iOS Xcode intermediate files
 ```
 
 ## Versioning with GitVersion
@@ -61,37 +79,82 @@ When building, scripts **MUST**:
    # Output: 1.0.0-beta.1
    ```
 
-2. Create versioned directory:
+2. Create versioned directory with subfolders:
    ```bash
-   mkdir -p build/_artifacts/1.0.0-beta.1
+   VERSION="1.0.0-beta.1"
+   mkdir -p build/_artifacts/${VERSION}/{Android,iOS,StandaloneWindows64,logs,intermediate}
    ```
 
-3. Build to versioned path:
+3. Build to platform-specific path:
    ```bash
-   # Unity build outputs to:
-   build/_artifacts/1.0.0-beta.1/SangoCard.apk
+   # Unity Android build outputs to:
+   build/_artifacts/1.0.0-beta.1/Android/SangoCard.apk
+   
+   # Unity Windows build outputs to:
+   build/_artifacts/1.0.0-beta.1/StandaloneWindows64/SangoCard.exe
+   build/_artifacts/1.0.0-beta.1/StandaloneWindows64/SangoCard_Data/
+   
+   # Build logs go to:
+   build/_artifacts/1.0.0-beta.1/logs/unity-build.log
+   
+   # Intermediate Gradle project (Android):
+   build/_artifacts/1.0.0-beta.1/intermediate/gradle/
    ```
 
-4. Generate version manifest:
+4. Generate version manifest at root of version directory:
    ```json
    {
      "version": "1.0.0-beta.1",
      "buildTime": "2025-10-16T16:40:00Z",
      "commit": "1ec20ff",
-     "branch": "release/1.0"
+     "branch": "release/1.0",
+     "platforms": {
+       "Android": {
+         "apk": "Android/SangoCard.apk",
+         "buildLog": "logs/gradle-build.log"
+       },
+       "StandaloneWindows64": {
+         "executable": "StandaloneWindows64/SangoCard.exe",
+         "buildLog": "logs/unity-build.log"
+       }
+     }
    }
    ```
 
 ## Running Built Executables
 
-**Always** use the versioned path:
+**Always** use the full versioned path with platform folder:
 
 ```bash
-# ✅ Correct
+# ✅ Correct - with platform subfolder
+./build/_artifacts/1.0.0/StandaloneWindows64/SangoCard.exe
+
+# ❌ Wrong - no platform subfolder
 ./build/_artifacts/1.0.0/SangoCard.exe
 
-# ❌ Wrong - artifacts are never in root
+# ❌ Wrong - no version
 ./build/_artifacts/SangoCard.exe
+```
+
+## Platform-Specific Paths
+
+```bash
+# Android
+build/_artifacts/{version}/Android/SangoCard.apk
+adb install build/_artifacts/1.0.0/Android/SangoCard.apk
+
+# iOS
+build/_artifacts/{version}/iOS/SangoCard.ipa
+xcrun simctl install booted build/_artifacts/1.0.0/iOS/SangoCard.ipa
+
+# Windows
+build/_artifacts/{version}/StandaloneWindows64/SangoCard.exe
+
+# Linux
+build/_artifacts/{version}/StandaloneLinux64/SangoCard.x86_64
+
+# WebGL (serve directory)
+cd build/_artifacts/{version}/WebGL && python -m http.server
 ```
 
 ## Example Usage
@@ -100,15 +163,28 @@ When building, scripts **MUST**:
 # Get current version
 VERSION=$(dotnet gitversion /showvariable SemVer)
 
-# Run the build
-./build/_artifacts/${VERSION}/SangoCard.exe
+# Run Windows build
+./build/_artifacts/${VERSION}/StandaloneWindows64/SangoCard.exe
 
-# Compare versions
-./build/_artifacts/1.0.0/SangoCard.exe &     # Old version
-./build/_artifacts/1.0.1/SangoCard.exe &     # New version
+# Install Android build to device
+adb install build/_artifacts/${VERSION}/Android/SangoCard.apk
 
-# Archive old versions
-tar -czf archives/1.0.0.tar.gz build/_artifacts/1.0.0/
+# Check build logs
+cat build/_artifacts/${VERSION}/logs/unity-build.log
+
+# Compare versions (Windows)
+./build/_artifacts/1.0.0/StandaloneWindows64/SangoCard.exe &     # Old
+./build/_artifacts/1.0.1/StandaloneWindows64/SangoCard.exe &     # New
+
+# Archive specific platform
+tar -czf archives/1.0.0-android.tar.gz build/_artifacts/1.0.0/Android/
+
+# Archive all platforms for version
+tar -czf archives/1.0.0-all.tar.gz build/_artifacts/1.0.0/
+
+# Clean intermediate files but keep final builds
+rm -rf build/_artifacts/1.0.0/intermediate/
+rm -rf build/_artifacts/1.0.0/logs/
 ```
 
 ## Benefits
