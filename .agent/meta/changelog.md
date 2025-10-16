@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-10-16
 
 ### Added
+
 - Initial agent instruction system for Sango Card project
 - Base rules adapted from Winged Bean project structure
 - 10 core principles for Unity card game development
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Metadata structure (changelog, versioning, adapter template)
 
 ### Philosophy
+
 - Unity-first development with mobile optimization
 - Spec-driven feature development methodology
 - Performance-conscious with 60 FPS target
@@ -35,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Build automation through Task/Nuke pipeline
 
 ### Context
+
 - Unity 2022.3 LTS
 - C# with .NET Standard 2.1
 - Mobile-first (Android ARM64)
@@ -49,16 +52,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Version Guidelines
 
 **MAJOR version** (X.0.0): Backward-incompatible changes to rule semantics or structure
+
 - Removing a rule category
 - Changing rule ID numbering scheme
 - Fundamental philosophy changes
 
 **MINOR version** (1.X.0): Backward-compatible additions
+
 - New rules added
 - New rule categories
 - Additional context or examples
 
 **PATCH version** (1.0.X): Clarifications and fixes
+
 - Typo fixes
 - Wording improvements
 - Example corrections

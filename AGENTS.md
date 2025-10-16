@@ -5,16 +5,19 @@ Multi-agent project configuration for Sango Card.
 ## Supported Agents
 
 ### Claude Code
+
 **Pointer:** `CLAUDE.md` → `.agent/adapters/claude.md`
 
 Claude is the primary development agent for this project with full context awareness.
 
 ### GitHub Copilot
+
 **Pointer:** `.github/copilot-instructions.md` → `.agent/adapters/copilot.md`
 
 Copilot provides inline code suggestions and chat assistance following project patterns.
 
 ### Windsurf
+
 **Pointer:** `.windsurf/rules.md` → `.agent/adapters/windsurf.md`
 
 Windsurf/Codeium integration for alternative AI coding assistance.
@@ -24,6 +27,7 @@ Windsurf/Codeium integration for alternative AI coding assistance.
 All agents follow the shared rule base at `.agent/base/` with agent-specific adapters.
 
 **Structure:**
+
 - `.agent/base/` - Canonical rules (10 principles, 60+ rules, glossary)
 - `.agent/adapters/` - Agent-specific implementations
 - `.agent/meta/` - Versioning and governance
@@ -49,6 +53,7 @@ await readFile(''tasks.md'');
 ```
 
 **Guidelines:**
+
 - Read multiple files in parallel when gathering information
 - Execute independent tasks simultaneously
 - Report progress in parallel with subsequent actions
@@ -57,6 +62,7 @@ await readFile(''tasks.md'');
 ## Key Constraints
 
 All agents must:
+
 - Follow spec-kit workflow for features (R-SPEC-010)
 - Use Task runner for builds (R-BLD-010)
 - Never commit secrets (R-SEC-020, R-GIT-020)

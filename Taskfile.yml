@@ -1,14 +1,11 @@
 version: '3'
-
 vars:
   BUILD_DIR: ./build/nuke
   UNITY_PROJECT: ./projects/client
   OUTPUT_DIR: ./output
   NUKE_BUILD_SCRIPT: '{{if eq OS "windows"}}./build/nuke/build.ps1{{else}}./build/nuke/build.sh{{end}}'
-
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: "1"
-
 tasks:
   # Default task - shows help
   default:
@@ -16,7 +13,6 @@ tasks:
     silent: true
     cmds:
       - task --list
-
   # Setup and initialization tasks
   setup:
     desc: Setup development environment (install dependencies)
@@ -25,7 +21,6 @@ tasks:
       - task: setup:unity
       - task: setup:hooks
       - echo "✓ Setup complete!"
-
   setup:dotnet:
     desc: Restore .NET dependencies for Nuke build
     dir: '{{.BUILD_DIR}}/build'
@@ -35,13 +30,11 @@ tasks:
       - '{{.BUILD_DIR}}/build/_build.csproj'
     generates:
       - '{{.BUILD_DIR}}/build/obj/**/*'
-
   setup:unity:
     desc: Check Unity installation and project setup
     cmds:
       - echo "Checking Unity project at {{.UNITY_PROJECT}}"
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\ProjectSettings\ProjectVersion.txt" (type "{{.UNITY_PROJECT}}\ProjectSettings\ProjectVersion.txt") else (echo Unity project not initialized){{else}}if [ -f "{{.UNITY_PROJECT}}/ProjectSettings/ProjectVersion.txt" ]; then cat "{{.UNITY_PROJECT}}/ProjectSettings/ProjectVersion.txt"; else echo "Unity project not initialized"; fi{{end}}'
-
   setup:hooks:
     desc: Install git hooks (pre-commit framework)
     cmds:
@@ -67,7 +60,6 @@ tasks:
           echo "  Then run: task setup:hooks"
         fi
         {{end}}
-
   # Clean tasks
   clean:
     desc: Clean all build artifacts
@@ -75,7 +67,6 @@ tasks:
       - task: clean:nuke
       - task: clean:unity
       - task: clean:output
-
   clean:nuke:
     desc: Clean Nuke build artifacts
     dir: '{{.BUILD_DIR}}/build'
@@ -83,7 +74,6 @@ tasks:
       - dotnet clean
       - '{{if eq OS "windows"}}if exist "bin" rmdir /s /q bin{{else}}rm -rf bin{{end}}'
       - '{{if eq OS "windows"}}if exist "obj" rmdir /s /q obj{{else}}rm -rf obj{{end}}'
-
   clean:unity:
     desc: Clean Unity build artifacts
     cmds:
@@ -91,61 +81,50 @@ tasks:
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\Library" echo Skipping Library folder (too large, clean manually if needed){{else}}echo "Skipping Library folder (too large, clean manually if needed)"{{end}}'
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\Temp" rmdir /s /q "{{.UNITY_PROJECT}}\Temp"{{else}}rm -rf "{{.UNITY_PROJECT}}/Temp"{{end}}'
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\obj" rmdir /s /q "{{.UNITY_PROJECT}}\obj"{{else}}rm -rf "{{.UNITY_PROJECT}}/obj"{{end}}'
-
   clean:output:
     desc: Clean output directory
     cmds:
       - '{{if eq OS "windows"}}if exist "{{.OUTPUT_DIR}}" rmdir /s /q "{{.OUTPUT_DIR}}"{{else}}rm -rf "{{.OUTPUT_DIR}}"{{end}}'
       - echo "✓ Output directory cleaned"
-
   # Build tasks (using Nuke)
   build:
     desc: Build the project using Nuke
     cmds:
       - task: build:nuke
-
   build:nuke:
     desc: Run Nuke build (Compile target)
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} Compile'
-
   build:unity:
     desc: Build Unity project (Windows 64-bit)
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} BuildUnity --unity-build-target StandaloneWindows64'
-
   build:unity:android:
     desc: Build Unity project for Android
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} BuildUnity --unity-build-target Android'
-
   build:unity:ios:
     desc: Build Unity project for iOS
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} BuildUnity --unity-build-target iOS'
-
   build:unity:webgl:
     desc: Build Unity project for WebGL
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} BuildUnity --unity-build-target WebGL'
-
   # Test tasks
   test:
     desc: Run all tests
     cmds:
       - task: test:unity
-
   test:unity:
     desc: Run Unity tests
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} TestUnity'
-
   # Package tasks
   package:
     desc: Create Unity package
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} ExportUnityPackage'
-
   # Development workflow tasks
   dev:
     desc: Start development workflow (clean + restore + build)
@@ -153,7 +132,6 @@ tasks:
       - task: clean
       - task: setup
       - task: build
-
   ci:
     desc: Run CI pipeline (clean + restore + build + test)
     cmds:
@@ -161,19 +139,16 @@ tasks:
       - task: setup
       - task: build
       - task: test
-
   # Utility tasks
   restore:
     desc: Restore all dependencies
     cmds:
       - task: setup:dotnet
-
   rebuild:
     desc: Clean and build
     cmds:
       - task: clean
       - task: build
-
   # Info tasks
   info:
     desc: Display project information
@@ -198,14 +173,12 @@ tasks:
       - echo "  task ci        - Run CI pipeline"
       - echo ""
       - echo "Run 'task --list' for all available tasks"
-
   # Watch tasks (for development)
   watch:unity:
     desc: Watch Unity project for changes (placeholder for Unity editor workflow)
     cmds:
       - echo "Open Unity Editor at {{.UNITY_PROJECT}} for live development"
       - echo "Unity Editor will handle hot-reloading automatically"
-
   # Nuke-specific tasks (direct passthrough)
   nuke:
     desc: Run custom Nuke target
@@ -215,7 +188,6 @@ tasks:
       Example: task nuke -- CleanUnity
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} {{.CLI_ARGS}}'
-
   # Install Task runner itself (for new developers)
   install-task:
     desc: Install Task runner (for new developers)
@@ -232,26 +204,22 @@ tasks:
           snap install task --classic
         {{end}}
       - echo "✓ Task installed! Restart your terminal and run 'task --version' to verify"
-
   # Documentation tasks
   docs:
     desc: Open Task documentation
     cmds:
       - echo "Opening Task documentation index..."
       - '{{if eq OS "windows"}}start docs\task\INDEX.md{{else if eq OS "darwin"}}open docs/task/INDEX.md{{else}}xdg-open docs/task/INDEX.md{{end}}'
-
   docs:task:
     desc: Open complete Task guide
     cmds:
       - echo "Opening Task guide..."
       - '{{if eq OS "windows"}}start docs\task\README.md{{else if eq OS "darwin"}}open docs/task/README.md{{else}}xdg-open docs/task/README.md{{end}}'
-
   docs:unity:
     desc: Open Unity component documentation
     cmds:
       - echo "Opening Unity build component documentation..."
       - '{{if eq OS "windows"}}start {{.BUILD_DIR}}\build\Components\README.md{{else if eq OS "darwin"}}open {{.BUILD_DIR}}/build/Components/README.md{{else}}xdg-open {{.BUILD_DIR}}/build/Components/README.md{{end}}'
-  
   docs:quick:
     desc: Open quick reference card
     cmds:

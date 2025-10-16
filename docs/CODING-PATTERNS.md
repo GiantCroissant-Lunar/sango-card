@@ -18,6 +18,7 @@ ClassName.InterfaceName3.cs     // Additional interfaces...
 ```
 
 **File Naming Convention**: Use the interface name without the 'I' prefix.
+
 - Interface: `IUnityBuild` → File: `Build.UnityBuild.cs`
 - Interface: `IDockerBuild` → File: `Build.DockerBuild.cs`
 - Interface: `IAwsBuild` → File: `Build.AwsBuild.cs`
@@ -25,10 +26,11 @@ ClassName.InterfaceName3.cs     // Additional interfaces...
 ### Example: Build System
 
 **Build.cs** - Base class inheritance:
+
 ```csharp
 /// <summary>
 /// Main build orchestration class.
-/// 
+///
 /// ARCHITECTURE NOTE (R-CODE-090):
 /// This class uses partial class pattern for interface segregation.
 /// - Build.cs: Contains base NukeBuild inheritance only
@@ -37,16 +39,17 @@ ClassName.InterfaceName3.cs     // Additional interfaces...
 partial class Build : NukeBuild
 {
     public static int Main() => Execute<Build>(x => x.Compile);
-    
+
     // Core build targets here
 }
 ```
 
 **Build.UnityBuild.cs** - Interface implementation:
+
 ```csharp
 /// <summary>
 /// Unity build interface implementation for Build class.
-/// 
+///
 /// ARCHITECTURE NOTE (R-CODE-090):
 /// This partial class file contains ONLY the IUnityBuild interface implementation.
 /// File naming: Build.UnityBuild.cs (interface name without 'I' prefix)
@@ -69,6 +72,7 @@ partial class Build : IUnityBuild
 ### Applicability
 
 This pattern applies to:
+
 - ✅ Build scripts with multiple component interfaces (IUnityBuild → UnityBuild.cs, IDockerBuild → DockerBuild.cs, etc.)
 - ✅ Component systems with multiple behavioral interfaces
 - ✅ Service classes implementing multiple interface contracts
@@ -77,6 +81,7 @@ This pattern applies to:
 **Important**: Interface-specific members (properties, methods) must be implemented in the interface-specific partial file, not in the base file.
 
 Does NOT apply to:
+
 - ❌ Classes with only base class inheritance (no interfaces)
 - ❌ Classes implementing a single interface (optional, but not required)
 - ❌ Unity MonoBehaviours with Unity component interfaces (use composition instead)
@@ -98,6 +103,7 @@ A custom Roslyn analyzer will be developed to enforce this pattern at compile ti
 **Analyzer ID**: `SANGO1001` - "Multiple interfaces should use separate partial class files"
 
 **Detection Logic**:
+
 - Trigger when a class declaration lists multiple interfaces in one file
 - Severity: Warning (upgradeable to Error)
 - Fix: Code action to split into partial files automatically
@@ -121,6 +127,7 @@ pre-commit install
 ```
 
 **What it checks**:
+
 1. Scans staged C# files for classes implementing multiple interfaces
 2. Verifies each interface has a corresponding `ClassName.InterfaceName.cs` file
 3. Fails commit if pattern is violated with clear error messages
@@ -143,13 +150,14 @@ For existing code that doesn't follow this pattern:
 7. Verify build and tests pass
 
 **Example Migration**:
+
 ```csharp
 // BEFORE: Build.cs
 class Build : NukeBuild, IUnityBuild
 {
     // Unity-specific property
     AbsolutePath UnityProjectPath => RootDirectory / "projects/client";
-    
+
     Target BuildUnity => _ => _.Executes(() => { });
 }
 
@@ -164,7 +172,7 @@ partial class Build : IUnityBuild
 {
     // Unity-specific property - moved here
     AbsolutePath UnityProjectPath => RootDirectory / "projects/client";
-    
+
     Target BuildUnity => _ => _.Executes(() => { });
 }
 ```

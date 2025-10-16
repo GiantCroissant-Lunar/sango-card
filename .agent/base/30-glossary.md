@@ -1,6 +1,7 @@
 # Domain Glossary
 
 ## Card Game Terms
+
 - **Card**: Basic game unit with attributes (cost, effect, rarity, faction)
 - **Deck**: Collection of cards selected by player for battle (30-60 cards typical)
 - **Hand**: Cards currently available to play (typically 5-10 cards)
@@ -15,6 +16,7 @@
 - **Meta**: Current popular strategies and deck archetypes
 
 ## Unity Terms
+
 - **GameObject**: Base object in Unity scene hierarchy
 - **Component**: Behavior attached to GameObject (MonoBehaviour, Transform, etc.)
 - **ScriptableObject**: Data container that exists as project asset, not scene object
@@ -31,6 +33,7 @@
 - **Assembly Definition**: Defines code compilation boundary for faster iteration
 
 ## Build System Terms
+
 - **Nuke**: .NET-based build automation tool (similar to Make, but C#-based)
 - **Task**: Go-based task runner (modern alternative to Make)
 - **Taskfile**: Configuration file for Task runner (Taskfile.yml)
@@ -40,6 +43,7 @@
 - **Pipeline**: Automated sequence of build/test/deploy steps
 
 ## Spec-Kit Terms
+
 - **Spec**: Feature specification document created with `/speckit.specify`
 - **Plan**: Implementation plan created with `/speckit.plan`
 - **Tasks**: Actionable task breakdown created with `/speckit.tasks`
@@ -50,6 +54,7 @@
 - **Feature Number**: Sequential identifier for specs (e.g., 001, 002, 003)
 
 ## Development Terms
+
 - **Hot Path**: Code executed frequently (e.g., every frame)
 - **GC (Garbage Collection)**: Automatic memory management in C#/.NET
 - **Pooling**: Reusing objects instead of creating/destroying to reduce GC pressure
@@ -63,6 +68,7 @@
 - **SOLID**: OOP design principles (Single Responsibility, Open/Closed, etc.)
 
 ## Platform Terms
+
 - **Mobile**: iOS and Android target platforms
 - **Standalone**: Desktop builds (Windows, Mac, Linux)
 - **ARM64**: 64-bit ARM processor architecture (modern mobile devices)

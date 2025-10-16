@@ -9,11 +9,13 @@ Git hooks for enforcing code quality and project conventions.
 Enforces partial class interface separation pattern (R-CODE-090).
 
 **What it checks**:
+
 - Classes implementing multiple interfaces must use separate partial class files
 - Base file (`ClassName.cs`) should contain only parent class inheritance
 - Each interface should be in `ClassName.IInterfaceName.cs`
 
 **Example violation**:
+
 ```csharp
 // ❌ Build.cs
 class Build : NukeBuild, IUnityBuild, IDockerBuild
@@ -23,6 +25,7 @@ class Build : NukeBuild, IUnityBuild, IDockerBuild
 ```
 
 **Correct pattern**:
+
 ```csharp
 // ✅ Build.cs
 partial class Build : NukeBuild
@@ -65,6 +68,7 @@ pre-commit install --hook-type commit-msg
 ```
 
 This approach provides:
+
 - ✅ Cross-platform compatibility
 - ✅ Automatic hook updates
 - ✅ Multiple hook integration (linting, formatting, secrets detection)
@@ -73,11 +77,13 @@ This approach provides:
 ### Alternative: Direct Hook Installation
 
 **Windows (PowerShell as Administrator)**:
+
 ```powershell
 New-Item -ItemType SymbolicLink -Path ".git\hooks\pre-commit" -Target "..\..\scripts\git-hooks\pre-commit.ps1"
 ```
 
 **Linux/macOS**:
+
 ```bash
 ln -s ../../scripts/git-hooks/pre-commit.ps1 .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit

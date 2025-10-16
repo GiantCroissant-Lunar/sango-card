@@ -1,11 +1,8 @@
 version: '3'
-
 # Unity-specific tasks (can be included in main Taskfile.yml if needed)
-
 vars:
   UNITY_PROJECT: ./projects/client
   UNITY_VERSION_FILE: '{{.UNITY_PROJECT}}/ProjectSettings/ProjectVersion.txt'
-
 tasks:
   # Unity project management
   open:
@@ -13,21 +10,18 @@ tasks:
     cmds:
       - echo "Opening Unity project at {{.UNITY_PROJECT}}"
       - '{{if eq OS "windows"}}start "" "{{.UNITY_PROJECT}}"{{else if eq OS "darwin"}}open -a Unity "{{.UNITY_PROJECT}}"{{else}}echo "Please open Unity manually and load {{.UNITY_PROJECT}}"{{end}}'
-
   version:
     desc: Show Unity version for this project
     cmds:
       - cat "{{.UNITY_VERSION_FILE}}"
     preconditions:
       - test -f "{{.UNITY_VERSION_FILE}}"
-
   generate:
     desc: Generate Unity code (Entitas, Jenny, etc.)
     cmds:
       - echo "Running Unity code generation..."
       - echo "This typically runs automatically in Unity Editor"
       - echo "Check {{.UNITY_PROJECT}}/.properties files for configuration"
-
   validate:
     desc: Validate Unity project structure
     silent: true
@@ -37,7 +31,6 @@ tasks:
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\ProjectSettings" (echo ✓ ProjectSettings folder found) else (echo ✗ ProjectSettings folder missing && exit /b 1){{else}}if [ -d "{{.UNITY_PROJECT}}/ProjectSettings" ]; then echo "✓ ProjectSettings folder found"; else echo "✗ ProjectSettings folder missing"; exit 1; fi{{end}}'
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\Packages" (echo ✓ Packages folder found) else (echo ✗ Packages folder missing && exit /b 1){{else}}if [ -d "{{.UNITY_PROJECT}}/Packages" ]; then echo "✓ Packages folder found"; else echo "✗ Packages folder missing"; exit 1; fi{{end}}'
       - echo "✓ Unity project structure is valid"
-
   clean:deep:
     desc: Deep clean Unity project (including Library)
     prompt: This will delete the Library folder which may take time to regenerate. Continue?
@@ -47,7 +40,6 @@ tasks:
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\Temp" rmdir /s /q "{{.UNITY_PROJECT}}\Temp"{{else}}rm -rf "{{.UNITY_PROJECT}}/Temp"{{end}}'
       - '{{if eq OS "windows"}}if exist "{{.UNITY_PROJECT}}\obj" rmdir /s /q "{{.UNITY_PROJECT}}\obj"{{else}}rm -rf "{{.UNITY_PROJECT}}/obj"{{end}}'
       - echo "✓ Deep clean complete. Unity will regenerate Library on next open."
-
   cache:clear:
     desc: Clear Unity cache files
     cmds:
@@ -55,7 +47,6 @@ tasks:
       - '{{if eq OS "windows"}}del /s /q "{{.UNITY_PROJECT}}\*.csproj" 2>nul{{else}}find "{{.UNITY_PROJECT}}" -name "*.csproj" -delete{{end}}'
       - '{{if eq OS "windows"}}del /s /q "{{.UNITY_PROJECT}}\*.sln" 2>nul{{else}}find "{{.UNITY_PROJECT}}" -name "*.sln" -delete{{end}}'
       - echo "✓ Cache cleared. Unity will regenerate project files on next open."
-
   logs:
     desc: View Unity Editor logs
     cmds:
@@ -82,7 +73,6 @@ tasks:
             echo "Unity log not found at $LOG_PATH"
           fi
         {{end}}
-
   platforms:
     desc: List supported Unity build platforms
     silent: true

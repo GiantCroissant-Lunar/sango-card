@@ -7,6 +7,7 @@ Welcome! This guide will help you get up and running with Task in the Sango Card
 Choose the method that works best for your platform:
 
 ### Windows
+
 ```powershell
 # Automated installer (recommended)
 .\scripts\install-task.ps1
@@ -22,12 +23,14 @@ choco install go-task
 ```
 
 ### macOS
+
 ```bash
 # Homebrew (recommended)
 brew install go-task/tap/go-task
 ```
 
 ### Linux
+
 ```bash
 # Snap
 snap install task --classic
@@ -73,12 +76,14 @@ This will restore all project dependencies and prepare your development environm
 ## Step 5: Common Workflows
 
 ### Development Workflow
+
 ```bash
 # Clean, setup, and build everything
 task dev
 ```
 
 ### Building
+
 ```bash
 # Build with Nuke
 task build
@@ -92,6 +97,7 @@ task build:unity:ios
 ```
 
 ### Testing
+
 ```bash
 # Run all tests
 task test
@@ -101,6 +107,7 @@ task test:unity
 ```
 
 ### Cleaning
+
 ```bash
 # Clean everything
 task clean
@@ -131,6 +138,7 @@ This runs: clean → setup → build → test
 4. Select from available tasks
 
 **Keyboard shortcuts:**
+
 - `Ctrl+Shift+B` - Run build task
 - `Ctrl+Shift+T` - Run test task
 
@@ -190,16 +198,19 @@ task --dry build
 Enable tab completion for Task commands:
 
 ### Linux/macOS
+
 ```bash
 ./scripts/setup-completion.sh
 ```
 
 ### PowerShell (Windows)
+
 ```powershell
 task --completion powershell >> $PROFILE
 ```
 
 Then restart your terminal and try:
+
 ```bash
 task <TAB>
 ```
@@ -207,12 +218,14 @@ task <TAB>
 ## Understanding Task Output
 
 Task provides clear output with:
+
 - ✓ Success indicators
 - ✗ Error indicators
 - Colored output for readability
 - Command execution details
 
 Example:
+
 ```
 task: [setup:dotnet] dotnet restore
 ✓ Setup complete!
@@ -223,6 +236,7 @@ task: [setup:dotnet] dotnet restore
 ### Task not found after installation
 
 **Windows:**
+
 ```powershell
 # Check PATH
 $env:Path -split ';' | Select-String task
@@ -232,6 +246,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 ```
 
 **Linux/macOS:**
+
 ```bash
 # Check if in PATH
 which task
@@ -243,6 +258,7 @@ export PATH="$HOME/.local/bin:$PATH"
 ### Permission denied (Linux/macOS)
 
 Make scripts executable:
+
 ```bash
 chmod +x ./build/nuke/build.sh
 chmod +x ./scripts/*.sh
@@ -251,6 +267,7 @@ chmod +x ./scripts/*.sh
 ### Unity path not found
 
 Specify Unity path explicitly:
+
 ```bash
 task nuke -- BuildUnity --unity-path "/Applications/Unity/Hub/Editor/2022.3.0f1/Unity.app/Contents/MacOS/Unity"
 ```
@@ -258,6 +275,7 @@ task nuke -- BuildUnity --unity-path "/Applications/Unity/Hub/Editor/2022.3.0f1/
 ### Task seems slow
 
 Task caches results. Clean cache if needed:
+
 ```bash
 rm -rf .task/
 ```
@@ -272,6 +290,7 @@ rm -rf .task/
 ## Getting Help
 
 ### Built-in Help
+
 ```bash
 # General help
 task --help
@@ -284,9 +303,10 @@ task --list-all
 ```
 
 ### Documentation
+
 - Project docs: [Complete Guide](README.md)
-- Task website: https://taskfile.dev
-- Task GitHub: https://github.com/go-task/task
+- Task website: <https://taskfile.dev>
+- Task GitHub: <https://github.com/go-task/task>
 
 ### Common Commands Reference
 
@@ -334,6 +354,7 @@ Both work together seamlessly! Task calls Nuke behind the scenes.
 ---
 
 **Ready to go?** Try this:
+
 ```bash
 task setup
 task build

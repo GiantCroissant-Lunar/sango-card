@@ -85,28 +85,33 @@ task -d /path/to/project build
 3. Select your task
 
 Or use keyboard shortcuts:
+
 - `Ctrl+Shift+B` - Run default build task
 - `Ctrl+Shift+T` - Run default test task
 
 ## Common Workflows
 
 ### First Time Setup
+
 ```bash
 task setup
 task build
 ```
 
 ### Daily Development
+
 ```bash
 task dev          # Clean + Setup + Build
 ```
 
 ### Before Committing
+
 ```bash
 task ci           # Full CI pipeline
 ```
 
 ### Building for Multiple Platforms
+
 ```bash
 task build:unity                    # Windows
 task build:unity:android            # Android
@@ -114,6 +119,7 @@ task build:unity:ios                # iOS
 ```
 
 ### Debugging Build Issues
+
 ```bash
 task clean                          # Clean everything
 task setup                          # Restore dependencies
@@ -121,6 +127,7 @@ task build                          # Try building again
 ```
 
 ### Custom Nuke Target
+
 ```bash
 task nuke -- YourCustomTarget --parameter value
 ```
@@ -138,6 +145,7 @@ task build:unity UNITY_PROJECT=./custom/path
 ## Troubleshooting
 
 ### Task not found
+
 ```bash
 # Check if Task is installed
 task --version
@@ -148,12 +156,14 @@ where task        # Windows
 ```
 
 ### Permission denied
+
 ```bash
 # Make scripts executable (Linux/macOS)
 chmod +x ./build/nuke/build.sh
 ```
 
 ### Unity path not found
+
 ```bash
 # Specify Unity path
 task nuke -- BuildUnity --unity-path "C:\Program Files\Unity\Hub\Editor\2022.3.0f1\Editor\Unity.exe"
@@ -166,23 +176,25 @@ task nuke -- BuildUnity --unity-path "C:\Program Files\Unity\Hub\Editor\2022.3.0
 - Getting Started: [GETTING_STARTED.md](GETTING_STARTED.md)
 - Integration Details: [INTEGRATION.md](INTEGRATION.md)
 - Unity Component: `../../build/nuke/build/Components/README.md`
-- Task Website: https://taskfile.dev
+- Task Website: <https://taskfile.dev>
 
 ## Tips
 
 1. **Tab Completion**: Enable shell completion for Task
+
    ```bash
    # Bash
    task --completion bash > /etc/bash_completion.d/task
-   
+
    # Zsh
    task --completion zsh > /usr/local/share/zsh/site-functions/_task
-   
+
    # PowerShell
    task --completion powershell > $PROFILE
    ```
 
 2. **Watch Mode**: Use with `entr` or `watchexec` for continuous builds
+
    ```bash
    ls **/*.cs | entr task build
    ```

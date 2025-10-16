@@ -31,15 +31,15 @@ interface IUnityBuild : INukeBuild
         .Executes(() =>
         {
             EnsureCleanDirectory(UnityBuildOutput);
-            
+
             var libraryPath = UnityProjectPath / "Library";
             var tempPath = UnityProjectPath / "Temp";
-            
+
             if (Directory.Exists(libraryPath))
             {
                 Serilog.Log.Information("Cleaning Unity Library folder...");
             }
-            
+
             if (Directory.Exists(tempPath))
             {
                 Serilog.Log.Information("Cleaning Unity Temp folder...");
@@ -55,11 +55,11 @@ interface IUnityBuild : INukeBuild
         .Executes(() =>
         {
             EnsureExistingDirectory(UnityBuildOutput);
-            
+
             Serilog.Log.Information($"Building Unity project at: {UnityProjectPath}");
             Serilog.Log.Information($"Target platform: {UnityBuildTarget}");
             Serilog.Log.Information($"Output path: {UnityBuildOutput}");
-            
+
             var arguments = new[]
             {
                 "-quit",
@@ -78,7 +78,7 @@ interface IUnityBuild : INukeBuild
                 timeout: TimeSpan.FromMinutes(30));
 
             process.AssertZeroExitCode();
-            
+
             Serilog.Log.Information("Unity build completed successfully");
         });
 
@@ -90,9 +90,9 @@ interface IUnityBuild : INukeBuild
         .Executes(() =>
         {
             EnsureExistingDirectory(UnityBuildOutput);
-            
+
             var packagePath = UnityBuildOutput / "package.unitypackage";
-            
+
             var arguments = new[]
             {
                 "-quit",
@@ -111,7 +111,7 @@ interface IUnityBuild : INukeBuild
                 timeout: TimeSpan.FromMinutes(15));
 
             process.AssertZeroExitCode();
-            
+
             Serilog.Log.Information($"Unity package exported to: {packagePath}");
         });
 
@@ -123,9 +123,9 @@ interface IUnityBuild : INukeBuild
         .Executes(() =>
         {
             EnsureExistingDirectory(UnityBuildOutput);
-            
+
             var testResultsPath = UnityBuildOutput / "test-results.xml";
-            
+
             var arguments = new[]
             {
                 "-quit",
@@ -145,7 +145,7 @@ interface IUnityBuild : INukeBuild
                 timeout: TimeSpan.FromMinutes(20));
 
             process.AssertZeroExitCode();
-            
+
             Serilog.Log.Information($"Unity tests completed. Results: {testResultsPath}");
         });
 
@@ -159,7 +159,7 @@ interface IUnityBuild : INukeBuild
             var defaultPath = @"C:\Program Files\Unity\Hub\Editor\2022.3.0f1\Editor\Unity.exe";
             if (File.Exists(defaultPath))
                 return defaultPath;
-            
+
             // Check for Unity Hub installations
             var hubPath = @"C:\Program Files\Unity\Hub\Editor";
             if (Directory.Exists(hubPath))

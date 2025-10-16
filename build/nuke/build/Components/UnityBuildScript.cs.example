@@ -18,9 +18,9 @@ public static class BuildScript
         string[] args = System.Environment.GetCommandLineArgs();
         string buildPath = GetArg(args, "-buildPath", "Build");
         string buildTarget = GetArg(args, "-buildTarget", "StandaloneWindows64");
-        
+
         BuildTarget target = ParseBuildTarget(buildTarget);
-        
+
         // Get all scenes in build settings
         string[] scenes = EditorBuildSettings.scenes
             .Where(scene => scene.enabled)

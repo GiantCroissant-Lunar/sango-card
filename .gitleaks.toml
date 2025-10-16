@@ -1,0 +1,38 @@
+# Gitleaks configuration
+# See https://github.com/gitleaks/gitleaks#configuration
+
+title = "Sango Card - Gitleaks Configuration"
+
+[extend]
+# useDefault will extend the base configuration with the default gitleaks config:
+# https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+useDefault = true
+
+[allowlist]
+description = "Allowlist for known false positives"
+
+# Paths to exclude from scanning
+paths = [
+  '''\.secrets\.baseline$''',
+  '''test.*''',
+  '''mock.*''',
+  '''dummy.*''',
+  '''example.*''',
+  '''\.md$''',  # Documentation files
+]
+
+# Regexes to exclude from scanning
+regexes = [
+  '''EXAMPLE_.*''',
+  '''SAMPLE_.*''',
+  '''DUMMY_.*''',
+  '''TEST_.*''',
+  '''<REDACTED>''',
+  '''xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx''',  # Placeholder UUIDs
+]
+
+# Commits to exclude from scanning (e.g., known safe commits)
+commits = []
+
+# Stop words for false positive reduction
+stopwords = []

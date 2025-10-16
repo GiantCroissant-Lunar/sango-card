@@ -87,17 +87,17 @@ $tempDir = "$env:TEMP\task_extract"
 
 try {
     Invoke-WebRequest -Uri $downloadUrl -OutFile $tempZip -UseBasicParsing
-    
+
     # Extract
     Expand-Archive -Path $tempZip -DestinationPath $tempDir -Force
-    
+
     # Move executable
     Copy-Item "$tempDir\task.exe" -Destination $binPath -Force
-    
+
     # Clean up
     Remove-Item $tempZip -Force
     Remove-Item $tempDir -Recurse -Force
-    
+
     # Add to PATH if not already there
     $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
     if ($currentPath -notlike "*$installDir*") {
@@ -109,7 +109,7 @@ try {
         )
         $env:Path = "$env:Path;$installDir"
     }
-    
+
     Write-Host ""
     Write-Host "✓ Task installed successfully to: $installDir" -ForegroundColor Green
     Write-Host ""

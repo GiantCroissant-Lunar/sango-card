@@ -72,11 +72,13 @@ This document summarizes the Task (go-task/task) integration into the Sango Card
 ### Task Categories
 
 #### Setup & Initialization
+
 - `task setup` - Complete environment setup
 - `task setup:dotnet` - Restore .NET dependencies
 - `task setup:unity` - Verify Unity installation
 
 #### Building
+
 - `task build` - Build with Nuke
 - `task build:unity` - Build Unity for Windows
 - `task build:unity:android` - Build for Android
@@ -84,21 +86,25 @@ This document summarizes the Task (go-task/task) integration into the Sango Card
 - `task build:unity:webgl` - Build for WebGL
 
 #### Testing
+
 - `task test` - Run all tests
 - `task test:unity` - Run Unity tests
 
 #### Cleaning
+
 - `task clean` - Clean all artifacts
 - `task clean:nuke` - Clean Nuke artifacts
 - `task clean:unity` - Clean Unity artifacts
 - `task clean:output` - Clean output directory
 
 #### Workflows
+
 - `task dev` - Complete development workflow (clean + setup + build)
 - `task ci` - Full CI pipeline (clean + setup + build + test)
 - `task rebuild` - Clean and rebuild
 
 #### Utilities
+
 - `task info` - Display project information
 - `task docs` - Open documentation
 - `task nuke -- <target>` - Run custom Nuke targets
@@ -120,6 +126,7 @@ This document summarizes the Task (go-task/task) integration into the Sango Card
 ### Quick Install
 
 **Windows:**
+
 ```powershell
 .\scripts\install-task.ps1
 # or
@@ -127,11 +134,13 @@ winget install Task.Task
 ```
 
 **macOS:**
+
 ```bash
 brew install go-task/tap/go-task
 ```
 
 **Linux:**
+
 ```bash
 sh -c "$(curl -sL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
 ```
@@ -146,6 +155,7 @@ task --list
 ## Usage Examples
 
 ### Daily Development
+
 ```bash
 # First time
 task setup
@@ -159,6 +169,7 @@ task ci
 ```
 
 ### Building for Different Platforms
+
 ```bash
 task build:unity                # Windows
 task build:unity:android        # Android
@@ -167,12 +178,14 @@ task build:unity:webgl          # WebGL
 ```
 
 ### Running Custom Nuke Targets
+
 ```bash
 task nuke -- CleanUnity
 task nuke -- BuildUnity --unity-build-target Android
 ```
 
 ### IDE Integration
+
 - **VS Code**: `Ctrl+Shift+P` → "Tasks: Run Task"
 - **JetBrains**: Create Shell Script run configuration with `task <name>`
 
@@ -239,16 +252,21 @@ sango-card/
 ## Migration Path
 
 ### For Existing Users
+
 No changes required! Existing Nuke commands still work:
+
 - `./build/nuke/build.ps1 Compile`
 - `./build/nuke/build.sh BuildUnity`
 
 ### For New Users
+
 Use Task for simplified experience:
+
 - `task build`
 - `task build:unity`
 
 ### Gradual Adoption
+
 1. Install Task: `./scripts/install-task.ps1`
 2. Try basic commands: `task setup`, `task build`
 3. Learn more: `task --list`, see `TASK.md`
@@ -291,8 +309,8 @@ DOTNET_CLI_TELEMETRY_OPTOUT=1 task build
 
 ## Support Resources
 
-- **Task Documentation**: https://taskfile.dev
-- **Task GitHub**: https://github.com/go-task/task
+- **Task Documentation**: <https://taskfile.dev>
+- **Task GitHub**: <https://github.com/go-task/task>
 - **Project Documentation**: See [INDEX.md](INDEX.md)
 - **Complete Guide**: [README.md](README.md)
 - **Quick Reference**: [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
@@ -302,6 +320,7 @@ DOTNET_CLI_TELEMETRY_OPTOUT=1 task build
 ## Troubleshooting
 
 ### Task not found
+
 ```bash
 # Verify installation
 task --version
@@ -316,12 +335,14 @@ where task  # Windows
 ```
 
 ### Unity path not found
+
 ```bash
 # Specify Unity path explicitly
 task nuke -- BuildUnity --unity-path "C:\Program Files\Unity\Hub\Editor\2022.3.0f1\Editor\Unity.exe"
 ```
 
 ### Permission denied (Linux/macOS)
+
 ```bash
 chmod +x ./build/nuke/build.sh
 chmod +x ./scripts/*.sh
@@ -330,10 +351,11 @@ chmod +x ./scripts/*.sh
 ## Feedback
 
 If you encounter issues or have suggestions:
+
 1. Check [README.md](README.md) troubleshooting section
 2. Review [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
 3. Create an issue in the repository
-4. Consult Task documentation at https://taskfile.dev
+4. Consult Task documentation at <https://taskfile.dev>
 
 ---
 

@@ -14,7 +14,7 @@ if [ -n "$ZSH_VERSION" ]; then
 elif [ -n "$BASH_VERSION" ]; then
     SHELL_TYPE="bash"
     SHELL_RC="$HOME/.bashrc"
-    
+
     # Determine bash completion directory
     if [ -d "/usr/local/etc/bash_completion.d" ]; then
         COMPLETION_DIR="/usr/local/etc/bash_completion.d"
@@ -40,7 +40,7 @@ case "$SHELL_TYPE" in
     zsh)
         COMPLETION_FILE="$COMPLETION_DIR/_task"
         task --completion zsh > "$COMPLETION_FILE"
-        
+
         # Add to fpath if not already there
         if ! grep -q "$COMPLETION_DIR" "$SHELL_RC" 2>/dev/null; then
             echo "" >> "$SHELL_RC"
@@ -49,11 +49,11 @@ case "$SHELL_TYPE" in
             echo "autoload -U compinit && compinit" >> "$SHELL_RC"
         fi
         ;;
-        
+
     bash)
         COMPLETION_FILE="$COMPLETION_DIR/task"
         task --completion bash | sudo tee "$COMPLETION_FILE" > /dev/null 2>&1 || task --completion bash > "$COMPLETION_FILE"
-        
+
         # Source completion in bashrc if not already there
         if ! grep -q "bash_completion.d/task" "$SHELL_RC" 2>/dev/null; then
             echo "" >> "$SHELL_RC"

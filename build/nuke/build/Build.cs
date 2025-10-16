@@ -12,7 +12,7 @@ using static Nuke.Common.IO.PathConstruction;
 
 /// <summary>
 /// Main build orchestration class.
-/// 
+///
 /// ARCHITECTURE NOTE (R-CODE-090):
 /// This class uses partial class pattern for interface segregation.
 /// - Build.cs: Contains base NukeBuild inheritance only

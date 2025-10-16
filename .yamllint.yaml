@@ -1,0 +1,46 @@
+# yamllint configuration
+# See https://yamllint.readthedocs.io/en/stable/configuration.html
+
+extends: default
+rules:
+  # Line length
+  line-length:
+    max: 120
+    level: warning
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+  # Comments
+  comments:
+    min-spaces-from-content: 1
+  # Indentation
+  indentation:
+    spaces: 2
+    indent-sequences: true
+  # Trailing spaces
+  trailing-spaces: enable
+  # Truthy values (yes/no, true/false, on/off)
+  truthy:
+    allowed-values: ['true', 'false']
+    check-keys: true
+  # Document start (---)
+  document-start:
+    present: false
+  # Empty lines
+  empty-lines:
+    max: 2
+  # Brackets
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+  # Braces
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+ignore: |
+  .github/workflows/
+  projects/client/
+  projects/code-quality/
+  node_modules/
+  .venv/
+  venv/
+  Taskfile.yml

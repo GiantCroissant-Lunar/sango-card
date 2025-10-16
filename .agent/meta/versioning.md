@@ -22,22 +22,29 @@ When an agent starts working in the repository:
 ## Comparison Outcomes
 
 ### ✅ Exact Match
+
 Version matches exactly → Proceed normally.
 
 ### ⚠️ Minor/Patch Mismatch
+
 Base version is higher but MAJOR matches (e.g., base 1.2.0, adapter expects 1.0.0):
+
 - **Warning**: Inform user that adapter may not know about new rules
 - **Action**: Continue with caution, suggest adapter update
 - **Example**: "Note: Rule base updated to 1.2.0, this adapter expects 1.0.0. Some rules may be missing from adapter guidance."
 
 ### ❌ Major Mismatch
+
 MAJOR version differs (e.g., base 2.0.0, adapter expects 1.0.0):
+
 - **Error**: Fail closed - do not proceed
 - **Action**: Request human intervention to update adapter
 - **Example**: "Error: Rule base is 2.0.0 but adapter expects 1.0.0. Major version mismatch indicates incompatible changes. Please update adapter before continuing."
 
 ### 🔄 Base Older Than Adapter
+
 Adapter expects higher version than base (unusual):
+
 - **Warning**: Base rules may be out of date
 - **Action**: Request user to update base rules
 - **Example**: "Warning: Adapter expects 1.2.0 but base is 1.0.0. Base rules may need updating."
@@ -72,6 +79,7 @@ Following [SemVer 2.0.0](https://semver.org/):
 ## Rule ID Immutability
 
 Rule IDs are immutable once published:
+
 - **Never renumber** existing rules
 - **Never reuse** retired rule IDs
 - **Deprecate** instead of removing (mark "DEPRECATED")
@@ -92,15 +100,18 @@ Rule IDs are immutable once published:
 When base version increases:
 
 ### Patch Update (1.0.0 → 1.0.1)
+
 - Adapters continue working without changes
 - Optional: Update adapters to reflect clarifications
 
 ### Minor Update (1.0.0 → 1.1.0)
+
 - Adapters continue working (additive changes)
 - Recommended: Update adapters to reference new rules
 - Timeline: Within 1 week
 
 ### Major Update (1.0.0 → 2.0.0)
+
 - Adapters MUST be updated before use
 - Required: Update all adapters immediately
 - Timeline: Before any work continues
@@ -108,6 +119,7 @@ When base version increases:
 ## Automated Checks (Future)
 
 Consider implementing:
+
 - Pre-commit hook to verify version consistency
 - CI check that all adapters reference current MAJOR version
 - Script to audit adapter/base version mismatches

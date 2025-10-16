@@ -5,6 +5,7 @@ This document explains alternatives to traditional build tools and why Task is t
 ## Why Not Make?
 
 **Makefile was removed** because:
+
 1. Task provides better cross-platform support
 2. YAML is more readable than Make syntax
 3. Task has better error messages and output
@@ -25,6 +26,7 @@ task clean
 ```
 
 **Benefits:**
+
 - Already integrated
 - Cross-platform (Windows, macOS, Linux)
 - Great documentation
@@ -36,6 +38,7 @@ task clean
 Create aliases in your shell RC file for frequently used commands:
 
 **Bash/Zsh** (`~/.bashrc` or `~/.zshrc`):
+
 ```bash
 # Task shortcuts
 alias tb='task build'
@@ -47,6 +50,7 @@ alias tl='task --list'
 ```
 
 **PowerShell** (`$PROFILE`):
+
 ```powershell
 # Task shortcuts
 function tb { task build }
@@ -58,6 +62,7 @@ function tl { task --list }
 ```
 
 **Usage:**
+
 ```bash
 tb      # Instead of: task build
 tt      # Instead of: task test
@@ -77,10 +82,12 @@ test:
 ```
 
 **Pros:**
+
 - Simple syntax
 - Good for very simple workflows
 
 **Cons:**
+
 - Additional tool to install
 - Redundant with Task
 - Less features than Task
@@ -101,16 +108,19 @@ If your project already uses Node.js, you can add to `package.json`:
 ```
 
 **Usage:**
+
 ```bash
 npm run build
 npm test
 ```
 
 **Pros:**
+
 - Familiar to JavaScript developers
 - Works if you already have package.json
 
 **Cons:**
+
 - Requires Node.js/npm
 - Adds dependency
 - Still calls Task underneath
@@ -120,6 +130,7 @@ npm test
 For very simple needs, direct scripts:
 
 **Windows** (`build.cmd`):
+
 ```batch
 @echo off
 if "%1"=="" goto help
@@ -133,6 +144,7 @@ echo Usage: build.cmd [build^|test^|clean]
 ```
 
 **Unix** (`build.sh`):
+
 ```bash
 #!/bin/bash
 case "$1" in
@@ -143,10 +155,12 @@ esac
 ```
 
 **Pros:**
+
 - No additional tools
 - Simple wrapper
 
 **Cons:**
+
 - Platform-specific
 - Limited features
 - Maintenance overhead
@@ -167,6 +181,7 @@ esac
 ### Primary: Task
 
 Use Task for all build operations:
+
 ```bash
 task --list     # See available commands
 task build      # Build project
@@ -177,6 +192,7 @@ task ci         # CI pipeline
 ### Optional: Personal Aliases
 
 Add personal shortcuts to your shell:
+
 ```bash
 # Add to ~/.bashrc or ~/.zshrc
 alias tb='task build'
@@ -186,6 +202,7 @@ alias td='task dev'
 ### IDE Integration
 
 Configure your IDE to use Task:
+
 - **VS Code**: Already configured in `.vscode/tasks.json`
 - **JetBrains**: Create run configurations with `task <name>`
 
@@ -194,6 +211,7 @@ Configure your IDE to use Task:
 ### From Make
 
 **Before:**
+
 ```bash
 make build
 make test
@@ -201,6 +219,7 @@ make clean
 ```
 
 **After:**
+
 ```bash
 task build
 task test  
@@ -210,12 +229,14 @@ task clean
 ### From NPM Scripts
 
 **Before:**
+
 ```bash
 npm run build
 npm test
 ```
 
 **After:**
+
 ```bash
 task build
 task test
@@ -224,12 +245,14 @@ task test
 ### From Shell Scripts
 
 **Before:**
+
 ```bash
 ./build.sh
 ./test.sh
 ```
 
 **After:**
+
 ```bash
 task build
 task test
@@ -249,6 +272,7 @@ task test
 ## Getting Help
 
 ### Task Help
+
 ```bash
 task --help              # General help
 task --list              # List all tasks
@@ -256,14 +280,16 @@ task <task-name> --help  # Task-specific help
 ```
 
 ### Documentation
+
 - [Quick Reference](QUICK_REFERENCE.md) - Command cheat sheet
 - [Complete Guide](README.md) - Full documentation
 - [Getting Started](GETTING_STARTED.md) - New user guide
 
 ### External Resources
-- **Task Website**: https://taskfile.dev
-- **Task GitHub**: https://github.com/go-task/task
-- **Task Discord**: https://discord.gg/6TY36E39UK
+
+- **Task Website**: <https://taskfile.dev>
+- **Task GitHub**: <https://github.com/go-task/task>
+- **Task Discord**: <https://discord.gg/6TY36E39UK>
 
 ## Conclusion
 

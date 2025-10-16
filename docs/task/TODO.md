@@ -50,6 +50,7 @@ partial class Build : IUnityBuild
 ```
 
 **File Naming Convention**: Interface files use the interface name without the 'I' prefix.
+
 - `IUnityBuild` → `Build.UnityBuild.cs`
 - `IDockerBuild` → `Build.DockerBuild.cs`
 
@@ -88,6 +89,7 @@ Add to solution/build system.
 ## Testing
 
 Create unit tests in:
+
 ```
 packages/analyzers/Sango.CodeQuality.Analyzers.Tests/
 ├── PartialClassInterfaceSeparationAnalyzerTests.cs
@@ -95,6 +97,7 @@ packages/analyzers/Sango.CodeQuality.Analyzers.Tests/
 ```
 
 Test cases:
+
 - ✅ Single interface (no diagnostic)
 - ✅ Multiple interfaces with proper separation (no diagnostic)
 - ❌ Multiple interfaces in one file (diagnostic)

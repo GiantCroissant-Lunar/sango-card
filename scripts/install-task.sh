@@ -70,7 +70,7 @@ sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b "$INSTALL_DI
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
     echo ""
     echo "Adding Task to PATH..."
-    
+
     # Detect shell
     if [ -n "$ZSH_VERSION" ]; then
         SHELL_RC="$HOME/.zshrc"
@@ -79,7 +79,7 @@ if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
     else
         SHELL_RC="$HOME/.profile"
     fi
-    
+
     echo "export PATH=\"\$PATH:$INSTALL_DIR\"" >> "$SHELL_RC"
     export PATH="$PATH:$INSTALL_DIR"
 fi

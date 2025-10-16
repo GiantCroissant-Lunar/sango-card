@@ -4,7 +4,7 @@ using Nuke.Common.Tooling;
 
 /// <summary>
 /// Unity build interface implementation for Build class.
-/// 
+///
 /// ARCHITECTURE NOTE (R-CODE-090):
 /// This partial class file contains ONLY the IUnityBuild interface implementation.
 /// The base NukeBuild inheritance is in Build.cs.

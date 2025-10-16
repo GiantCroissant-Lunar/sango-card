@@ -26,8 +26,9 @@ specify check
 ```
 
 **Example:**
+
 ```
-/speckit.constitution Focus on Unity performance, C# best practices, 
+/speckit.constitution Focus on Unity performance, C# best practices,
 card game balance, and player-centric design
 ```
 
@@ -42,9 +43,10 @@ card game balance, and player-centric design
 ```
 
 **Example:**
+
 ```
-/speckit.specify Create a deck builder where players can create custom 
-decks from their card collection. Include deck validation rules (min/max 
+/speckit.specify Create a deck builder where players can create custom
+decks from their card collection. Include deck validation rules (min/max
 cards, faction restrictions) and deck list export/import functionality
 ```
 
@@ -59,10 +61,11 @@ cards, faction restrictions) and deck list export/import functionality
 ```
 
 **Example:**
+
 ```
-/speckit.plan Use Unity UI Toolkit for the deck builder interface. 
-Store deck data as ScriptableObjects with JSON serialization for 
-import/export. Implement validation with a rule-based system using 
+/speckit.plan Use Unity UI Toolkit for the deck builder interface.
+Store deck data as ScriptableObjects with JSON serialization for
+import/export. Implement validation with a rule-based system using
 the Strategy pattern
 ```
 
@@ -161,6 +164,7 @@ task test
 ### Pattern 3: Exploratory Spike (Skip Spec-Kit)
 
 For quick experiments, you can skip spec-kit entirely and just code directly. Use spec-kit when:
+
 - Feature is medium-to-large size
 - Requirements need clarification
 - Multiple implementation approaches exist
@@ -187,6 +191,7 @@ For quick experiments, you can skip spec-kit entirely and just code directly. Us
 ## VS Code Integration
 
 Slash commands are automatically available in GitHub Copilot Chat when:
+
 1. `.github/prompts/` directory exists (✅ already set up)
 2. VS Code settings enable prompt files (✅ configured in `.vscode/settings.json`)
 3. GitHub Copilot extension is installed
@@ -219,8 +224,9 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ### "Agent ignores constitution"
 
 Explicitly reference it:
+
 ```
-Before planning, review .specify/memory/constitution.md and ensure 
+Before planning, review .specify/memory/constitution.md and ensure
 all decisions align with our established principles
 ```
 
@@ -251,15 +257,15 @@ all decisions align with our established principles
 **Goal:** Add a card favoriting system
 
 ```
-User: I want players to be able to favorite cards so they can quickly 
+User: I want players to be able to favorite cards so they can quickly
       filter to their favorites in the collection view
 
 Agent: Let me help you create a spec for this feature.
 
-User: /speckit.specify Create a card favoriting system where players 
-      can mark cards as favorites by tapping a star icon. Favorites 
-      persist across sessions. Add a filter toggle in the collection 
-      view to show only favorited cards. Allow unfavoriting by tapping 
+User: /speckit.specify Create a card favoriting system where players
+      can mark cards as favorites by tapping a star icon. Favorites
+      persist across sessions. Add a filter toggle in the collection
+      view to show only favorited cards. Allow unfavoriting by tapping
       the star again.
 
 Agent: [Creates .specify/specs/001-card-favorites/spec.md]
@@ -273,9 +279,9 @@ Agent: [Asks clarifying questions about edge cases, data storage, etc.]
 
 User: [Answers questions to refine spec]
 
-User: /speckit.plan Use Unity PlayerPrefs for local storage with JSON 
-      serialization. Add a bool isFavorite field to CardData. Update 
-      CardCollectionView to support filtering. Use UI Toolkit toggle 
+User: /speckit.plan Use Unity PlayerPrefs for local storage with JSON
+      serialization. Add a bool isFavorite field to CardData. Update
+      CardCollectionView to support filtering. Use UI Toolkit toggle
       button with star icon.
 
 Agent: [Creates plan.md, data-model.md, etc.]
@@ -306,8 +312,8 @@ User: git add -A
 ## More Help
 
 - **Full Guide:** `docs/SPEC-KIT.md`
-- **Official Docs:** https://github.com/github/spec-kit
-- **Methodology:** https://github.com/github/spec-kit/blob/main/spec-driven.md
+- **Official Docs:** <https://github.com/github/spec-kit>
+- **Methodology:** <https://github.com/github/spec-kit/blob/main/spec-driven.md>
 - **Constitution:** `.specify/memory/constitution.md`
 
 ---

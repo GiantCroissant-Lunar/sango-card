@@ -5,6 +5,7 @@ Welcome to the Sango Card project documentation.
 ## 📚 Documentation Sections
 
 ### Task Runner
+
 - **[Task Documentation](task/)** - Complete guide to using Task for building and development
   - [Getting Started](task/GETTING_STARTED.md) - New user walkthrough
   - [Quick Reference](task/QUICK_REFERENCE.md) - Command cheat sheet
@@ -12,24 +13,29 @@ Welcome to the Sango Card project documentation.
   - [Integration Details](task/INTEGRATION.md) - Technical overview
 
 ### Architecture Decision Records (ADRs)
+
 - **[adrs/](adrs/)** - Architecture decisions and rationale
 
 ### RFCs (Request for Comments)
+
 - **[rfcs/](rfcs/)** - Proposals and design documents
 
 ## 🚀 Quick Start
 
 ### For Developers
+
 1. Read the main [README.md](../README.md) in the project root
 2. Follow [Task Getting Started](task/GETTING_STARTED.md) to set up your environment
 3. Run `task --list` to see available commands
 
 ### For Build System Users
+
 - See [Task Documentation](task/) for all build and development tasks
 - Use `task dev` for daily development workflow
 - Use `task ci` before committing changes
 
 ### For Project Contributors
+
 - Review [CONTRIBUTING.md](../CONTRIBUTING.md)
 - Check existing ADRs and RFCs for context
 - Follow the [Code of Conduct](../CODE_OF_CONDUCT.md)
@@ -56,7 +62,8 @@ docs/
 
 ## 🔍 Finding What You Need
 
-### I want to...
+### I want to
+
 - **Build the project** → See [Task Quick Reference](task/QUICK_REFERENCE.md)
 - **Set up my environment** → See [Task Getting Started](task/GETTING_STARTED.md)
 - **Understand the build system** → See [Task Integration](task/INTEGRATION.md)
@@ -73,9 +80,9 @@ docs/
 
 ## 🔗 External Resources
 
-- **Task**: https://taskfile.dev
-- **Nuke Build**: https://nuke.build
-- **Unity**: https://unity.com
+- **Task**: <https://taskfile.dev>
+- **Nuke Build**: <https://nuke.build>
+- **Unity**: <https://unity.com>
 
 ---
 

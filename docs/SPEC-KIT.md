@@ -22,8 +22,8 @@ Spec-Driven Development flips traditional software development by making specifi
 Use `/speckit.constitution` to create or update your project's governing principles:
 
 ```
-/speckit.constitution Create principles focused on Unity best practices, 
-C# coding standards, performance requirements for card game mechanics, 
+/speckit.constitution Create principles focused on Unity best practices,
+C# coding standards, performance requirements for card game mechanics,
 and consistent UI/UX patterns
 ```
 
@@ -34,8 +34,8 @@ This creates `.specify/memory/constitution.md` which guides all subsequent devel
 Use `/speckit.specify` to describe what you want to build:
 
 ```
-/speckit.specify Create a card collection system where players can view, 
-organize, and manage their card inventory. Include filtering by rarity, 
+/speckit.specify Create a card collection system where players can view,
+organize, and manage their card inventory. Include filtering by rarity,
 type, and faction. Support drag-and-drop card organization into custom decks.
 ```
 
@@ -46,8 +46,8 @@ Focus on **what** and **why**, not **how**. This creates a spec in `.specify/spe
 Use `/speckit.plan` to define the technical approach:
 
 ```
-/speckit.plan Use Unity's UI Toolkit for the card collection interface. 
-Store card data in ScriptableObjects. Implement filtering with LINQ queries. 
+/speckit.plan Use Unity's UI Toolkit for the card collection interface.
+Store card data in ScriptableObjects. Implement filtering with LINQ queries.
 Use Unity's new Input System for drag-and-drop interactions.
 ```
 
@@ -155,7 +155,7 @@ Before creating your first feature spec, establish project principles with `/spe
 Don't treat the first draft as final. Use natural language with your AI agent to refine specs after `/speckit.specify`:
 
 ```
-The card rarity filtering should also include a "favorites" category 
+The card rarity filtering should also include a "favorites" category
 that persists across sessions
 ```
 
@@ -185,6 +185,7 @@ Spec-kit complements but doesn't replace the existing Task-based build workflow:
 - Use **Task** for building, testing, and CI/CD operations
 
 Example workflow:
+
 1. `/speckit.specify` - Define feature
 2. `/speckit.plan` - Plan implementation
 3. `/speckit.tasks` - Break down work
@@ -216,17 +217,17 @@ Let's walk through adding a "Daily Rewards" feature:
 ### 1. Establish principles (once per project)
 
 ```
-/speckit.constitution Focus on Unity performance optimization, 
-C# async/await patterns, maintainable MonoBehaviour architecture, 
+/speckit.constitution Focus on Unity performance optimization,
+C# async/await patterns, maintainable MonoBehaviour architecture,
 and player-centric reward systems that feel generous but balanced
 ```
 
 ### 2. Create specification
 
 ```
-/speckit.specify Create a daily rewards system where players receive 
-increasing rewards for consecutive daily logins. Show a calendar UI 
-with 7 days, highlighting claimed days. Rewards include cards, gold, 
+/speckit.specify Create a daily rewards system where players receive
+increasing rewards for consecutive daily logins. Show a calendar UI
+with 7 days, highlighting claimed days. Rewards include cards, gold,
 and premium currency. Track streak across sessions with local persistence.
 ```
 
@@ -237,6 +238,7 @@ and premium currency. Track streak across sessions with local persistence.
 ```
 
 The agent asks questions like:
+
 - "What happens if a player misses a day - does the streak reset?"
 - "Should time zones affect the daily reset?"
 - "What's the maximum reward tier?"
@@ -246,10 +248,10 @@ Answer each question to refine the spec.
 ### 4. Create implementation plan
 
 ```
-/speckit.plan Use Unity's PlayerPrefs for persistence, with JSON 
-serialization for the reward calendar state. Implement the calendar UI 
-with UI Toolkit. Use System.DateTime for time calculations with UTC 
-normalization. Create a RewardDefinition ScriptableObject for configuring 
+/speckit.plan Use Unity's PlayerPrefs for persistence, with JSON
+serialization for the reward calendar state. Implement the calendar UI
+with UI Toolkit. Use System.DateTime for time calculations with UTC
+normalization. Create a RewardDefinition ScriptableObject for configuring
 reward tiers.
 ```
 
@@ -297,6 +299,7 @@ Ensure you're using a supported AI agent (GitHub Copilot, Claude Code, etc.) and
 ### Scripts fail to execute
 
 Check that PowerShell execution policy allows scripts:
+
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
@@ -308,8 +311,9 @@ Verify Git is installed and the repository is initialized. Check `.specify/scrip
 ### Agent ignores constitution
 
 Explicitly reference it in prompts:
+
 ```
-Review the constitution at .specify/memory/constitution.md and ensure 
+Review the constitution at .specify/memory/constitution.md and ensure
 this plan follows all established principles
 ```
 

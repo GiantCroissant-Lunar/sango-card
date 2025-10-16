@@ -5,36 +5,43 @@ This project uses [Task](https://taskfile.dev) as a task runner to simplify buil
 ## Installation
 
 ### Windows (via winget)
+
 ```powershell
 winget install Task.Task
 ```
 
 ### Windows (via Scoop)
+
 ```powershell
 scoop install task
 ```
 
 ### Windows (via Chocolatey)
+
 ```powershell
 choco install go-task
 ```
 
 ### macOS (via Homebrew)
+
 ```bash
 brew install go-task/tap/go-task
 ```
 
 ### Linux (via snap)
+
 ```bash
 snap install task --classic
 ```
 
 ### Linux (via script)
+
 ```bash
 sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
 ```
 
 ### Or use the helper
+
 ```bash
 task install-task
 ```
@@ -42,16 +49,19 @@ task install-task
 ## Quick Start
 
 After installation, verify Task is working:
+
 ```bash
 task --version
 ```
 
 List all available tasks:
+
 ```bash
 task --list
 ```
 
 Show detailed project information:
+
 ```bash
 task info
 ```
@@ -131,6 +141,7 @@ task package
 #### Run Custom Nuke Targets
 
 You can run any Nuke target directly:
+
 ```bash
 # Run custom Nuke target
 task nuke -- CleanUnity
@@ -183,6 +194,7 @@ Task acts as a convenient wrapper around the Nuke build system:
 ### VS Code
 
 Install the [Task extension](https://marketplace.visualstudio.com/items?itemName=task.vscode-task):
+
 ```bash
 code --install-extension task.vscode-task
 ```
@@ -239,6 +251,7 @@ The `Taskfile.yml` is organized into categories:
 ### Silent Mode
 
 Run tasks without output (only errors):
+
 ```bash
 task --silent build
 ```
@@ -246,6 +259,7 @@ task --silent build
 ### Dry Run
 
 See what commands would be executed without running them:
+
 ```bash
 task --dry build
 ```
@@ -265,6 +279,7 @@ task clean setup build test
 ### Task Dependencies
 
 Tasks automatically handle dependencies. For example, `task dev` runs:
+
 1. `clean`
 2. `setup`
 3. `build`
@@ -272,6 +287,7 @@ Tasks automatically handle dependencies. For example, `task dev` runs:
 ### Environment Variables
 
 Set environment variables for a single task:
+
 ```bash
 DOTNET_CLI_TELEMETRY_OPTOUT=1 task build
 ```
@@ -281,6 +297,7 @@ DOTNET_CLI_TELEMETRY_OPTOUT=1 task build
 ### Task not found
 
 Make sure Task is in your PATH:
+
 ```bash
 which task  # Linux/macOS
 where task  # Windows
@@ -289,6 +306,7 @@ where task  # Windows
 ### Permission denied (Linux/macOS)
 
 Make sure the Nuke build scripts are executable:
+
 ```bash
 chmod +x ./build/nuke/build.sh
 ```
@@ -296,6 +314,7 @@ chmod +x ./build/nuke/build.sh
 ### Unity path not found
 
 Specify Unity path explicitly:
+
 ```bash
 task nuke -- BuildUnity --unity-path "C:\Program Files\Unity\Hub\Editor\2022.3.0f1\Editor\Unity.exe"
 ```
@@ -303,6 +322,7 @@ task nuke -- BuildUnity --unity-path "C:\Program Files\Unity\Hub\Editor\2022.3.0
 ## Migration from Direct Nuke Calls
 
 Before (using Nuke directly):
+
 ```bash
 # Windows
 .\build\nuke\build.ps1 Compile
@@ -314,6 +334,7 @@ Before (using Nuke directly):
 ```
 
 After (using Task):
+
 ```bash
 # Same on all platforms
 task build
@@ -330,6 +351,7 @@ task build:unity:android
 ## Support
 
 For issues with:
+
 - **Task runner itself**: See [Task GitHub Issues](https://github.com/go-task/task/issues)
 - **Nuke build system**: Check `./build/nuke/build/` directory
 - **Unity builds**: See Unity build component documentation

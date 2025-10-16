@@ -18,6 +18,7 @@ class Build : NukeBuild, IUnityBuild
 The component provides the following targets:
 
 ### CleanUnity
+
 Cleans Unity build artifacts including the output directory and temporary folders.
 
 ```bash
@@ -25,6 +26,7 @@ nuke CleanUnity
 ```
 
 ### BuildUnity
+
 Builds the Unity project for the specified target platform.
 
 ```bash
@@ -34,6 +36,7 @@ nuke BuildUnity --unity-path "C:\Program Files\Unity\Hub\Editor\2021.3.0f1\Edito
 ```
 
 ### ExportUnityPackage
+
 Exports the Unity project as a .unitypackage file.
 
 ```bash
@@ -41,6 +44,7 @@ nuke ExportUnityPackage
 ```
 
 ### TestUnity
+
 Runs Unity EditMode tests and generates test results.
 
 ```bash
@@ -61,26 +65,31 @@ The component exposes the following parameters:
 ## Examples
 
 ### Build for Windows
+
 ```bash
 nuke BuildUnity --unity-build-target StandaloneWindows64
 ```
 
 ### Build for Android
+
 ```bash
 nuke BuildUnity --unity-build-target Android
 ```
 
 ### Build for iOS
+
 ```bash
 nuke BuildUnity --unity-build-target iOS
 ```
 
 ### Custom Unity Path
+
 ```bash
 nuke BuildUnity --unity-path "C:\Program Files\Unity\Hub\Editor\2023.1.0f1\Editor\Unity.exe"
 ```
 
 ### Clean and Build
+
 ```bash
 nuke CleanUnity BuildUnity
 ```
@@ -100,10 +109,10 @@ class Build : NukeBuild, IUnityBuild
 {
     // Override default Unity project path
     AbsolutePath IUnityBuild.UnityProjectPath => RootDirectory / "MyUnityProject";
-    
+
     // Override default build target
     string IUnityBuild.UnityBuildTarget => "Android";
-    
+
     // Add custom targets that depend on Unity targets
     Target BuildAll => _ => _
         .DependsOn(((IUnityBuild)this).BuildUnity)
