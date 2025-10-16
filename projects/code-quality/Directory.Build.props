@@ -1,0 +1,8 @@
+<Project>
+    <PropertyGroup>
+
+        <!-- Set the default target framework for all projects -->
+        <LangVersion>preview</LangVersion>
+
+    </PropertyGroup>
+</Project>

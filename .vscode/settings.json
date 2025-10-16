@@ -1,5 +1,20 @@
 {
     "editor.fontSize": 16,
+
+    "files.associations": {
+        "**/*.asmdef": "json",
+        "**/*.ruleset": "xml",
+        "**/*.sln.DotSettings": "xml"
+    },
+
+    "files.exclude": {
+        "**/projects/**/*.csproj": true,
+        "**/Library/[!Package]*": true,
+        "**/Library/[{com, ex}]*": true,
+        "**/Library/PackageManager": true,
+        "**/Library/*.bin": true
+    },
+
     "window.zoomLevel": 2,
 
     "workbench.colorTheme": "Paper Contrast",

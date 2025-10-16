@@ -1,0 +1,39 @@
+{
+    "name": "SangoCard.Build.Editor",
+    "rootNamespace": "",
+    "references": [
+        "CodeStage.Maintainer.Editor",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "System.CommandLine.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "org.nuget.system.reactive",
+            "expression": "6.0.1",
+            "define": "HAS_NUGET_SYSTEM_REACTIVE"
+        },
+        {
+            "name": "com.unity.addressables",
+            "expression": "1.22.0",
+            "define": "HAS_UNITY_ADDRESSABLES"
+        },
+        {
+            "name": "net.codestage.maintainer",
+            "expression": "1.17.1",
+            "define": "HAS_CODE_STAGE_MAINTAINER"
+        }
+    ],
+    "noEngineReferences": false
+}
