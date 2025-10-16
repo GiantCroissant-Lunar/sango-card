@@ -29,6 +29,10 @@ Windsurf (powered by Codeium) is an AI-native IDE with agentic coding capabiliti
 - Follow C# conventions: PascalCase public, _camelCase private (R-CODE-030)
 - Use `[SerializeField]` for Unity inspector fields (R-CODE-040)
 - Respect project structure; avoid orphaned files (R-CODE-050)
+- **Scoped configuration files** (R-CODE-100):
+  - When creating config files (.gitignore, .editorconfig, etc.), prefer scoped/local configs
+  - Place configs in relevant subdirectories near files they affect
+  - Root configs only for truly global settings
 - **Partial classes for multiple interfaces** (R-CODE-090):
   - Split classes with multiple interfaces into partial files
   - `ClassName.cs`: base class inheritance only
@@ -78,6 +82,11 @@ Windsurf (powered by Codeium) is an AI-native IDE with agentic coding capabiliti
 ## Git Workflow
 
 - Use `git commit -F <file>` for commit bodies (R-GIT-010)
+- **Always use temporary commit message files** (R-GIT-060):
+  - Create temporary file (e.g., `.git/COMMIT_EDITMSG_TEMP`)
+  - Use `git commit -F <file>` not multiple `-m` flags
+  - Clean up temp file after committing
+  - Ensures proper multi-line formatting
 - Include Windsurf co-authorship footer:
 
   ```

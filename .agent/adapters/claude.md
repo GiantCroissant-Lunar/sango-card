@@ -25,6 +25,10 @@ References base rule set in `.agent/base/`. The base canon prevails on conflict.
 - Do not fabricate implementation details (R-CODE-020).
 - Follow existing project structure; avoid orphaned files (R-CODE-050).
 - Separate game logic from MonoBehaviours for testability (R-CODE-060).
+- **Scoped configuration files** (R-CODE-100):
+  - When creating config files (.gitignore, .editorconfig, etc.), prefer scoped/local configs
+  - Place configs in relevant subdirectories near files they affect
+  - Root configs only for truly global settings
 - **Partial classes for multiple interfaces** (R-CODE-090):
   - When creating/modifying classes with multiple interfaces, use separate partial files
   - Base file contains only direct parent class inheritance
@@ -72,6 +76,11 @@ References base rule set in `.agent/base/`. The base canon prevails on conflict.
 ## Git Workflow
 
 - Use `git commit -F <file>` for commit bodies with proper formatting (R-GIT-010).
+- **Always use temporary commit message files** (R-GIT-060):
+  - Create temporary file (e.g., `.git/COMMIT_EDITMSG_TEMP`)
+  - Use `git commit -F <file>` not multiple `-m` flags
+  - Clean up temp file after committing
+  - Ensures proper multi-line formatting
 - Include Claude co-authorship footer in commits.
 - Never commit secrets or Unity Library/ folder (R-GIT-020, R-GIT-030).
 - Commit meta files alongside assets (R-GIT-040).

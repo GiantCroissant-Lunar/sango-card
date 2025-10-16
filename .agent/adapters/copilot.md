@@ -15,6 +15,10 @@ GitHub Copilot provides code suggestions in editor and chat-based assistance. Th
 - Use `[SerializeField]` for Unity inspector fields (R-CODE-040).
 - Suggest object pooling for frequently instantiated objects (R-UNITY-040).
 - Cache component references, avoid GetComponent in loops (R-UNITY-030).
+- **Scoped configuration files** (R-CODE-100):
+  - When creating config files (.gitignore, .editorconfig, etc.), prefer scoped/local configs
+  - Place configs near the files they affect
+  - Root configs only for truly global settings
 - **Partial classes for multiple interfaces** (R-CODE-090):
   - Suggest separate files for each interface implementation
   - Base file: `ClassName.cs` with parent class only
@@ -48,6 +52,14 @@ When suggesting Unity code:
 ## Testing
 
 - Suggest test methods when creating game logic (R-TST-010).
+
+## Git Workflow
+
+- **Commit via file** (R-GIT-060):
+  - Always create temporary file for commit messages
+  - Use `git commit -F <file>` not multiple `-m` flags
+  - Clean up temp file after committing
+  - Ensures proper formatting and multi-line support
 - Use Unity Test Framework patterns (R-TST-020).
 - Mock Unity APIs in test suggestions (R-TST-050).
 

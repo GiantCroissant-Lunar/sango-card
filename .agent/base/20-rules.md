@@ -12,6 +12,14 @@ R-CODE-050: Respect existing project structure. Do not create orphaned files out
 R-CODE-060: Separate business logic from MonoBehaviours when practical for testability.
 R-CODE-070: Use dependency injection patterns for complex component interactions to enable testing.
 R-CODE-080: Prefer composition over inheritance in Unity Component design.
+R-CODE-100: **Scoped Configuration Files** - When creating configuration files that support scoping, ALWAYS prefer scoped/local configurations:
+
+- `.gitignore`: Create local `.gitignore` files in subdirectories rather than bloating root `.gitignore`
+- `.editorconfig`: Create scoped `.editorconfig` files in project/language-specific directories (e.g., `projects/client/.editorconfig` for Unity C#, `packages/spec-kit/.editorconfig` for Node.js)
+- ESLint/Prettier configs: Use directory-level configs (`.eslintrc.json`, `.prettierrc`) in specific package directories
+- Tool configs: Place tool-specific configs near the files they affect (e.g., `tsconfig.json` in TypeScript packages, `pytest.ini` in Python packages)
+- Benefits: Better maintainability, clearer ownership, prevents config conflicts between different project types
+- Root configs should only contain truly global/repository-wide settings
 R-CODE-090: **Partial Class Interface Separation** - When a class implements multiple interfaces, organize using partial classes:
 
 - Base file (`ClassName.cs`) contains ONLY direct parent class inheritance (e.g., `partial class Build : NukeBuild`)
@@ -95,6 +103,13 @@ R-GIT-020: Do not commit files that likely contain secrets (.env, credentials.js
 R-GIT-030: Do not commit Unity Library/ folder. Use .gitignore correctly.
 R-GIT-040: Commit Unity meta files alongside their assets. Never commit asset without corresponding .meta file.
 R-GIT-050: Use meaningful branch names: `feature/{spec-number}-{name}`, `hotfix/{issue}`, `experimental/{name}`.
+R-GIT-060: **Always use temporary commit message files.** When creating commits:
+
+- Create a temporary file (e.g., `.git/COMMIT_EDITMSG_TEMP`) with the commit message
+- Use `git commit -F <file>` to commit from the file
+- Clean up the temporary file after committing
+- Never use multiple `-m` flags or long command-line arguments for commit messages
+- This ensures proper formatting, multi-line messages, and avoids shell escaping issues
 
 ## Build System
 

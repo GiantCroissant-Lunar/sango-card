@@ -14,6 +14,7 @@ tasks:
     cmds:
       - task --list
   # Setup and initialization tasks
+
   setup:
     desc: Setup development environment (install dependencies)
     cmds:
@@ -61,6 +62,7 @@ tasks:
         fi
         {{end}}
   # Clean tasks
+
   clean:
     desc: Clean all build artifacts
     cmds:
@@ -87,6 +89,7 @@ tasks:
       - '{{if eq OS "windows"}}if exist "{{.OUTPUT_DIR}}" rmdir /s /q "{{.OUTPUT_DIR}}"{{else}}rm -rf "{{.OUTPUT_DIR}}"{{end}}'
       - echo "✓ Output directory cleaned"
   # Build tasks (using Nuke)
+
   build:
     desc: Build the project using Nuke
     cmds:
@@ -112,6 +115,7 @@ tasks:
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} BuildUnity --unity-build-target WebGL'
   # Test tasks
+
   test:
     desc: Run all tests
     cmds:
@@ -121,11 +125,13 @@ tasks:
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} TestUnity'
   # Package tasks
+
   package:
     desc: Create Unity package
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} ExportUnityPackage'
   # Development workflow tasks
+
   dev:
     desc: Start development workflow (clean + restore + build)
     cmds:
@@ -140,6 +146,7 @@ tasks:
       - task: build
       - task: test
   # Utility tasks
+
   restore:
     desc: Restore all dependencies
     cmds:
@@ -150,6 +157,7 @@ tasks:
       - task: clean
       - task: build
   # Info tasks
+
   info:
     desc: Display project information
     silent: true
@@ -174,12 +182,14 @@ tasks:
       - echo ""
       - echo "Run 'task --list' for all available tasks"
   # Watch tasks (for development)
+
   watch:unity:
     desc: Watch Unity project for changes (placeholder for Unity editor workflow)
     cmds:
       - echo "Open Unity Editor at {{.UNITY_PROJECT}} for live development"
       - echo "Unity Editor will handle hot-reloading automatically"
   # Nuke-specific tasks (direct passthrough)
+
   nuke:
     desc: Run custom Nuke target
     summary: |
@@ -189,6 +199,7 @@ tasks:
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} {{.CLI_ARGS}}'
   # Install Task runner itself (for new developers)
+
   install-task:
     desc: Install Task runner (for new developers)
     cmds:
@@ -205,6 +216,7 @@ tasks:
         {{end}}
       - echo "✓ Task installed! Restart your terminal and run 'task --version' to verify"
   # Documentation tasks
+
   docs:
     desc: Open Task documentation
     cmds:

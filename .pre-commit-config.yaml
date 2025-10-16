@@ -3,7 +3,6 @@
 # Installation: pip install pre-commit OR uv tool install pre-commit
 # Setup: pre-commit install
 # Run manually: pre-commit run --all-files
-
 default_language_version:
   python: python3.11
 repos:
@@ -28,15 +27,17 @@ repos:
         exclude: '\.bat$|\.cmd$|\.ps1$' # Keep CRLF for Windows scripts
       - id: detect-private-key
         exclude: 'test.*|mock.*|dummy.*'
-  # Secrets detection
   - repo: https://github.com/Yelp/detect-secrets
+    # Secrets detection
+
     rev: v1.4.0
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
-        exclude: 'test.*|mock.*|\.lock$'
-  # Gitleaks - Advanced secret scanning
+        exclude: 'test.*|mock.*|\.lock$|projects/code-quality/.*\.meta$|projects/client/.*\.meta$'
   - repo: https://github.com/gitleaks/gitleaks
+    # Gitleaks - Advanced secret scanning
+
     rev: v8.21.4
     hooks:
       - id: gitleaks
@@ -45,15 +46,17 @@ repos:
         entry: gitleaks detect --source . --verbose --no-git --redact
         language: system
         pass_filenames: false
-  # Markdown linting
   - repo: https://github.com/igorshubovych/markdownlint-cli
+    # Markdown linting
+
     rev: v0.39.0
     hooks:
       - id: markdownlint
         args: ['--fix']
         exclude: 'CHANGELOG.md|node_modules/'
-  # YAML linting and formatting
   - repo: https://github.com/adrienverge/yamllint
+    # YAML linting and formatting
+
     rev: v1.35.1
     hooks:
       - id: yamllint
@@ -63,15 +66,17 @@ repos:
     rev: v0.11.0
     hooks:
       - id: yamlfmt
-        exclude: '\.github/workflows/|\.unity$'
-  # EditorConfig enforcement
+        exclude: '\.github/workflows/|\.unity$|qodana\.yaml'
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    # EditorConfig enforcement
+
     rev: 2.7.3
     hooks:
       - id: editorconfig-checker
         exclude: '\.meta$|\.asset$|\.unity$'
-  # C# partial class pattern validation (R-CODE-090)
   - repo: local
+    # C# partial class pattern validation (R-CODE-090)
+
     hooks:
       - id: partial-class-interface-separation
         name: Partial Class Interface Separation (R-CODE-090)
@@ -81,8 +86,9 @@ repos:
         exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$'
         pass_filenames: false
         description: Validates partial class pattern for multi-interface classes
-  # Commit message validation
   - repo: https://github.com/compilerla/conventional-pre-commit
+    # Commit message validation
+
     rev: v3.1.0
     hooks:
       - id: conventional-pre-commit
@@ -90,6 +96,7 @@ repos:
         args: [--strict, --force-scope]
         description: Enforce Conventional Commits format
 # CI-specific configuration
+
 ci:
   autofix_commit_msg: |
     chore: auto-fixes from pre-commit hooks

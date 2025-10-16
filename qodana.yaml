@@ -1,0 +1,201 @@
+# Qodana Configuration
+# See: https://www.jetbrains.com/help/qodana/configure-qodana.html
+
+version: "1.0"
+
+# Linter to use
+# For C# and Unity projects, we use qodana-dotnet
+linter: jetbrains/qodana-dotnet:latest
+
+# Project name
+projectName: "sango-card"
+
+# Profile configuration
+profile:
+  name: "qodana.recommended"
+  path: ".idea/inspectionProfiles/qodana.xml"
+
+# Exclude paths
+exclude:
+  - name: All
+    paths:
+      - "projects/client/**/*"  # Unity project is isolated (R-BLD-060)
+      - "node_modules"
+      - ".venv"
+      - "venv"
+      - "Library"
+      - "Temp"
+      - "Logs"
+      - "obj"
+      - "bin"
+      - "build/output"
+      - "**/*.meta"
+      - "**/*.asset"
+      - "**/*.unity"
+
+# Include paths - focus on our custom code
+include:
+  - name: All
+    paths:
+      - "packages/**/*.cs"
+      - "build/**/*.cs"
+      - "scripts/**/*.ps1"
+
+# Fail threshold
+failThreshold: 10
+
+# Baseline
+# Store baseline to track new issues
+baseline: ".qodana/baseline.xml"
+baselineIncludeAbsent: false
+
+# Inspections
+inspections:
+  # Enable all recommended inspections
+  - group: Recommended
+    enabled: true
+
+  # Unity-specific inspections
+  - group: Unity
+    enabled: true
+
+  # C# inspections
+  - group: C#
+    enabled: true
+    severity:
+      # Enforce naming conventions (R-CODE-030)
+      - inspection: InconsistentNaming
+        severity: WARNING
+        enabled: true
+
+      # Enforce SerializeField usage (R-CODE-040)
+      - inspection: Unity.UnitySerializeField
+        severity: WARNING
+        enabled: true
+
+      # Performance checks (R-PERF-030)
+      - inspection: Unity.InefficientMultidimensionalArrayUsage
+        severity: WARNING
+        enabled: true
+      - inspection: Unity.PerformanceCriticalCodeInvocation
+        severity: ERROR
+        enabled: true
+
+  # Security inspections (R-SEC-*)
+  - group: Security
+    enabled: true
+    severity:
+      - inspection: HardcodedCredentials
+        severity: ERROR
+        enabled: true
+      - inspection: InsecureRandomness
+        severity: WARNING
+        enabled: true
+
+  # Disable inspections for generated code
+  - inspection: All
+    paths:
+      - "**/*.g.cs"
+      - "**/*.designer.cs"
+    enabled: false
+
+# Code coverage
+# Integration with test coverage reports
+coverage:
+  minCoverage: 70  # R-TST-040
+
+# License audit
+# Check for license compatibility
+licenseRules:
+  - keys:
+      - "MIT"
+      - "Apache-2.0"
+      - "BSD-3-Clause"
+    allowed: true
+  - keys:
+      - "GPL-3.0"
+    allowed: false
+    severity: ERROR
+
+# Dependency check
+# Scan for vulnerable dependencies
+dependencyCheck:
+  enabled: true
+  severity: WARNING
+
+# Script paths
+# Additional scripts to run
+script:
+  # Run pre-commit checks
+  beforeAnalysis: |
+    echo "Running Qodana analysis..."
+  afterAnalysis: |
+    echo "Qodana analysis complete."
+
+# Report configuration
+report:
+  # Output formats
+  formats:
+    - sarif
+    - json
+    - html
+
+  # Report path
+  path: "qodana-report"
+
+# Docker configuration
+# When running in Docker
+docker:
+  # Mount additional volumes
+  volumes:
+    - ".:/data/project"
+
+  # Environment variables
+  environment:
+    - "QODANA_TOKEN=${QODANA_TOKEN}"
+
+# CI/CD integration
+ci:
+  # Fail build on threshold
+  failOnThreshold: true
+
+  # GitHub integration
+  github:
+    # Post comments on PRs
+    comments: true
+
+    # Required checks
+    requiredChecks:
+      - "Qodana Analysis"
+
+# Custom rules
+# Project-specific inspection rules
+customRules:
+  # Partial class pattern (R-CODE-090)
+  - name: "PartialClassInterfaceSeparation"
+    description: "Multi-interface classes must use partial class pattern"
+    severity: WARNING
+    pattern: "class\\s+(\\w+)\\s*:\\s*\\w+\\s*,\\s*I\\w+\\s*,\\s*I\\w+"
+    message: "Classes implementing multiple interfaces should use partial class pattern (R-CODE-090)"
+
+  # GetComponent in Update (R-UNITY-030)
+  - name: "GetComponentInUpdate"
+    description: "GetComponent should not be used in Update methods"
+    severity: ERROR
+    pattern: "void\\s+Update\\s*\\([^)]*\\)\\s*\\{[^}]*GetComponent"
+    message: "Cache component references, do not use GetComponent in Update (R-UNITY-030)"
+
+  # LINQ in hot paths (R-PERF-030)
+  - name: "LinqInHotPath"
+    description: "Avoid LINQ in Update/FixedUpdate"
+    severity: WARNING
+    pattern: "void\\s+(Update|FixedUpdate)\\s*\\([^)]*\\)\\s*\\{[^}]*\\.(Where|Select|Any|All|First)"
+    message: "Avoid LINQ in hot paths (R-PERF-030)"
+
+# Notifications
+# Send notifications on analysis completion
+notifications:
+  email:
+    enabled: false
+  slack:
+    enabled: false
