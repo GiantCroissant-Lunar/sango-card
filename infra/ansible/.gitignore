@@ -1,0 +1,21 @@
+# Ansible specific
+*.retry
+.ansible/
+host_vars/localhost.yml
+
+# Credentials and secrets
+terraform.tfvars
+*.pem
+*.key
+*.secret
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

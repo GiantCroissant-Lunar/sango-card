@@ -1,0 +1,65 @@
+V |                      | ArgumentsFromParametersFile.OnBuildCreated (150)
+V |                      | HandleReSharperSurrogateArguments.OnBuildCreated (150)
+V |                      | InjectParameterValues.OnBuildCreated (100)
+V |                      | HandleShellCompletion.OnBuildCreated (75)
+V |                      | GenerateBuildServerConfigurations.OnBuildCreated (50)
+V |                      | InvokeBuildServerConfigurationGeneration.OnBuildCreated (45)
+V |                      | UpdateNotification.OnBuildCreated (10)
+V |                      | UnsetVisualStudioEnvironmentVariables.OnBuildCreated (0)
+V |                      | HandleVisualStudioDebugging.OnBuildCreated (0)
+V |                      | EventInvoker.OnBuildCreated (-3.4028235E+38)
+V |                      | HandlePlanRequests.OnBuildInitialized (10)
+V |                      | HandleHelpRequests.OnBuildInitialized (5)
+V |                      | Telemetry.OnBuildInitialized (0)
+V |                      | Sending BuildStarted telemetry event ...
+V |                      |   build_components         =
+V |                      |   build_type               = Project
+V |                      |   compile_time             = <null>
+V |                      |   config_generators        =
+V |                      |   host                     = VSCode
+V |                      |   num_custom_components    = 1
+V |                      |   num_custom_extensions    = 0
+V |                      |   num_partitioned_targets  = 0
+V |                      |   num_secrets              = 0
+V |                      |   num_targets              = 7
+V |                      |   os_architecture          = X64
+V |                      |   os_platform              = Windows
+V |                      |   repo_branch              = main
+V |                      |   repo_commit              = c3358e
+V |                      |   repo_provider            = GitHub
+V |                      |   repo_url                 = 4e9f76
+V |                      |   target_framework         = .NETCoreApp,Version=v8.0
+V |                      |   version_dotnet_sdk       = 9.0.111
+V |                      |   version_nuke_common      = 9.0.4
+V |                      |   version_nuke_global_tool = <null>
+V |                      | InjectNonParameterValues.OnBuildInitialized (-100)
+V |                      | EventInvoker.OnBuildInitialized (-3.4028235E+38)
+V | BuildUnity           | EventInvoker.OnTargetRunning (-3.4028235E+38)
+I | BuildUnity           | Building Unity project at: D:\lunar-snake\constract-work\card-projects\sango-card\projects\client
+I | BuildUnity           | Target platform: StandaloneWindows64
+I | BuildUnity           | Output path: D:\lunar-snake\constract-work\card-projects\sango-card\build\nuke\output
+I | BuildUnity           | Build version: 1.0.0
+I | BuildUnity           | Build profile: Windows
+I | BuildUnity           | Build purpose: UnityPlayer
+I | BuildUnity           | > "C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.7f1\\Editor\\Unity.exe" -quit -batchmode -nographics -projectPath "D:\lunar-snake\constract-work\card-projects\sango-card\projects\client" -buildTarget StandaloneWindows64 -executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild --buildPurpose UnityPlayer --buildVersion 1.0.0 --buildProfileName Windows --outputPath "D:\lunar-snake\constract-work\card-projects\sango-card\build\nuke\output" -logFile "D:\lunar-snake\constract-work\card-projects\sango-card\build\nuke\output\unity-build.log"
+I | BuildUnity           | @ D:\lunar-snake\constract-work\card-projects\sango-card\projects\client
+D | BuildUnity           |
+D | BuildUnity           | Aborting batchmode due to failure:
+D | BuildUnity           | Scripts have compiler errors.
+D | BuildUnity           |
+E | BuildUnity           | Target BuildUnity has thrown an exception
+Nuke.Common.Tooling.ProcessException: Process 'Unity.exe' exited with code 1.
+   > "C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.7f1\\Editor\\Unity.exe" -quit -batchmode -nographics -projectPath "D:\lunar-snake\constract-work\card-projects\sango-card\projects\client" -buildTarget StandaloneWindows64 -executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild --buildPurpose UnityPlayer --buildVersion 1.0.0 --buildProfileName Windows --outputPath "D:\lunar-snake\constract-work\card-projects\sango-card\build\nuke\output" -logFile "D:\lunar-snake\constract-work\card-projects\sango-card\build\nuke\output\unity-build.log"
+   @ D:\lunar-snake\constract-work\card-projects\sango-card\projects\client
+Standard output:
+
+   Aborting batchmode due to failure:
+   Scripts have compiler errors.
+
+
+   at Nuke.Common.Tooling.ProcessExtensions.AssertZeroExitCode(IProcess process) in /_/source/Nuke.Tooling/ProcessExtensions.cs:line 38
+   at IUnityBuild.<get_BuildUnity>b__17_1() in D:\lunar-snake\constract-work\card-projects\sango-card\build\nuke\build\Components\IUnityBuild.cs:line 100
+   at Nuke.Common.Execution.BuildExecutor.<>c.<Execute>b__4_2(Action x) in /_/source/Nuke.Build/Execution/BuildExecutor.cs:line 120
+   at System.Collections.Generic.List`1.ForEach(Action`1 action)
+   at Nuke.Common.Execution.BuildExecutor.Execute(NukeBuild build, ExecutableTarget target, IReadOnlyCollection`1 previouslyExecutedTargets, Boolean failureMode) in /_/source/Nuke.Build/Execution/BuildExecutor.cs:line 120
+V | BuildUnity           | EventInvoker.OnTargetFailed (-3.4028235E+38)

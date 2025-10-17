@@ -1,0 +1,71 @@
+# GitHub Provider Configuration
+github_owner      = "your-org-or-user"
+github_token      = "ghp_..." # Use environment variable TF_VAR_github_token instead
+repo_name         = "sango-card"
+repo_visibility   = "private"
+default_branch    = "main"
+
+# Branch Protection
+protect_develop_branch           = false
+required_status_checks           = ["build", "test", "lint"]
+required_approving_review_count  = 1
+
+# GitHub Actions Secrets (use terraform.tfvars, not checked into git)
+repository_secrets = {
+  # Example secrets - DO NOT commit actual values
+  # UNITY_LICENSE          = "your-unity-license-content"
+  # UNITY_EMAIL            = "your-unity-email"
+  # UNITY_PASSWORD         = "your-unity-password"
+  # UNITY_SERIAL           = "your-unity-serial"
+  # ANDROID_KEYSTORE_BASE64 = "your-android-keystore-base64"
+  # ANDROID_KEYSTORE_PASS  = "your-keystore-password"
+  # ANDROID_KEY_ALIAS      = "your-key-alias"
+  # ANDROID_KEY_PASS       = "your-key-password"
+  # IOS_CERTIFICATE_BASE64 = "your-ios-certificate-base64"
+  # IOS_PROVISION_BASE64   = "your-ios-provisioning-profile-base64"
+  # IOS_CERTIFICATE_PASSWORD = "your-certificate-password"
+}
+
+# GitHub Actions Variables (non-sensitive)
+repository_variables = {
+  # Unity Configuration
+  UNITY_VERSION           = "2022.3.x"
+  DOTNET_VERSION          = "8.0.x"
+  NODEJS_VERSION          = "20.x"
+  
+  # Build Configuration
+  BUILD_CONFIGURATION     = "Release"
+  ENABLE_CODE_COVERAGE    = "true"
+  ENABLE_UNITY_CACHE      = "true"
+  
+  # Platform Settings
+  BUILD_ANDROID           = "true"
+  BUILD_IOS               = "true"
+  BUILD_WEBGL             = "false"
+  
+  # Spec-Kit Configuration
+  SPEC_KIT_ENABLED        = "true"
+}
+
+# CODEOWNERS Configuration
+create_codeowners_file = false
+codeowners_content     = <<-EOT
+# Default owners for everything in the repo
+* @your-org-or-user
+
+# Build system
+/build/ @your-org-or-user
+/infra/ @your-org-or-user
+/.github/ @your-org-or-user
+
+# Unity project
+/projects/client/ @your-org-or-user
+/projects/client/Assets/Scripts/ @your-org-or-user
+
+# Documentation
+/docs/ @your-org-or-user
+*.md @your-org-or-user
+
+# Spec-Kit specifications
+/.specify/ @your-org-or-user
+EOT

@@ -1,0 +1,70 @@
+---
+# Node.js installation
+
+- name: Install Node.js (Windows)
+  when: ansible_os_family == "Windows"
+  win_chocolatey:
+    name: nodejs
+    version: "{{ nodejs_version }}"
+    state: present
+
+- name: Install Node.js (macOS)
+  when: ansible_os_family == "Darwin"
+  homebrew:
+    name: "node@{{ nodejs_version }}"
+    state: present
+
+- name: Install Node.js (Linux)
+  when: ansible_os_family in ["Debian", "RedHat"]
+  block:
+    - name: Download NodeSource setup script
+      get_url:
+        url: "https://deb.nodesource.com/setup_{{ nodejs_version }}.x"
+        dest: /tmp/nodesource_setup.sh
+        mode: '0755'
+      when: ansible_os_family == "Debian"
+
+    - name: Run NodeSource setup
+      shell: /tmp/nodesource_setup.sh
+      when: ansible_os_family == "Debian"
+      become: yes
+
+    - name: Install Node.js (Debian/Ubuntu)
+      apt:
+        name: nodejs
+        state: present
+      when: ansible_os_family == "Debian"
+      become: yes
+
+- name: Verify Node.js installation
+  command: node --version
+  register: node_version_check
+  changed_when: false
+
+- name: Verify npm installation
+  command: npm --version
+  register: npm_version_check
+  changed_when: false
+
+- name: Display Node.js and npm versions
+  debug:
+    msg:
+      - "Node.js {{ node_version_check.stdout }} installed"
+      - "npm {{ npm_version_check.stdout }} installed"
+
+- name: Configure npm global directory (non-Windows)
+  block:
+    - name: Create npm global directory
+      file:
+        path: "{{ ansible_env.HOME }}/.npm-global"
+        state: directory
+
+    - name: Configure npm to use global directory
+      command: npm config set prefix "{{ ansible_env.HOME }}/.npm-global"
+
+    - name: Add npm global to PATH
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export PATH="{{ ansible_env.HOME }}/.npm-global/bin:$PATH"'
+        create: yes
+  when: ansible_os_family != "Windows"

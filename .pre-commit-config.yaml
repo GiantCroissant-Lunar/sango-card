@@ -86,6 +86,17 @@ repos:
         exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$'
         pass_filenames: false
         description: Validates partial class pattern for multi-interface classes
+      - id: docs-validate
+        name: Documentation Front-Matter Validation (R-DOC-002)
+        entry: python scripts/docs_validate.py
+        language: python
+        files: '^docs/.*\.md$'
+        pass_filenames: false
+        description: Validates documentation front-matter and detects duplicates
+        additional_dependencies:
+          - pyyaml
+          - simhash
+          - rapidfuzz
   - repo: https://github.com/compilerla/conventional-pre-commit
     # Commit message validation
 
@@ -109,3 +120,4 @@ ci:
   skip:
     - partial-class-interface-separation # Skip PowerShell hook in CI
     - gitleaks # Skip gitleaks in CI (runs separately)
+    - docs-validate # Docs validation runs in dedicated GitHub Action

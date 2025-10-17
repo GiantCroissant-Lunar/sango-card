@@ -1,0 +1,356 @@
+# Wave Coordinator Workflow
+# Manages execution waves and triggers next wave when dependencies are met
+
+name: Wave Coordinator
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number that was just merged'
+        required: false
+      wave:
+        description: 'Wave number to check/trigger'
+        required: false
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  coordinate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine completed task
+        id: task
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let taskId, wave;
+
+            if (context.payload.inputs.pr_number) {
+              // Get PR details
+              const pr = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: parseInt(context.payload.inputs.pr_number)
+              });
+
+              // Extract task ID from PR title
+              const match = pr.data.title.match(/\[TASK-(\d+\.\d+)\]/);
+              if (match) {
+                taskId = match[1];
+
+                // Extract wave from task ID (first digit)
+                const waveNum = parseInt(taskId.split('.')[0]);
+                wave = waveNum;
+              }
+            } else if (context.payload.inputs.wave) {
+              wave = parseInt(context.payload.inputs.wave);
+            }
+
+            return { taskId, wave };
+
+      - name: Find blocked tasks
+        id: blocked
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { taskId, wave } = ${{ steps.task.outputs.result }};
+
+            if (!taskId) {
+              console.log('No task ID found');
+              return [];
+            }
+
+            // Find all open issues blocked by this task
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'spec-kit-task',
+              per_page: 100
+            });
+
+            const unblockedIssues = [];
+
+            for (const issue of issues.data) {
+              const body = issue.body;
+
+              // Extract blocked_by
+              const blockedByMatch = body.match(/blocked_by: \[(.*?)\]/);
+              if (!blockedByMatch) continue;
+
+              const blockedBy = blockedByMatch[1]
+                .split(',')
+                .map(t => t.trim())
+                .filter(t => t);
+
+              // Check if this task was blocking
+              if (!blockedBy.includes(taskId)) continue;
+
+              // Check if all dependencies are now met
+              const allMet = await checkAllDependencies(blockedBy);
+
+              if (allMet) {
+                unblockedIssues.push({
+                  number: issue.number,
+                  title: issue.title,
+                  wave: extractWave(body)
+                });
+              }
+            }
+
+            return unblockedIssues;
+
+            async function checkAllDependencies(deps) {
+              for (const dep of deps) {
+                const depIssues = await github.rest.issues.listForRepo({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  state: 'all',
+                  per_page: 100
+                });
+
+                const depIssue = depIssues.data.find(i =>
+                  i.title.includes(dep) || i.body.includes(`**Task ID:** ${dep}`)
+                );
+
+                if (!depIssue || depIssue.state !== 'closed') {
+                  return false;
+                }
+              }
+              return true;
+            }
+
+            function extractWave(body) {
+              const match = body.match(/wave: (\d+)/);
+              return match ? parseInt(match[1]) : null;
+            }
+
+      - name: Unblock and trigger tasks
+        if: steps.blocked.outputs.result != '[]'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const unblockedIssues = ${{ steps.blocked.outputs.result }};
+
+            for (const issue of unblockedIssues) {
+              console.log(`Unblocking issue #${issue.number}: ${issue.title}`);
+
+              // Remove blocked label
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  name: 'blocked'
+                });
+              } catch (error) {
+                console.log(`Label 'blocked' not found on #${issue.number}`);
+              }
+
+              // Add wave-ready label
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: [`wave-${issue.wave}-ready`]
+              });
+
+              // Comment on issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `🚀 All dependencies met! This task is now ready for execution.\n\n` +
+                      `Wave ${issue.wave} is ready to start.`
+              });
+            }
+
+      - name: Check wave completion
+        id: wave-complete
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { wave } = ${{ steps.task.outputs.result }};
+
+            if (!wave) {
+              console.log('No wave number found');
+              return { complete: false };
+            }
+
+            // Find all tasks in this wave
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              labels: 'spec-kit-task',
+              per_page: 100
+            });
+
+            const waveTasks = issues.data.filter(issue => {
+              const waveMatch = issue.body.match(/wave: (\d+)/);
+              return waveMatch && parseInt(waveMatch[1]) === wave;
+            });
+
+            const openTasks = waveTasks.filter(t => t.state === 'open');
+            const closedTasks = waveTasks.filter(t => t.state === 'closed');
+
+            const complete = openTasks.length === 0 && closedTasks.length > 0;
+
+            console.log(`Wave ${wave}: ${closedTasks.length}/${waveTasks.length} tasks complete`);
+
+            return {
+              complete,
+              wave,
+              total: waveTasks.length,
+              closed: closedTasks.length,
+              open: openTasks.length
+            };
+
+      - name: Trigger next wave
+        if: fromJson(steps.wave-complete.outputs.result).complete
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { wave, total, closed } = ${{ steps.wave-complete.outputs.result }};
+            const nextWave = wave + 1;
+
+            console.log(`✅ Wave ${wave} complete! (${closed}/${total} tasks)`);
+            console.log(`🚀 Triggering Wave ${nextWave}...`);
+
+            // Find all tasks in next wave
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'spec-kit-task',
+              per_page: 100
+            });
+
+            const nextWaveTasks = issues.data.filter(issue => {
+              const waveMatch = issue.body.match(/wave: (\d+)/);
+              return waveMatch && parseInt(waveMatch[1]) === nextWave;
+            });
+
+            if (nextWaveTasks.length === 0) {
+              console.log(`No tasks found for Wave ${nextWave}`);
+              console.log('🎉 All waves complete!');
+
+              // Create completion comment on dashboard
+              await createCompletionComment();
+              return;
+            }
+
+            // Label next wave tasks as ready (if not blocked)
+            for (const issue of nextWaveTasks) {
+              const labels = issue.labels.map(l => l.name);
+
+              if (!labels.includes('blocked')) {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  labels: [`wave-${nextWave}-ready`]
+                });
+
+                console.log(`✅ Labeled #${issue.number} as wave-${nextWave}-ready`);
+              } else {
+                console.log(`⏸️  #${issue.number} is blocked, skipping`);
+              }
+            }
+
+            // Comment on dashboard
+            await updateDashboard(wave, nextWave, nextWaveTasks.length);
+
+            async function createCompletionComment() {
+              // Find dashboard issue
+              const dashboards = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'dashboard',
+                state: 'open'
+              });
+
+              if (dashboards.data.length > 0) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: dashboards.data[0].number,
+                  body: `## 🎉 All Waves Complete!\n\n` +
+                        `Wave ${wave} was the final wave.\n` +
+                        `All spec-kit tasks have been completed.\n\n` +
+                        `**Next Steps:**\n` +
+                        `- Review final integration\n` +
+                        `- Update documentation\n` +
+                        `- Deploy to production`
+                });
+              }
+            }
+
+            async function updateDashboard(completedWave, nextWave, taskCount) {
+              const dashboards = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'dashboard',
+                state: 'open'
+              });
+
+              if (dashboards.data.length > 0) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: dashboards.data[0].number,
+                  body: `## Wave ${completedWave} Complete ✅\n\n` +
+                        `All tasks in Wave ${completedWave} have been completed and merged.\n\n` +
+                        `**Wave ${nextWave} Starting** 🚀\n` +
+                        `- ${taskCount} tasks ready for execution\n` +
+                        `- Copilot agents will be assigned automatically\n\n` +
+                        `_Automated by Wave Coordinator_`
+                });
+              }
+            }
+
+      - name: Update progress metrics
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Calculate overall progress
+            const allIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'spec-kit-task',
+              state: 'all',
+              per_page: 100
+            });
+
+            const total = allIssues.data.length;
+            const closed = allIssues.data.filter(i => i.state === 'closed').length;
+            const percentage = Math.round((closed / total) * 100);
+
+            console.log(`\n📊 Overall Progress: ${closed}/${total} (${percentage}%)\n`);
+
+            // Group by wave
+            const waves = {};
+            for (const issue of allIssues.data) {
+              const waveMatch = issue.body.match(/wave: (\d+)/);
+              if (waveMatch) {
+                const wave = waveMatch[1];
+                if (!waves[wave]) {
+                  waves[wave] = { total: 0, closed: 0 };
+                }
+                waves[wave].total++;
+                if (issue.state === 'closed') {
+                  waves[wave].closed++;
+                }
+              }
+            }
+
+            console.log('\n📈 Progress by Wave:\n');
+            for (const [wave, stats] of Object.entries(waves)) {
+              const pct = Math.round((stats.closed / stats.total) * 100);
+              const status = pct === 100 ? '✅' : pct > 0 ? '🔄' : '⏳';
+              console.log(`  ${status} Wave ${wave}: ${stats.closed}/${stats.total} (${pct}%)`);
+            }

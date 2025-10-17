@@ -1,0 +1,46 @@
+---
+# Host-specific variables for localhost - Sango Card
+# Copy this file to localhost.yml and customize for your setup
+# Note: localhost.yml is gitignored - safe to add personal settings
+
+# Git Configuration (override defaults)
+git_user_name: "Your Name"
+git_user_email: "your.email@example.com"
+
+# Version Overrides (if you need different versions)
+# dotnet_version: "7.0"
+# nodejs_version: "18"
+# python_version: "3.10"
+# unity_version: "2022.3.15f1"  # Specific Unity version
+
+# Installation Preferences
+install_unity: false
+install_android_sdk: false
+install_vscode: true
+install_rider: false
+install_docker: false
+
+# Custom Paths (optional)
+# tools_dir: "/custom/path/to/tools"
+# dotnet_install_dir: "/custom/path/.dotnet"
+
+# GitHub Runner (if setting up self-hosted runner)
+# setup_github_runner: true
+# github_org: "your-org"
+# runner_labels: "self-hosted,unity,mobile,windows"
+
+# Additional packages (platform-specific)
+# common_packages_windows:
+#   - vscode
+#   - docker-desktop
+#   - notepadplusplus
+#   - visualstudio2022community  # For C# development
+
+# common_packages_macos:
+#   - visual-studio-code
+#   - docker
+#   - iterm2
+
+# common_packages_linux:
+#   - code  # VS Code
+#   - docker.io

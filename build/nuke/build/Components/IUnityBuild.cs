@@ -23,6 +23,15 @@ interface IUnityBuild : INukeBuild
     [Parameter("Unity build output path")]
     AbsolutePath UnityBuildOutput => TryGetValue(() => UnityBuildOutput) ?? RootDirectory / "output";
 
+    [Parameter("Unity build version")]
+    string UnityBuildVersion => TryGetValue(() => UnityBuildVersion) ?? "1.0.0";
+
+    [Parameter("Unity build profile name (Windows, Android, iOS, etc.)")]
+    string UnityBuildProfileName => TryGetValue(() => UnityBuildProfileName) ?? "Windows";
+
+    [Parameter("Unity build purpose (UnityPlayer, UnityAssetBundles, UnityAddressables)")]
+    string UnityBuildPurpose => TryGetValue(() => UnityBuildPurpose) ?? "UnityPlayer";
+
     /// <summary>
     /// Clean Unity build artifacts
     /// </summary>
@@ -30,7 +39,11 @@ interface IUnityBuild : INukeBuild
         .Description("Clean Unity build artifacts")
         .Executes(() =>
         {
-            EnsureCleanDirectory(UnityBuildOutput);
+            if (Directory.Exists(UnityBuildOutput))
+            {
+                Directory.Delete(UnityBuildOutput, recursive: true);
+            }
+            Directory.CreateDirectory(UnityBuildOutput);
 
             var libraryPath = UnityProjectPath / "Library";
             var tempPath = UnityProjectPath / "Temp";
@@ -43,7 +56,7 @@ interface IUnityBuild : INukeBuild
             if (Directory.Exists(tempPath))
             {
                 Serilog.Log.Information("Cleaning Unity Temp folder...");
-                DeleteDirectory(tempPath);
+                Directory.Delete(tempPath, recursive: true);
             }
         });
 
@@ -54,11 +67,14 @@ interface IUnityBuild : INukeBuild
         .Description("Build Unity project")
         .Executes(() =>
         {
-            EnsureExistingDirectory(UnityBuildOutput);
+            Directory.CreateDirectory(UnityBuildOutput);
 
             Serilog.Log.Information($"Building Unity project at: {UnityProjectPath}");
             Serilog.Log.Information($"Target platform: {UnityBuildTarget}");
             Serilog.Log.Information($"Output path: {UnityBuildOutput}");
+            Serilog.Log.Information($"Build version: {UnityBuildVersion}");
+            Serilog.Log.Information($"Build profile: {UnityBuildProfileName}");
+            Serilog.Log.Information($"Build purpose: {UnityBuildPurpose}");
 
             var arguments = new[]
             {
@@ -67,7 +83,11 @@ interface IUnityBuild : INukeBuild
                 "-nographics",
                 $"-projectPath \"{UnityProjectPath}\"",
                 $"-buildTarget {UnityBuildTarget}",
-                "-executeMethod BuildScript.Build",
+                "-executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild",
+                $"--buildPurpose {UnityBuildPurpose}",
+                $"--buildVersion {UnityBuildVersion}",
+                $"--buildProfileName {UnityBuildProfileName}",
+                $"--outputPath \"{UnityBuildOutput}\"",
                 $"-logFile \"{UnityBuildOutput / "unity-build.log"}\"",
             };
 
@@ -75,7 +95,7 @@ interface IUnityBuild : INukeBuild
                 UnityPath,
                 string.Join(" ", arguments),
                 workingDirectory: UnityProjectPath,
-                timeout: TimeSpan.FromMinutes(30));
+                timeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
 
             process.AssertZeroExitCode();
 
@@ -89,7 +109,7 @@ interface IUnityBuild : INukeBuild
         .Description("Export Unity package")
         .Executes(() =>
         {
-            EnsureExistingDirectory(UnityBuildOutput);
+            Directory.CreateDirectory(UnityBuildOutput);
 
             var packagePath = UnityBuildOutput / "package.unitypackage";
 
@@ -108,7 +128,7 @@ interface IUnityBuild : INukeBuild
                 UnityPath,
                 string.Join(" ", arguments),
                 workingDirectory: UnityProjectPath,
-                timeout: TimeSpan.FromMinutes(15));
+                timeout: (int)TimeSpan.FromMinutes(15).TotalMilliseconds);
 
             process.AssertZeroExitCode();
 
@@ -122,7 +142,7 @@ interface IUnityBuild : INukeBuild
         .Description("Run Unity tests")
         .Executes(() =>
         {
-            EnsureExistingDirectory(UnityBuildOutput);
+            Directory.CreateDirectory(UnityBuildOutput);
 
             var testResultsPath = UnityBuildOutput / "test-results.xml";
 
@@ -142,7 +162,7 @@ interface IUnityBuild : INukeBuild
                 UnityPath,
                 string.Join(" ", arguments),
                 workingDirectory: UnityProjectPath,
-                timeout: TimeSpan.FromMinutes(20));
+                timeout: (int)TimeSpan.FromMinutes(20).TotalMilliseconds);
 
             process.AssertZeroExitCode();
 

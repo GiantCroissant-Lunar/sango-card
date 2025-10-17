@@ -3,9 +3,14 @@
     "rootNamespace": "",
     "references": [
         "CodeStage.Maintainer.Editor",
+        "SangoCard.Cross.Editor",
         "Unity.Addressables",
         "Unity.Addressables.Editor",
-        "Unity.ResourceManager"
+        "Unity.ResourceManager",
+        "Microsoft.Extensions.Logging",
+        "Microsoft.Extensions.Logging.Abstractions",
+        "Microsoft.Extensions.DependencyInjection",
+        "Microsoft.Extensions.DependencyInjection.Abstractions"
     ],
     "includePlatforms": [
         "Editor"
@@ -14,7 +19,8 @@
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [
-        "System.CommandLine.dll"
+        "System.CommandLine.dll",
+        "Splat.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

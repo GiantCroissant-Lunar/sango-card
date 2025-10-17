@@ -1,0 +1,61 @@
+---
+# .NET SDK installation
+
+- name: Install .NET SDK (Windows)
+  when: ansible_os_family == "Windows"
+  win_chocolatey:
+    name: "dotnet-sdk"
+    version: "{{ dotnet_version }}"
+    state: present
+
+- name: Install .NET SDK (macOS)
+  when: ansible_os_family == "Darwin"
+  homebrew_cask:
+    name: "dotnet-sdk"
+    state: present
+
+- name: Install .NET SDK (Linux)
+  when: ansible_os_family in ["Debian", "RedHat"]
+  block:
+    - name: Download .NET install script
+      get_url:
+        url: https://dot.net/v1/dotnet-install.sh
+        dest: /tmp/dotnet-install.sh
+        mode: '0755'
+
+    - name: Install .NET SDK
+      shell: |
+        /tmp/dotnet-install.sh --channel {{ dotnet_version }} --install-dir {{ dotnet_install_dir }}
+      args:
+        creates: "{{ dotnet_install_dir }}/dotnet"
+
+    - name: Add .NET to PATH
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export PATH="{{ dotnet_install_dir }}:$PATH"'
+        create: yes
+
+- name: Verify .NET installation
+  command: dotnet --version
+  register: dotnet_version_check
+  changed_when: false
+  ignore_errors: yes
+
+- name: Display .NET version
+  debug:
+    msg: ".NET SDK {{ dotnet_version_check.stdout }} installed"
+  when: dotnet_version_check.rc == 0
+
+- name: Disable .NET telemetry
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export DOTNET_CLI_TELEMETRY_OPTOUT=1'
+    create: yes
+  when: ansible_os_family != "Windows"
+
+- name: Set .NET telemetry opt-out (Windows)
+  win_environment:
+    name: DOTNET_CLI_TELEMETRY_OPTOUT
+    value: "1"
+    level: user
+  when: ansible_os_family == "Windows"

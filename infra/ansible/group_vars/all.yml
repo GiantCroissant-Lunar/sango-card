@@ -1,0 +1,73 @@
+---
+# Global variables for all hosts - Sango Card project
+# Override in host_vars/ or inventory/hosts as needed
+
+# Version Configuration (matching sango-card requirements)
+dotnet_version: "8.0"
+nodejs_version: "20"
+python_version: "3.11"
+unity_version: "2022.3.x"
+git_version: "latest"
+
+# Tool Versions
+task_version: "3.35.1"
+nuke_version: "latest"
+pre_commit_version: "latest"
+uv_version: "latest"
+
+# Installation Flags
+install_unity: false  # Set to true to attempt Unity installation
+install_android_sdk: false
+install_ios_tools: false
+
+# Git Configuration
+git_user_name: ""  # Override per user in host_vars/localhost.yml
+git_user_email: ""  # Override per user in host_vars/localhost.yml
+git_default_branch: "main"
+
+# Development Tools
+install_vscode: false
+install_rider: false
+install_docker: false
+
+# GitHub Runner Configuration (for CI/CD self-hosted runners)
+github_org: your-org
+github_pat: "{{ lookup('env', 'GH_TOKEN') }}"
+runner_version: "2.319.1"
+runner_labels: "self-hosted,unity,mobile"
+runner_group: "Default"
+setup_github_runner: false
+
+# System Packages
+common_packages_windows:
+  - git
+  - 7zip
+  - curl
+  - wget
+
+common_packages_macos:
+  - git
+  - wget
+  - curl
+  - coreutils
+  - jq
+  - tree
+
+common_packages_linux:
+  - git
+  - curl
+  - wget
+  - build-essential
+  - jq
+  - tree
+  - unzip
+
+# Build Configuration
+enable_code_coverage: true
+enable_unity_cache: true
+parallel_builds: true
+
+# Paths (OS-specific, set at runtime)
+dotnet_install_dir: "{{ ansible_env.HOME }}/.dotnet"
+nodejs_install_dir: "{{ ansible_env.HOME }}/.nodejs"
+tools_dir: "{{ ansible_env.HOME }}/.local/bin"

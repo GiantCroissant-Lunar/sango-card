@@ -1,0 +1,67 @@
+---
+# Common role: Install base packages and tools
+
+- name: Install common packages (Windows)
+  when: ansible_os_family == "Windows"
+  block:
+    - name: Ensure Chocolatey is installed
+      win_chocolatey:
+        name: chocolatey
+        state: present
+
+    - name: Install common Windows packages
+      win_chocolatey:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ common_packages_windows }}"
+      ignore_errors: yes
+
+- name: Install common packages (macOS)
+  when: ansible_os_family == "Darwin"
+  block:
+    - name: Ensure Homebrew is installed
+      stat:
+        path: /opt/homebrew/bin/brew
+      register: homebrew_check
+
+    - name: Install Homebrew
+      shell: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      when: not homebrew_check.stat.exists
+
+    - name: Install common macOS packages
+      homebrew:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ common_packages_macos }}"
+
+- name: Install common packages (Linux)
+  when: ansible_os_family in ["Debian", "RedHat"]
+  block:
+    - name: Update apt cache (Debian/Ubuntu)
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+      become: yes
+
+    - name: Install common Linux packages
+      apt:
+        name: "{{ common_packages_linux }}"
+        state: present
+      when: ansible_os_family == "Debian"
+      become: yes
+
+    - name: Install common Linux packages (RedHat/CentOS)
+      yum:
+        name: "{{ common_packages_linux }}"
+        state: present
+      when: ansible_os_family == "RedHat"
+      become: yes
+
+- name: Create tools directory
+  file:
+    path: "{{ tools_dir }}"
+    state: directory
+    mode: '0755'
+  when: ansible_os_family != "Windows"

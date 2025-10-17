@@ -1,0 +1,98 @@
+---
+# Build tools installation (Task, Nuke, etc.)
+
+- name: Install Task (Windows)
+  when: ansible_os_family == "Windows"
+  win_chocolatey:
+    name: go-task
+    state: present
+
+- name: Install Task (macOS)
+  when: ansible_os_family == "Darwin"
+  homebrew:
+    name: go-task
+    state: present
+
+- name: Install Task (Linux)
+  when: ansible_os_family in ["Debian", "RedHat"]
+  block:
+    - name: Download Task
+      get_url:
+        url: "https://github.com/go-task/task/releases/download/v{{ task_version }}/task_linux_amd64.tar.gz"
+        dest: /tmp/task.tar.gz
+
+    - name: Extract Task
+      unarchive:
+        src: /tmp/task.tar.gz
+        dest: "{{ tools_dir }}"
+        remote_src: yes
+        creates: "{{ tools_dir }}/task"
+
+    - name: Make Task executable
+      file:
+        path: "{{ tools_dir }}/task"
+        mode: '0755'
+
+- name: Verify Task installation
+  command: task --version
+  register: task_version_check
+  changed_when: false
+  ignore_errors: yes
+
+- name: Display Task version
+  debug:
+    msg: "Task {{ task_version_check.stdout }} installed"
+  when: task_version_check.rc == 0
+
+- name: Install additional build tools (all platforms)
+  block:
+    - name: Install jq (Windows)
+      win_chocolatey:
+        name: jq
+        state: present
+      when: ansible_os_family == "Windows"
+
+    - name: Install jq (macOS)
+      homebrew:
+        name: jq
+        state: present
+      when: ansible_os_family == "Darwin"
+
+    - name: Install make (Windows)
+      win_chocolatey:
+        name: make
+        state: present
+      when: ansible_os_family == "Windows"
+
+- name: Install Nuke global tool
+  command: dotnet tool install Nuke.GlobalTool --global
+  register: nuke_install
+  changed_when: "'was successfully installed' in nuke_install.stdout"
+  failed_when: false
+
+- name: Update Nuke if already installed
+  command: dotnet tool update Nuke.GlobalTool --global
+  when: nuke_install.rc != 0
+  changed_when: false
+
+- name: Verify Nuke installation
+  command: nuke --version
+  register: nuke_version_check
+  changed_when: false
+  ignore_errors: yes
+
+- name: Display Nuke version
+  debug:
+    msg: "Nuke {{ nuke_version_check.stdout }} installed"
+  when: nuke_version_check.rc == 0
+
+- name: Install GitVersion
+  command: dotnet tool install GitVersion.Tool --global
+  register: gitversion_install
+  changed_when: "'was successfully installed' in gitversion_install.stdout"
+  failed_when: false
+
+- name: Update GitVersion if already installed
+  command: dotnet tool update GitVersion.Tool --global
+  when: gitversion_install.rc != 0
+  changed_when: false

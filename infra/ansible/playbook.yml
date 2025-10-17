@@ -1,0 +1,89 @@
+---
+# Main Ansible playbook for setting up sango-card development environment
+# Supports: Windows, macOS, Linux
+# Usage: ansible-playbook -i inventory/hosts playbook.yml
+
+- name: Setup Sango Card Development Environment
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  
+  vars_files:
+    - group_vars/all.yml
+  
+  pre_tasks:
+    - name: Display OS information
+      debug:
+        msg: "Setting up sango-card development environment on {{ ansible_distribution }} {{ ansible_distribution_version }}"
+    
+    - name: Verify Ansible version
+      assert:
+        that:
+          - ansible_version.full is version('2.12', '>=')
+        fail_msg: "Ansible version must be 2.12 or higher"
+        success_msg: "Ansible version {{ ansible_version.full }} is compatible"
+
+  roles:
+    - role: common
+      tags: [common, base]
+    
+    - role: dotnet
+      tags: [dotnet, development]
+    
+    - role: nodejs
+      tags: [nodejs, development]
+    
+    - role: python
+      tags: [python, development]
+    
+    - role: git
+      tags: [git, development]
+    
+    - role: unity
+      tags: [unity, gamedev]
+      when: install_unity | default(false) | bool
+    
+    - role: build_tools
+      tags: [build, development]
+  
+  post_tasks:
+    - name: Display setup summary
+      debug:
+        msg:
+          - "=== Sango Card Development Environment Setup Complete ==="
+          - "Installed components:"
+          - "  - .NET SDK {{ dotnet_version }}"
+          - "  - Node.js {{ nodejs_version }}"
+          - "  - Python {{ python_version }}"
+          - "  - Git with LFS"
+          - "  - Build tools (Task, pre-commit, Nuke)"
+          - ""
+          - "Next steps:"
+          - "  1. Clone the repository: git clone <repo-url>"
+          - "  2. Run: task setup"
+          - "  3. Run: task build"
+          - ""
+          - "For Unity:"
+          - "  - Install Unity Hub from https://unity.com/download"
+          - "  - Install Unity {{ unity_version }}"
+          - "  - Add Android/iOS build support as needed"
+
+- name: Setup Unity (Optional)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags: [unity, optional]
+  
+  tasks:
+    - name: Display Unity installation instructions
+      debug:
+        msg:
+          - "=== Unity Installation ==="
+          - "Unity Hub and Editor must be installed manually:"
+          - "  1. Download Unity Hub from https://unity.com/download"
+          - "  2. Install Unity Editor version {{ unity_version | default('2022.3.x') }}"
+          - "  3. Add required modules:"
+          - "     - Android Build Support (for Android builds)"
+          - "     - iOS Build Support (macOS only, for iOS builds)"
+          - "     - WebGL Build Support (optional)"
+      when: not (install_unity | default(false) | bool)
