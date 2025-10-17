@@ -1,0 +1,32 @@
+﻿{
+  Original:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void TestMethod()
+        {
+            Console.WriteLine("Hello");
+            var x = 1;
+            Console.WriteLine("World");
+        }
+    }
+},
+  Patched:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void TestMethod()
+        {
+            Debug.Log("Hello");
+            var x = 1;
+            Console.WriteLine("World");
+        }
+    }
+},
+  Result: {
+    Success: true,
+    Modified: true
+  }
+}

@@ -81,8 +81,127 @@ public class CliHost
             await handler.ValidateAsync(file, level);
         }, fileOption, levelOption);
 
+        // config add-source
+        var addSourceCommand = new Command("add-source", "Add a source to preparation manifest (Phase 1)");
+        var sourcePathOption = new Option<string>(
+            aliases: new[] { "--source", "-s" },
+            description: "Source path (absolute or relative to git root)"
+        ) { IsRequired = true };
+        var cacheAsOption = new Option<string>(
+            aliases: new[] { "--cache-as", "-n" },
+            description: "Name to use in cache directory"
+        ) { IsRequired = true };
+        var typeOption = new Option<string>(
+            aliases: new[] { "--type", "-t" },
+            description: "Type: package, assembly, or asset"
+        ) { IsRequired = true };
+        var manifestOption = new Option<string>(
+            aliases: new[] { "--manifest", "-m" },
+            description: "Preparation manifest file path (relative to git root)"
+        ) { IsRequired = true };
+        var dryRunOption = new Option<bool>(
+            aliases: new[] { "--dry-run" },
+            getDefaultValue: () => false,
+            description: "Preview without applying changes"
+        );
+
+        addSourceCommand.AddOption(sourcePathOption);
+        addSourceCommand.AddOption(cacheAsOption);
+        addSourceCommand.AddOption(typeOption);
+        addSourceCommand.AddOption(manifestOption);
+        addSourceCommand.AddOption(dryRunOption);
+        addSourceCommand.SetHandler(async (string source, string cacheAs, string type, string manifest, bool dryRun) =>
+        {
+            var handler = _host.Services.GetRequiredService<ConfigCommandHandler>();
+            await handler.AddSourceAsync(source, cacheAs, type, manifest, dryRun);
+        }, sourcePathOption, cacheAsOption, typeOption, manifestOption, dryRunOption);
+
+        // config add-injection
+        var addInjectionCommand = new Command("add-injection", "Add injection mapping to build config (Phase 2)");
+        var injSourceOption = new Option<string>(
+            aliases: new[] { "--source", "-s" },
+            description: "Source path in cache (relative to git root)"
+        ) { IsRequired = true };
+        var injTargetOption = new Option<string>(
+            aliases: new[] { "--target", "-t" },
+            description: "Target path in client project (relative to git root)"
+        ) { IsRequired = true };
+        var injTypeOption = new Option<string>(
+            aliases: new[] { "--type" },
+            description: "Type: package, assembly, or asset"
+        ) { IsRequired = true };
+        var injConfigOption = new Option<string>(
+            aliases: new[] { "--config", "-c" },
+            description: "Build injection config file path (relative to git root)"
+        ) { IsRequired = true };
+        var injNameOption = new Option<string?>(
+            aliases: new[] { "--name", "-n" },
+            description: "Item name (auto-detected if omitted)"
+        );
+        var injVersionOption = new Option<string?>(
+            aliases: new[] { "--version", "-v" },
+            description: "Item version (optional)"
+        );
+        var injDryRunOption = new Option<bool>(
+            aliases: new[] { "--dry-run" },
+            getDefaultValue: () => false,
+            description: "Preview without applying changes"
+        );
+
+        addInjectionCommand.AddOption(injSourceOption);
+        addInjectionCommand.AddOption(injTargetOption);
+        addInjectionCommand.AddOption(injTypeOption);
+        addInjectionCommand.AddOption(injConfigOption);
+        addInjectionCommand.AddOption(injNameOption);
+        addInjectionCommand.AddOption(injVersionOption);
+        addInjectionCommand.AddOption(injDryRunOption);
+        addInjectionCommand.SetHandler(async (string source, string target, string type, string config, string? name, string? version, bool dryRun) =>
+        {
+            var handler = _host.Services.GetRequiredService<ConfigCommandHandler>();
+            await handler.AddInjectionAsync(source, target, type, config, name, version, dryRun);
+        }, injSourceOption, injTargetOption, injTypeOption, injConfigOption, injNameOption, injVersionOption, injDryRunOption);
+
+        // config add-batch
+        var addBatchCommand = new Command("add-batch", "Add multiple items from batch manifest file");
+        var batchManifestOption = new Option<string>(
+            aliases: new[] { "--manifest", "-m" },
+            description: "Batch manifest file path (YAML or JSON)"
+        ) { IsRequired = true };
+        var batchOutputOption = new Option<string>(
+            aliases: new[] { "--output", "-o" },
+            description: "Output config file path (relative to git root)"
+        ) { IsRequired = true };
+        var batchConfigTypeOption = new Option<string>(
+            aliases: new[] { "--config-type", "-t" },
+            description: "Config type: 'source' (Phase 1) or 'injection' (Phase 2)"
+        ) { IsRequired = true };
+        var batchDryRunOption = new Option<bool>(
+            aliases: new[] { "--dry-run" },
+            getDefaultValue: () => false,
+            description: "Preview without applying changes"
+        );
+        var batchContinueOnErrorOption = new Option<bool>(
+            aliases: new[] { "--continue-on-error" },
+            getDefaultValue: () => false,
+            description: "Continue processing on failures"
+        );
+
+        addBatchCommand.AddOption(batchManifestOption);
+        addBatchCommand.AddOption(batchOutputOption);
+        addBatchCommand.AddOption(batchConfigTypeOption);
+        addBatchCommand.AddOption(batchDryRunOption);
+        addBatchCommand.AddOption(batchContinueOnErrorOption);
+        addBatchCommand.SetHandler(async (string manifest, string output, string configType, bool dryRun, bool continueOnError) =>
+        {
+            var handler = _host.Services.GetRequiredService<ConfigCommandHandler>();
+            await handler.AddBatchAsync(manifest, output, configType, dryRun, continueOnError);
+        }, batchManifestOption, batchOutputOption, batchConfigTypeOption, batchDryRunOption, batchContinueOnErrorOption);
+
         configCommand.AddCommand(createCommand);
         configCommand.AddCommand(validateCommand);
+        configCommand.AddCommand(addSourceCommand);
+        configCommand.AddCommand(addInjectionCommand);
+        configCommand.AddCommand(addBatchCommand);
 
         return configCommand;
     }

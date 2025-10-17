@@ -1,0 +1,27 @@
+﻿{
+  Original:
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Text;
+
+namespace TestNamespace
+{
+    public class TestClass { }
+},
+  Patched:
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Text;
+
+namespace TestNamespace
+{
+    public class TestClass { }
+},
+  Result: {
+    Success: true,
+    Modified: true
+  }
+}

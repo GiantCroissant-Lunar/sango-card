@@ -1,0 +1,38 @@
+﻿{
+  Original:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void TestMethod()
+        {
+            var x = 1;
+            var y = 2;
+            Console.WriteLine(x + y);
+        }
+
+        public void OtherMethod()
+        {
+            var z = 3;
+        }
+    }
+},
+  Patched:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void TestMethod()
+        { var x = 10; var y = 20; Console.WriteLine(x * y); }
+
+        public void OtherMethod()
+        {
+            var z = 3;
+        }
+    }
+},
+  Result: {
+    Success: true,
+    Modified: true
+  }
+}

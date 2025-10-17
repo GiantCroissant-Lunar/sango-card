@@ -1,0 +1,32 @@
+﻿{
+  Original:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void TestMethod()
+        {
+            var oldValue = 10;
+            var result = OldValue + 5;
+            Console.WriteLine(OldValue);
+        }
+    }
+},
+  Patched:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void TestMethod()
+        {
+            var oldValue = 10;
+            var result = NewValue + 5;
+            Console.WriteLine(NewValue);
+        }
+    }
+},
+  Result: {
+    Success: true,
+    Modified: true
+  }
+}

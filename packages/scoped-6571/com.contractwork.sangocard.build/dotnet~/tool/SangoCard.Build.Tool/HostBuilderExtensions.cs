@@ -33,6 +33,8 @@ public static class HostBuilderExtensions
         services.AddSingleton<Core.Services.CacheService>();
         services.AddSingleton<Core.Services.ValidationService>();
         services.AddSingleton<Core.Services.PreparationService>();
+        services.AddSingleton<Core.Services.SourceManagementService>();
+        services.AddSingleton<Core.Services.BatchManifestService>();
         // services.AddSingleton<ManifestService>(); // Task 2.4
 
         // Code patchers
@@ -60,8 +62,10 @@ public static class HostBuilderExtensions
             services.AddSingleton<Tui.TuiHost>();
             services.AddTransient<Tui.Views.CacheManagementView>();
             services.AddTransient<Tui.Views.ConfigEditorView>();
+            services.AddTransient<Tui.Views.ConfigTypeSelectionView>();
             services.AddTransient<Tui.Views.ValidationView>();
             services.AddTransient<Tui.Views.PreparationExecutionView>();
+            services.AddTransient<Tui.Views.ManualSourcesView>();
         }
 
         return services;

@@ -1,0 +1,57 @@
+﻿{
+  Original:
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SangoCard.Build.Example
+{
+    public class BuildConfiguration
+    {
+        private string _oldValue = "legacy";
+
+        public void Configure()
+        {
+            var settings = new Dictionary<string, object>();
+            settings["key"] = _oldValue;
+            Console.WriteLine("Configuring build...");
+        }
+
+        [Obsolete]
+        public void LegacyMethod()
+        {
+            // This method is deprecated
+            Console.WriteLine("Legacy");
+        }
+    }
+},
+  Patched:
+using System;
+using System.Collections.Generic;
+
+namespace SangoCard.Build.Example
+{
+    public class BuildConfiguration
+    {
+        private string _oldValue = "legacy";
+
+        public void Configure()
+        {
+            var settings = new Dictionary<string, object>();
+            settings["key"] = _oldValue;
+            Console.WriteLine("Configuring build...");
+        }
+
+        [Obsolete]
+        public void LegacyMethod()
+        {
+            // This method is deprecated
+            Console.WriteLine("Legacy");
+        }
+    }
+},
+  Result: {
+    Success: true,
+    Modified: true
+  }
+}

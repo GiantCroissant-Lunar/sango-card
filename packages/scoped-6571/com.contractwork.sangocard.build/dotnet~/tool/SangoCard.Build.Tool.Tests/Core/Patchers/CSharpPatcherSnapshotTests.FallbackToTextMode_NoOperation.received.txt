@@ -1,0 +1,22 @@
+﻿{
+  Original:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void OldMethod() { }
+    }
+},
+  Patched:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void NewMethod() { }
+    }
+},
+  Result: {
+    Success: true,
+    Modified: true
+  }
+}

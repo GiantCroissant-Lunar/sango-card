@@ -1,0 +1,30 @@
+﻿{
+  Original:
+using System;
+using System.Linq;
+
+namespace TestNamespace
+{
+    public class TestClass { }
+},
+  FileAfterDryRun:
+using System;
+using System.Linq;
+
+namespace TestNamespace
+{
+    public class TestClass { }
+},
+  Result: {
+    Success: true,
+    Modified: true,
+    Message: Dry-run: Patch would be applied successfully,
+    Preview:
+=== Patch Preview ===
+Original length: 92 chars
+Patched length: 73 chars
+Difference: -19 chars
+Line count changed: 7 -> 6
+
+  }
+}

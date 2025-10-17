@@ -1,0 +1,61 @@
+﻿{
+  Original:
+using System;
+using System.Linq; // For LINQ operations
+using System.Collections.Generic;
+
+namespace TestNamespace
+{
+    /// <summary>
+    /// This is a test class.
+    /// </summary>
+    public class TestClass
+    {
+        // This is a field comment
+        private int _value;
+
+        /// <summary>
+        /// Test method with documentation.
+        /// </summary>
+        public void TestMethod()
+        {
+            // Inline comment
+            var x = 1; // End of line comment
+            /* Multi-line
+               comment */
+            var y = 2;
+        }
+    }
+},
+  Patched:
+using System;
+using System.Collections.Generic;
+
+namespace TestNamespace
+{
+    /// <summary>
+    /// This is a test class.
+    /// </summary>
+    public class TestClass
+    {
+        // This is a field comment
+        private int _value;
+
+        /// <summary>
+        /// Test method with documentation.
+        /// </summary>
+        public void TestMethod()
+        {
+            // Inline comment
+            var x = 1; // End of line comment
+            /* Multi-line
+               comment */
+            var y = 2;
+        }
+    }
+},
+  Result: {
+    Success: true,
+    Modified: true
+  }
+}

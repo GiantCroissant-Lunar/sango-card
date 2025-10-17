@@ -1,0 +1,42 @@
+﻿{
+  Original:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void MethodToRemove()
+        {
+            var x = 1;
+            Console.WriteLine(x);
+        }
+
+        public void MethodToKeep()
+        {
+            var y = 2;
+            Console.WriteLine(y);
+        }
+    }
+},
+  Patched:
+namespace TestNamespace
+{
+    public class TestClass
+    {
+        public void MethodToRemove()
+        {
+            var x = 1;
+            Console.WriteLine(x);
+        }
+
+        public void MethodToKeep()
+        {
+            var y = 2;
+            Console.WriteLine(y);
+        }
+    }
+},
+  Result: {
+    Success: true,
+    Modified: false
+  }
+}

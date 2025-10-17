@@ -83,10 +83,12 @@ public class TuiHost : Toplevel
         _statusBar = new StatusBar(new Shortcut[]
         {
             new(Key.F1, "Help", () => ShowHelpDialog()),
-            new(Key.F2, "Config", () => SwitchToConfigView()),
-            new(Key.F3, "Cache", () => SwitchToCacheView()),
-            new(Key.F4, "Validate", () => SwitchToValidationView()),
-            new(Key.F5, "Prepare", () => SwitchToPreparationView()),
+            new(Key.F2, "Config Type", () => SwitchToConfigTypeView()),
+            new(Key.F3, "Config", () => SwitchToConfigView()),
+            new(Key.F4, "Cache", () => SwitchToCacheView()),
+            new(Key.F5, "Manual", () => SwitchToManualSourcesView()),
+            new(Key.F6, "Validate", () => SwitchToValidationView()),
+            new(Key.F7, "Prepare", () => SwitchToPreparationView()),
             new(Key.F10, "Quit", () => RequestQuit())
         });
 
@@ -145,8 +147,10 @@ public class TuiHost : Toplevel
                 new MenuBarItem("_View", new MenuItem[]
                 {
                     new("_Welcome", "", () => ShowWelcomeView()),
+                    new("Config _Type Selection", "", () => SwitchToConfigTypeView()),
                     new("_Config Editor", "", () => SwitchToConfigView()),
                     new("C_ache Manager", "", () => SwitchToCacheView()),
+                    new("_Manual Sources", "", () => SwitchToManualSourcesView()),
                     new("_Validation", "", () => SwitchToValidationView()),
                     new("_Preparation", "", () => SwitchToPreparationView())
                 }),
@@ -185,15 +189,30 @@ This tool helps you manage Unity build preparation configurations,
 including package management, cache operations, and build execution.
 
 QUICK START:
-    F1 - Help          F6 - (Future view)
-    F2 - Config        F7 - (Future view)
-    F3 - Cache         F8 - (Future view)
-    F4 - Validation    F9 - (Future view)
-    F5 - Preparation   F10 - Quit
+    F1 - Help             F6 - Validation
+    F2 - Config Type      F7 - Preparation
+    F3 - Config Editor    F10 - Quit
+    F4 - Cache Manager
+    F5 - Manual Sources
+
+WORKFLOW GUIDE:
+
+Two-Phase System:
+    1. PREPARATION SOURCES (Phase 1)
+       → Collect packages/assemblies from external locations
+       → Items copied to local cache
+       → Use: F5 Manual Sources
+
+    2. BUILD INJECTIONS (Phase 2)
+       → Define what gets injected to Unity client
+       → Maps cache items to client targets
+       → Use: F3 Config Editor (coming soon: dedicated injection view)
 
 FEATURES:
-    • Configuration Management - Create and edit preparation configs
+    • Config Type Selection - Understand and choose config types
+    • Configuration Management - Create and edit configs
     • Cache Management - Manage Unity packages and assemblies cache
+    • Manual Source Management - Add packages/assemblies from anywhere
     • Validation - Validate configs before execution
     • Preparation - Execute build preparation with progress tracking
 
@@ -202,8 +221,8 @@ STATUS:
     ✅ Services Layer - Complete
     ✅ Code Patchers - Complete
     ✅ CLI Commands - Complete (14 commands)
-    ✅ TUI Views - Complete (4 views)
-    ⏳ Testing - Next Phase
+    ✅ TUI Views - Complete (6 views)
+    ⏳ Management Screens - In Progress (Wave 3.2)
 
 Use the menu bar (Alt+letter) or function keys to navigate.
 Press F10 or select File > Quit to exit.
@@ -215,6 +234,12 @@ Build: 2025-10-17
 
         _contentFrame.Add(welcomeText);
         _logger.LogDebug("Showing welcome view");
+    }
+
+    private void SwitchToConfigTypeView()
+    {
+        var view = _serviceProvider.GetRequiredService<ConfigTypeSelectionView>();
+        SwitchToView("Config Type Selection", view);
     }
 
     private void SwitchToConfigView()
@@ -239,6 +264,12 @@ Build: 2025-10-17
     {
         var view = _serviceProvider.GetRequiredService<PreparationExecutionView>();
         SwitchToView("Preparation Execution", view);
+    }
+
+    private void SwitchToManualSourcesView()
+    {
+        var view = _serviceProvider.GetRequiredService<ManualSourcesView>();
+        SwitchToView("Manual Source Management", view);
     }
 
     private void SwitchToView(string viewName, View view)
@@ -294,11 +325,18 @@ Build: 2025-10-17
             "Build Preparation Tool - TUI Help\n\n" +
             "FUNCTION KEYS:\n" +
             "  F1  - Show Help\n" +
-            "  F2  - Config Editor\n" +
-            "  F3  - Cache Manager\n" +
-            "  F4  - Validation View\n" +
-            "  F5  - Preparation View\n" +
+            "  F2  - Config Type Selection\n" +
+            "  F3  - Config Editor\n" +
+            "  F4  - Cache Manager\n" +
+            "  F5  - Manual Sources\n" +
+            "  F6  - Validation View\n" +
+            "  F7  - Preparation View\n" +
             "  F10 - Quit Application\n\n" +
+            "WORKFLOW:\n" +
+            "  1. Start with F2 to understand config types\n" +
+            "  2. Use F5 to add sources (Phase 1)\n" +
+            "  3. Use F3 to configure injections (Phase 2)\n" +
+            "  4. Use F6 to validate, F7 to prepare\n\n" +
             "NAVIGATION:\n" +
             "  Tab/Shift+Tab - Move between controls\n" +
             "  Arrow Keys - Navigate lists/menus\n" +
@@ -319,9 +357,12 @@ Build: 2025-10-17
             "Features:\n" +
             "  ✅ Configuration Management\n" +
             "  ✅ Cache Management\n" +
+            "  ✅ Manual Source Management\n" +
+            "  ✅ Config Type Selection\n" +
             "  ✅ Code Patching (4 types)\n" +
             "  ✅ CLI Interface (14 commands)\n" +
-            "  ⏳ TUI Interface (in progress)\n\n" +
+            "  ✅ TUI Interface (6 views)\n" +
+            "  ⏳ Management Screens (Wave 3.2)\n\n" +
             "Licensed under MIT",
             "OK");
     }
