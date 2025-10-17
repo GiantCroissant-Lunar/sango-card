@@ -38,7 +38,7 @@ public class UnityAssetPatcher : PatcherBase
     }
 
     /// <inheritdoc/>
-    protected override Task<ValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
+    protected override Task<PatchValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
     {
         var errors = new List<string>();
 
@@ -48,7 +48,7 @@ public class UnityAssetPatcher : PatcherBase
             errors.Add("Unity asset patch resulted in invalid structure");
         }
 
-        return Task.FromResult(new ValidationResult
+        return Task.FromResult(new PatchValidationResult
         {
             IsValid = errors.Count == 0,
             Errors = errors,

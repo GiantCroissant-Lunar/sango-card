@@ -258,10 +258,10 @@ public abstract class PatcherBase : IPatcher
     /// <param name="content">File content.</param>
     /// <param name="patch">The patch to validate.</param>
     /// <returns>Validation result.</returns>
-    protected virtual Task<ValidationResult> ValidateInternalAsync(string filePath, string content, CodePatch patch)
+    protected virtual Task<PatchValidationResult> ValidateInternalAsync(string filePath, string content, CodePatch patch)
     {
         // Default: no additional validation
-        return Task.FromResult(new ValidationResult
+        return Task.FromResult(new PatchValidationResult
         {
             IsValid = true,
             TargetFound = true
@@ -275,10 +275,10 @@ public abstract class PatcherBase : IPatcher
     /// <param name="patchedContent">Patched content.</param>
     /// <param name="patch">The applied patch.</param>
     /// <returns>Validation result.</returns>
-    protected virtual Task<ValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
+    protected virtual Task<PatchValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
     {
         // Default: no additional validation
-        return Task.FromResult(new ValidationResult
+        return Task.FromResult(new PatchValidationResult
         {
             IsValid = true,
             TargetFound = true

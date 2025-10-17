@@ -145,7 +145,7 @@ public class CSharpPatcher : PatcherBase
     }
 
     /// <inheritdoc/>
-    protected override async Task<ValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
+    protected override async Task<PatchValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
     {
         var errors = new List<string>();
         var warnings = new List<string>();
@@ -174,7 +174,7 @@ public class CSharpPatcher : PatcherBase
                 warnings.Add(warning.GetMessage());
             }
 
-            return new ValidationResult
+            return new PatchValidationResult
             {
                 IsValid = errors.Count == 0,
                 Errors = errors,
@@ -186,7 +186,7 @@ public class CSharpPatcher : PatcherBase
         {
             Logger.LogError(ex, "Failed to validate patched C# content: {File}", filePath);
             errors.Add($"Validation error: {ex.Message}");
-            return new ValidationResult
+            return new PatchValidationResult
             {
                 IsValid = false,
                 Errors = errors,
