@@ -49,7 +49,7 @@ public class PatcherTests : IDisposable
         var result = await patcher.ApplyPatchAsync(testFile, patch);
 
         // Assert
-        result.Should().BeTrue();
+        result.Success.Should().Be(true);
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Be("Hello Universe");
     }
@@ -73,7 +73,7 @@ public class PatcherTests : IDisposable
         var result = await patcher.ApplyPatchAsync(testFile, patch);
 
         // Assert
-        result.Should().BeTrue();
+        result.Success.Should().Be(true);
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Be("Hello World");
     }
@@ -97,7 +97,7 @@ public class PatcherTests : IDisposable
         var result = await patcher.ApplyPatchAsync(testFile, patch);
 
         // Assert
-        result.Should().BeTrue();
+        result.Success.Should().Be(true);
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Be("Version: 2.0.0");
     }
@@ -113,10 +113,10 @@ public class PatcherTests : IDisposable
         var patch = new CodePatch { Search = "World" };
 
         // Act
-        var canApply = await patcher.CanApplyPatchAsync(testFile, patch);
+        var canApply = await patcher.ValidatePatchAsync(testFile, patch);
 
         // Assert
-        canApply.Should().BeTrue();
+        canApply.IsValid.Should().Be(true);
     }
 
     #endregion
@@ -142,7 +142,7 @@ public class PatcherTests : IDisposable
         var result = await patcher.ApplyPatchAsync(testFile, patch);
 
         // Assert
-        result.Should().BeTrue();
+        result.Success.Should().Be(true);
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Contain(@"""name"": ""new""");
     }
@@ -165,7 +165,7 @@ public class PatcherTests : IDisposable
         var result = await patcher.ApplyPatchAsync(testFile, patch);
 
         // Assert
-        result.Should().BeTrue();
+        result.Success.Should().Be(true);
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().NotContain("version");
     }
@@ -181,10 +181,10 @@ public class PatcherTests : IDisposable
         var patch = new CodePatch { Search = "name" };
 
         // Act
-        var canApply = await patcher.CanApplyPatchAsync(testFile, patch);
+        var canApply = await patcher.ValidatePatchAsync(testFile, patch);
 
         // Assert
-        canApply.Should().BeTrue();
+        canApply.IsValid.Should().Be(true);
     }
 
     #endregion
@@ -210,7 +210,7 @@ public class PatcherTests : IDisposable
         var result = await patcher.ApplyPatchAsync(testFile, patch);
 
         // Assert
-        result.Should().BeTrue();
+        result.Success.Should().Be(true);
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Contain("public class TestModified");
     }
@@ -234,7 +234,7 @@ public class PatcherTests : IDisposable
         var result = await patcher.ApplyPatchAsync(testFile, patch);
 
         // Assert
-        result.Should().BeFalse(); // Should fail due to syntax errors
+        result.Success.Should().Be(false); // Should fail due to syntax errors
     }
 
     #endregion
@@ -260,7 +260,7 @@ public class PatcherTests : IDisposable
         var result = await patcher.ApplyPatchAsync(testFile, patch);
 
         // Assert
-        result.Should().BeTrue();
+        result.Success.Should().Be(true);
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Contain("RELEASE");
     }

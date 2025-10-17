@@ -110,6 +110,14 @@
   "allOf": [
     {
       "properties": {
+        "BuildToolConfigPath": {
+          "type": "string",
+          "description": "Build Tool config file path"
+        },
+        "BuildToolProjectPath": {
+          "type": "string",
+          "description": "Build Tool project path (csproj)"
+        },
         "Configuration": {
           "type": "string",
           "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
@@ -192,6 +200,10 @@
         "UnityPath": {
           "type": "string",
           "description": "Unity executable path"
+        },
+        "UseBuildToolForTestsOption": {
+          "type": "string",
+          "description": "Run Build Prep Tool before tests (prepare run)"
         },
         "UseIsolatedTestsOption": {
           "type": "string",

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using Nuke.Common;
 using Nuke.Common.IO;
@@ -37,6 +38,17 @@ interface IUnityBuild : INukeBuild
 
     [Parameter("Path of isolated Unity project for tests")]
     AbsolutePath IsolatedUnityProjectPath => TryGetValue(() => IsolatedUnityProjectPath) ?? RootDirectory / "output" / "unity-isolated";
+
+    // Build Tool (dotnet~/tool) integration
+    [Parameter("Run Build Prep Tool before tests (prepare run)")]
+    string UseBuildToolForTestsOption => TryGetValue(() => UseBuildToolForTestsOption) ?? "false";
+
+    [Parameter("Build Tool project path (csproj)")]
+    AbsolutePath BuildToolProjectPath => TryGetValue(() => BuildToolProjectPath) ??
+        RootDirectory / "packages" / "scoped-6571" / "com.contractwork.sangocard.build" / "dotnet~" / "tool" / "SangoCard.Build.Tool" / "SangoCard.Build.Tool.csproj";
+
+    [Parameter("Build Tool config file path")]
+    string? BuildToolConfigPath => TryGetValue(() => BuildToolConfigPath);
 
     /// <summary>
     /// Clean Unity build artifacts
@@ -193,8 +205,8 @@ interface IUnityBuild : INukeBuild
                     else
                     {
                         var contents = "root = false" + Environment.NewLine +
-                                       "[*.cs]" + Environment.NewLine +
-                                       "dotnet_diagnostic.MsgPack009.severity = warning" + Environment.NewLine;
+                            "[*.cs]" + Environment.NewLine +
+                            "dotnet_diagnostic.MsgPack009.severity = warning" + Environment.NewLine;
                         File.WriteAllText(editorConfigPath, contents);
                         stagedAnalyzerOverride = true;
                     }
@@ -238,6 +250,13 @@ interface IUnityBuild : INukeBuild
             };
             try
             {
+                // Optionally run the build preparation tool against the selected project
+                var runBuildTool = string.Equals(UseBuildToolForTestsOption, "true", StringComparison.OrdinalIgnoreCase) || UseBuildToolForTestsOption == "1";
+                if (runBuildTool)
+                {
+                    RunBuildPreparationTool(testProjectPath);
+                }
+
                 var process = ProcessTasks.StartProcess(
                     UnityPath,
                     string.Join(" ", arguments),
@@ -333,6 +352,43 @@ interface IUnityBuild : INukeBuild
         throw new Exception("Unity executable not found. Please specify using --unity-path parameter.");
     }
 
+    private void RunBuildPreparationTool(AbsolutePath targetProjectPath)
+    {
+        if (!File.Exists(BuildToolProjectPath))
+        {
+            Serilog.Log.Warning($"Build Tool project not found at '{BuildToolProjectPath}'. Skipping build preparation.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(BuildToolConfigPath))
+        {
+            Serilog.Log.Warning("Build Tool config path is not set. Skipping build preparation (requires --config).");
+            return;
+        }
+
+        var dotnet = Environment.GetEnvironmentVariable("DOTNET_EXE");
+        if (string.IsNullOrWhiteSpace(dotnet))
+        {
+            dotnet = ToolPathResolver.GetPathExecutable("dotnet") ?? "dotnet";
+        }
+
+        var args = new List<string>
+        {
+            "run",
+            "--project",
+            $"\"{BuildToolProjectPath}\"",
+            "--",
+            "prepare",
+            "run",
+            "--config",
+            $"\"{BuildToolConfigPath}\""
+        };
+
+        Serilog.Log.Information("Running Build Preparation Tool: {Args}", string.Join(" ", args));
+        var proc = ProcessTasks.StartProcess(dotnet, string.Join(" ", args), workingDirectory: RootDirectory);
+        proc.AssertZeroExitCode();
+    }
+
     /// <summary>
     /// Prepares an isolated Unity project that embeds our local packages.
     /// This avoids loading the client repository and its scripts (R-BLD-060).
@@ -341,7 +397,10 @@ interface IUnityBuild : INukeBuild
     {
         var isoPath = IsolatedUnityProjectPath;
         if (Directory.Exists(isoPath))
-            Directory.Delete(isoPath, true);
+        {
+            var unique = $"unity-isolated-{DateTime.Now:yyyyMMddHHmmssfff}";
+            isoPath = RootDirectory / "output" / unique;
+        }
         Directory.CreateDirectory(isoPath);
 
         // Create a fresh Unity project at the path so -projectPath is valid
@@ -366,10 +425,10 @@ interface IUnityBuild : INukeBuild
         // Minimal manifest with test framework to enable EditMode tests
         var manifestPath = packagesDir / "manifest.json";
         var manifest = "{\n" +
-                       "  \"dependencies\": {\n" +
-                       "    \"com.unity.test-framework\": \"1.4.5\"\n" +
-                       "  }\n" +
-                       "}\n";
+            "  \"dependencies\": {\n" +
+            "    \"com.unity.test-framework\": \"1.4.5\"\n" +
+            "  }\n" +
+            "}\n";
         File.WriteAllText(manifestPath, manifest);
 
         // Ensure C# language level supports file-scoped namespaces (C# 10+)

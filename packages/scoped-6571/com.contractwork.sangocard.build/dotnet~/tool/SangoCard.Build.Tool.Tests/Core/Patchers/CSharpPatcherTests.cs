@@ -17,14 +17,15 @@ public class CSharpPatcherTests
     public async Task RemoveUsing_RemovesTargetUsingDirective()
     {
         // Arrange
-        var sourceCode = @"using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace TestNamespace
-{
-    public class TestClass { }
-}";
+        // TODO: Create temporary test file with sourceCode
+        // var sourceCode = @"using System;
+        // using System.Collections.Generic;
+        // using System.Linq;
+        //
+        // namespace TestNamespace
+        // {
+        //     public class TestClass { }
+        // }";
 
         var patch = new CodePatch
         {
@@ -41,7 +42,7 @@ namespace TestNamespace
         Assert.True(result.Success);
         Assert.True(result.Modified);
         Assert.DoesNotContain("using System.Linq", result.Preview ?? "");
-        
+
         // Verify other usings are preserved
         var validation = await _patcher.ValidatePatchAsync("Test.cs", patch);
         Assert.True(validation.IsValid);
