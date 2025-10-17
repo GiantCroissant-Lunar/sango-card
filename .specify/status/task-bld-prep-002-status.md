@@ -6,7 +6,7 @@ updated: 2025-10-17
 
 # TASK-BLD-PREP-002: Implementation Status
 
-## Overall Progress: 80% Complete
+## Overall Progress: 85% Complete
 
 ### Wave Status
 
@@ -18,7 +18,7 @@ updated: 2025-10-17
 | Wave 4: Documentation | 🔄 Partial | 1/4h | D | 4h |
 
 **Total:** ~47/54 hours complete (87%)  
-**Note:** Wave 1, 2, 3.1, 3.2a complete! Only Phase 3.2b and 3.3 remaining
+**Note:** Waves 1, 2, 3.1, 3.2a, 3.2b complete! Only Phase 3.3 remaining
 
 ---
 
@@ -129,15 +129,22 @@ Config detection and handling built into `SourceManagementService`.
 **Verification:** See `.specify/status/completions/task-bld-prep-002-phase-3-2a-verification.md`
 
 ### Phase 3.2b: Build Injections Screen (3h) - Agent C
-**Dependencies:** Phase 3.1
+**Dependencies:** Phase 3.1  
+**Status:** ✅ COMPLETE
 
 **Tasks:**
-- [ ] Add injection management screen
-- [ ] Cache browser integration
-- [ ] Add/view/remove operations
+- [x] Add injection management screen ✅
+- [x] Cache browser integration ✅
+- [x] Add/view/remove operations ✅
 
 **Deliverables:**
-- Build injections screen
+- [x] BuildInjectionsManagementView.cs (992 lines) ✅
+- [x] Multi-section interface (packages, assemblies, assets) ✅
+- [x] Full CRUD for PreparationConfig ✅
+- [x] Menu integration ✅
+- [x] DI registration ✅
+
+**Completion:** See `.specify/status/completions/task-bld-prep-002-wave-3-2-complete.md`
 
 ### Phase 3.3: Integration & Testing (4h) - Agent A
 **Dependencies:** Phase 3.2a, 3.2b
@@ -174,28 +181,29 @@ Config detection and handling built into `SourceManagementService`.
 
 ## 🎯 Immediate Next Actions
 
-### Priority 1: Complete Wave 3 Phase 3.2b (3 hours)
-**Assignee:** Agent C  
+### Priority 1: Complete Wave 3 Phase 3.3 (4 hours)
+**Assignee:** Agent A (Lead)  
 **Status:** Ready to start  
-**Dependencies:** Phase 3.1 ✅ & Phase 3.2a ✅ complete
+**Dependencies:** Phase 3.2a ✅ & Phase 3.2b ✅ complete
 
 **Action Items:**
-1. [ ] Create BuildInjectionsManagementView.cs
-2. [ ] Implement CRUD interface for BuildPreparationConfig
-3. [ ] Add cache browser integration
-4. [ ] Implement add/edit/remove injection operations
-5. [ ] Add validation for injection targets
-6. [ ] Integrate into "Manage" menu (placeholder already exists)
-7. [ ] Register in DI container
-8. [ ] Test functionality
+1. [ ] End-to-end testing of all 8 TUI views
+2. [ ] Test complete Phase 1 workflow:
+   - Create preparation manifest
+   - Add sources from various locations
+   - Populate cache
+   - Verify cache contents
+3. [ ] Test complete Phase 2 workflow:
+   - Create build injection config
+   - Add injections (packages, assemblies, assets)
+   - Execute preparation
+   - Verify client updates
+4. [ ] Test integration between Phase 1 & 2
+5. [ ] Bug fixes and polish
+6. [ ] Performance testing
+7. [ ] User acceptance testing
 
-**Deliverable:** Build injections management screen
-
-**Pattern to Follow:**
-- Use PreparationSourcesManagementView as reference
-- Replace SourceManagementService with ConfigService
-- Manage BuildPreparationConfig instead of PreparationManifest
-- Focus on cache → client injection mappings
+**Deliverable:** Fully tested and polished TUI with all 8 views working
 
 ### Priority 3: Complete Wave 4 Documentation (4 hours)
 **Assignee:** Agent D (can run in parallel with Wave 3)
