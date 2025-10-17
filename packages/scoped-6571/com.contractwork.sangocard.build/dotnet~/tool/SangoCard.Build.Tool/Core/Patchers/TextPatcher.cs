@@ -7,88 +7,44 @@ namespace SangoCard.Build.Tool.Core.Patchers;
 /// <summary>
 /// Patcher for plain text files using regex.
 /// </summary>
-public class TextPatcher : IPatcher
+public class TextPatcher : PatcherBase
 {
-    private readonly ILogger<TextPatcher> _logger;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="TextPatcher"/> class.
     /// </summary>
-    public TextPatcher(ILogger<TextPatcher> logger)
+    public TextPatcher(ILogger<TextPatcher> logger) : base(logger)
     {
-        _logger = logger;
     }
 
     /// <inheritdoc/>
-    public PatchType PatchType => PatchType.Text;
+    public override PatchType PatchType => PatchType.Text;
 
     /// <inheritdoc/>
-    public async Task<bool> ApplyPatchAsync(string filePath, CodePatch patch)
+    protected override Task<string> ApplyPatchInternalAsync(string content, CodePatch patch)
     {
-        _logger.LogDebug("Applying text patch to: {File}", filePath);
-
-        try
+        var result = patch.Mode switch
         {
-            var content = await File.ReadAllTextAsync(filePath);
-            var originalContent = content;
+            PatchMode.Replace => ApplyReplace(content, patch),
+            PatchMode.InsertBefore => ApplyInsertBefore(content, patch),
+            PatchMode.InsertAfter => ApplyInsertAfter(content, patch),
+            PatchMode.Delete => ApplyDelete(content, patch),
+            _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported")
+        };
 
-            // Apply patch based on mode
-            content = patch.Mode switch
-            {
-                PatchMode.Replace => ApplyReplace(content, patch),
-                PatchMode.InsertBefore => ApplyInsertBefore(content, patch),
-                PatchMode.InsertAfter => ApplyInsertAfter(content, patch),
-                PatchMode.Delete => ApplyDelete(content, patch),
-                _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported")
-            };
-
-            // Check if content changed
-            if (content == originalContent)
-            {
-                _logger.LogWarning("Patch did not modify content: {File}", filePath);
-                return false;
-            }
-
-            // Write back to file
-            await File.WriteAllTextAsync(filePath, content);
-
-            _logger.LogInformation("Text patch applied successfully: {File}", filePath);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to apply text patch: {File}", filePath);
-            return false;
-        }
+        return Task.FromResult(result);
     }
 
     /// <inheritdoc/>
-    public async Task<bool> CanApplyPatchAsync(string filePath, CodePatch patch)
+    protected override Task<bool> IsTargetPresentAsync(string content, CodePatch patch)
     {
-        try
+        if (IsRegexPattern(patch.Search))
         {
-            if (!File.Exists(filePath))
-            {
-                return false;
-            }
-
-            var content = await File.ReadAllTextAsync(filePath);
-
-            // Check if search pattern exists in content
-            if (IsRegexPattern(patch.Search))
-            {
-                var regex = new Regex(patch.Search);
-                return regex.IsMatch(content);
-            }
-            else
-            {
-                return content.Contains(patch.Search);
-            }
+            var regex = new Regex(patch.Search);
+            return Task.FromResult(regex.IsMatch(content));
         }
-        catch (Exception ex)
+        else
         {
-            _logger.LogError(ex, "Failed to validate patch applicability: {File}", filePath);
-            return false;
+            return Task.FromResult(content.Contains(patch.Search));
         }
     }
 
@@ -147,9 +103,9 @@ public class TextPatcher : IPatcher
     private bool IsRegexPattern(string pattern)
     {
         // Simple heuristic: if it contains regex special chars, treat as regex
-        return pattern.Contains(".*") || 
-               pattern.Contains("\\") || 
-               pattern.Contains("^") || 
+        return pattern.Contains(".*") ||
+               pattern.Contains("\\") ||
+               pattern.Contains("^") ||
                pattern.Contains("$") ||
                pattern.Contains("[") ||
                pattern.Contains("(");

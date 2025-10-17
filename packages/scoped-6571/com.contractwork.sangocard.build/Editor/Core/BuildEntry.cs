@@ -1,8 +1,6 @@
 using System;
-using System.CommandLine;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using UnityEditor;
@@ -82,7 +80,7 @@ public partial class BuildEntry
 
     public static void PerformBuild()
     {
-        Debug.Log("🔧 PerformBuild method reached - starting actual build logic!");
+        Debug.Log("?? PerformBuild method reached - starting actual build logic!");
 
         var loggerFactory = Splat.Locator.Current.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
         _logger = loggerFactory?.CreateLogger<BuildEntry>() ?? new NullLogger<BuildEntry>();
@@ -91,21 +89,22 @@ public partial class BuildEntry
         {
             CheckIssues();
 
-            var rootCommand = CreateRootCommand(CancellationToken.None);
-
             var args = Environment.GetCommandLineArgs();
-            var adjustedArgs = args.Skip(1).ToArray();
+            var adjustedArgs = args.Length > 1 ? args.Skip(1).ToArray() : Array.Empty<string>();
 
-            // Modern System.CommandLine API - use root command directly
-            var parseResult = rootCommand.Parse(adjustedArgs);
-            var exitCode = parseResult.InvokeAsync().Result;
-
-            Log.LogDebug("Exit code: {ExitCode}", exitCode);
-            if (exitCode != 0)
+            if (!TryParseArguments(adjustedArgs, out var parsed, out var error))
             {
-                Log.LogError("Build failed with exit code: {ExitCode}", exitCode);
-                EditorApplication.Exit(exitCode);
+                Log.LogError("Failed to parse build arguments: {Error}", error);
+                throw new Exceptions.BuildFailedException(error);
             }
+
+            ProceedToBuild(
+                parsed.OutputPath,
+                parsed.BuildVersion,
+                parsed.BuildProfileName,
+                parsed.BuildPurpose,
+                parsed.BuildTarget);
+
             EditorApplication.Exit(0);
         }
         catch (Exceptions.BuildFailedException e)
@@ -115,6 +114,101 @@ public partial class BuildEntry
         }
     }
 
+    internal readonly struct CliArguments
+    {
+        internal CliArguments(string outputPath, string buildVersion, string buildProfileName, string buildPurpose, string? buildTarget)
+        {
+            OutputPath = outputPath;
+            BuildVersion = buildVersion;
+            BuildProfileName = buildProfileName;
+            BuildPurpose = buildPurpose;
+            BuildTarget = buildTarget;
+        }
+
+        internal string OutputPath { get; }
+        internal string BuildVersion { get; }
+        internal string BuildProfileName { get; }
+        internal string BuildPurpose { get; }
+        internal string? BuildTarget { get; }
+    }
+
+    internal static bool TryParseArguments(string[] args, out CliArguments parsed, out string error)
+    {
+        parsed = default;
+        error = string.Empty;
+
+        var map = new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        for (var index = 0; index < args.Length; index++)
+        {
+            var token = args[index];
+            if (!token.StartsWith("-", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            var trimmed = token.TrimStart('-');
+            string value;
+
+            var equalsIndex = trimmed.IndexOf('=');
+            if (equalsIndex >= 0)
+            {
+                value = trimmed[(equalsIndex + 1)..];
+                trimmed = trimmed[..equalsIndex];
+            }
+            else
+            {
+                if (index + 1 >= args.Length || args[index + 1].StartsWith("-", StringComparison.Ordinal))
+                {
+                    error = $"Option '{token}' is missing a value.";
+                    return false;
+                }
+
+                value = args[++index];
+            }
+
+            if (string.IsNullOrWhiteSpace(trimmed))
+            {
+                continue;
+            }
+
+            map[trimmed] = value;
+        }
+
+        if (!map.TryGetValue("outputPath", out var outputPath) || string.IsNullOrWhiteSpace(outputPath))
+        {
+            error = "Missing required option 'outputPath'.";
+            return false;
+        }
+
+        if (!map.TryGetValue("buildVersion", out var buildVersion) || string.IsNullOrWhiteSpace(buildVersion))
+        {
+            error = "Missing required option 'buildVersion'.";
+            return false;
+        }
+
+        if (!map.TryGetValue("buildProfileName", out var buildProfileName) || string.IsNullOrWhiteSpace(buildProfileName))
+        {
+            error = "Missing required option 'buildProfileName'.";
+            return false;
+        }
+
+        if (!map.TryGetValue("buildPurpose", out var buildPurpose) || string.IsNullOrWhiteSpace(buildPurpose))
+        {
+            error = "Missing required option 'buildPurpose'.";
+            return false;
+        }
+
+        map.TryGetValue("buildTarget", out var buildTarget);
+
+        parsed = new CliArguments(
+            outputPath,
+            buildVersion,
+            buildProfileName,
+            buildPurpose,
+            string.IsNullOrWhiteSpace(buildTarget) ? null : buildTarget);
+        return true;
+    }
     private static void ProceedToBuild(
         string outputPath,
         string buildVersion,
@@ -274,6 +368,97 @@ public partial class BuildEntry
         public BuildTarget m_BuildTarget;
     }
 
+    [Serializable]
+    private class BuildPreparationSettings : ScriptableObject
+    {
+        [SerializeField]
+        public ProfileCollection ProfileSettings = new();
+
+        [Serializable]
+        public class ProfileCollection
+        {
+            public ProfileEntry[] Profiles = Array.Empty<ProfileEntry>();
+        }
+
+        [Serializable]
+        public class ProfileEntry
+        {
+            public string Name = string.Empty;
+            public UnityEditor.Build.Profile.BuildProfile BuildProfile;
+        }
+    }
+
+    private static bool TryParseBuildTarget(string value, out BuildTarget target)
+    {
+        return Enum.TryParse(value, ignoreCase: true, out target);
+    }
+
+    private static BuildTarget GetBuildTarget(ScriptableObject buildProfile)
+    {
+        if (!buildProfile)
+        {
+            return BuildTarget.NoTarget;
+        }
+
+        var method = buildProfile.GetType().GetMethod(
+            "GetBuildTarget",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic,
+            null,
+            Type.EmptyTypes,
+            null);
+        if (method != null && method.ReturnType == typeof(BuildTarget))
+        {
+            return (BuildTarget)method.Invoke(buildProfile, null);
+        }
+
+        var field = buildProfile.GetType().GetField(
+            "m_BuildTarget",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+        if (field != null && field.FieldType == typeof(BuildTarget))
+        {
+            return (BuildTarget)field.GetValue(buildProfile);
+        }
+
+        return BuildTarget.NoTarget;
+    }
+
+    private static class BuildAssetBundleProcessor
+    {
+        public static void BuildAssetBundle(BuildTarget target)
+        {
+            Log.LogInformation("BuildAssetBundleProcessor placeholder invoked for {Target}", target);
+        }
+    }
+
+    private static string GetBuildExtensionForTarget(BuildTarget target, UnityEditor.Build.Profile.BuildProfile buildProfile)
+    {
+        if (buildProfile != null)
+        {
+            var method = buildProfile.GetType().GetMethod(
+                "GetExecutableExtension",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic,
+                null,
+                Type.EmptyTypes,
+                null);
+            if (method != null && method.ReturnType == typeof(string))
+            {
+                var result = method.Invoke(buildProfile, null) as string;
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return result;
+                }
+            }
+        }
+
+        return target switch
+        {
+            BuildTarget.Android => ".apk",
+            BuildTarget.StandaloneWindows => ".exe",
+            BuildTarget.StandaloneWindows64 => ".exe",
+            BuildTarget.iOS => ".ipa",
+            _ => ".build"
+        };
+    }
     private static void ProcessToBuildUnityAddressables()
     {
         Log.LogDebug("ProcessToBuildUnityAddressables");

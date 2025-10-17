@@ -1,0 +1,32 @@
+# CODEOWNERS - Require review for sensitive changes
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Documentation system (R-DOC-xxx)
+# All documentation changes require review to prevent sprawl
+/docs/**                         @lunar-horse-docs-maintainers
+/.agent/base/40-documentation.md @lunar-horse-docs-maintainers
+/scripts/docs_validate.py        @lunar-horse-docs-maintainers
+/.github/workflows/docs-guard.yml @lunar-horse-docs-maintainers
+
+# Agent rules and configuration
+# Changes to agent behavior require careful review
+/.agent/base/                    @lunar-horse-agent-maintainers
+/.agent/adapters/                @lunar-horse-agent-maintainers
+/.specify/memory/constitution.md @lunar-horse-agent-maintainers
+
+# Build system
+# Build changes affect all developers
+/build/nuke/                     @lunar-horse-build-maintainers
+/Taskfile.yml                    @lunar-horse-build-maintainers
+/.github/workflows/              @lunar-horse-build-maintainers
+
+# Security and secrets
+# Require security team review for sensitive configurations
+/infra/terraform/                @lunar-horse-security-team
+/.sops.yaml                      @lunar-horse-security-team
+/.pre-commit-config.yaml         @lunar-horse-security-team
+
+# Note: Teams above are examples. Replace with actual GitHub team names:
+# @owner/docs-team
+# @owner/security-team
+# etc.

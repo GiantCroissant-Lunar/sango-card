@@ -1,0 +1,148 @@
+name: Documentation - Scattered Docs Check
+
+on:
+  pull_request:
+    paths:
+      - '**.md'
+  push:
+    branches:
+      - main
+    paths:
+      - '**.md'
+
+jobs:
+  check-scattered-docs:
+    name: Detect Scattered Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for scattered documentation
+        shell: bash
+        run: |
+          set -e
+
+          echo "🔍 Checking for scattered documentation files..."
+          echo ""
+
+          # Define allowed patterns (same as pre-commit hook)
+          ALLOWED_PATTERNS=(
+            "^README\.md$"
+            "^AGENTS\.md$"
+            "^CLAUDE\.md$"
+            "^CODE_OF_CONDUCT\.md$"
+            "^CONTRIBUTING\.md$"
+            "^LICENSE\.md$"
+            "^CHANGELOG\.md$"
+            "^docs/"
+            "^\.agent/"
+            "^\.github/"
+            "^\.specify/"
+            "^\.windsurf/"
+            "^\.gemini/"
+            ".*/README\.md$"
+            ".*/LICENSE\.md$"
+            ".*/CHANGELOG\.md$"
+            "^build/preparation/.*\.md$"
+            "^projects/client/.*\.md$"
+            "^packages/.*/dotnet~/.*\.md$"
+          )
+
+          # Find all markdown files
+          SCATTERED_DOCS=()
+
+          while IFS= read -r file; do
+            IS_ALLOWED=false
+
+            for pattern in "${ALLOWED_PATTERNS[@]}"; do
+              if echo "$file" | grep -qE "$pattern"; then
+                IS_ALLOWED=true
+                break
+              fi
+            done
+
+            if [ "$IS_ALLOWED" = false ]; then
+              SCATTERED_DOCS+=("$file")
+            fi
+          done < <(find . -type f -name "*.md" ! -path "*/node_modules/*" ! -path "*/.git/*")
+
+          if [ ${#SCATTERED_DOCS[@]} -eq 0 ]; then
+            echo "✅ No scattered documentation found!"
+            echo ""
+            echo "All markdown files are in canonical locations."
+            exit 0
+          fi
+
+          # Found scattered docs - fail the check
+          echo "❌ ERROR: Scattered documentation detected!"
+          echo ""
+          echo "The following markdown files are in non-canonical locations:"
+          echo ""
+
+          for doc in "${SCATTERED_DOCS[@]}"; do
+            echo "  - $doc"
+          done
+
+          echo ""
+          echo "📚 Documentation must be in canonical locations:"
+          echo "  ✅ New docs        → docs/_inbox/"
+          echo "  ✅ Guides          → docs/guides/"
+          echo "  ✅ Specifications  → docs/specs/"
+          echo "  ✅ RFCs            → docs/rfcs/"
+          echo "  ✅ ADRs            → docs/adrs/"
+          echo "  ✅ Plans           → docs/plans/"
+          echo "  ✅ Findings        → docs/findings/"
+          echo "  ✅ Obsolete docs   → docs/archive/"
+          echo ""
+          echo "📖 See: docs/DOCUMENTATION-SCHEMA.md"
+          echo "📖 See: .agent/base/40-documentation.md (R-DOC-001)"
+          echo ""
+          echo "🔧 To fix:"
+          echo "  1. Move files to proper location (usually docs/_inbox/)"
+          echo "  2. Add YAML front-matter (see docs/DOCUMENTATION-SCHEMA.md)"
+          echo "  3. Run: python scripts/docs_validate.py"
+          echo ""
+
+          exit 1
+
+      - name: Comment on PR (if scattered docs found)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## ❌ Scattered Documentation Detected
+
+            This PR contains markdown files in non-canonical locations. Please move them to the proper documentation structure.
+
+            ### 📚 Required Locations:
+            - **New docs** → \`docs/_inbox/\`
+            - **Guides** → \`docs/guides/\`
+            - **Specifications** → \`docs/specs/\`
+            - **RFCs** → \`docs/rfcs/\`
+            - **ADRs** → \`docs/adrs/\`
+            - **Plans** → \`docs/plans/\`
+            - **Findings** → \`docs/findings/\`
+            - **Obsolete docs** → \`docs/archive/\`
+
+            ### 📖 Documentation:
+            - [Documentation Schema](docs/DOCUMENTATION-SCHEMA.md)
+            - [Agent Rules](.agent/base/40-documentation.md) (R-DOC-001)
+
+            ### 🔧 How to Fix:
+            1. Move scattered markdown files to \`docs/_inbox/\`
+            2. Add YAML front-matter (see schema)
+            3. Run \`python scripts/docs_validate.py\` locally
+            4. Push changes
+
+            <sub>🤖 This check prevents documentation sprawl - see the [docs scattered check workflow](.github/workflows/docs-scattered-check.yml)</sub>`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

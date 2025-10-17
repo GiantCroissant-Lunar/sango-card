@@ -1,0 +1,14 @@
+{
+    "name": "SangoCard.Cross.Editor.Tests",
+    "rootNamespace": "SangoCard.Cross.Editor.Tests",
+    "references": [
+        "SangoCard.Cross.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "autoReferenced": false
+}

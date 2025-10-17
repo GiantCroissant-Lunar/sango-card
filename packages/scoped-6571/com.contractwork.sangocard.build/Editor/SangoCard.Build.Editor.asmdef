@@ -1,45 +1,54 @@
 {
-    "name": "SangoCard.Build.Editor",
-    "rootNamespace": "",
-    "references": [
-        "CodeStage.Maintainer.Editor",
-        "SangoCard.Cross.Editor",
-        "Unity.Addressables",
-        "Unity.Addressables.Editor",
-        "Unity.ResourceManager",
-        "Microsoft.Extensions.Logging",
-        "Microsoft.Extensions.Logging.Abstractions",
-        "Microsoft.Extensions.DependencyInjection",
-        "Microsoft.Extensions.DependencyInjection.Abstractions"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [
-        "System.CommandLine.dll",
-        "Splat.dll"
-    ],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "org.nuget.system.reactive",
-            "expression": "6.0.1",
-            "define": "HAS_NUGET_SYSTEM_REACTIVE"
-        },
-        {
-            "name": "com.unity.addressables",
-            "expression": "1.22.0",
-            "define": "HAS_UNITY_ADDRESSABLES"
-        },
-        {
-            "name": "net.codestage.maintainer",
-            "expression": "1.17.1",
-            "define": "HAS_CODE_STAGE_MAINTAINER"
-        }
-    ],
-    "noEngineReferences": false
+  "name": "SangoCard.Build.Editor",
+  "rootNamespace": "",
+  "references": [
+    "CodeStage.Maintainer.Editor",
+    "SangoCard.Cross.Editor",
+    "Unity.Addressables",
+    "Unity.Addressables.Editor",
+    "Unity.ResourceManager",
+    "Microsoft.Extensions.Logging",
+    "Microsoft.Extensions.Logging.Abstractions",
+    "Microsoft.Extensions.DependencyInjection",
+    "Microsoft.Extensions.DependencyInjection.Abstractions"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [
+    "Microsoft.Extensions.Configuration.Abstractions.dll",
+    "Microsoft.Extensions.Configuration.Binder.dll",
+    "Microsoft.Extensions.Configuration.CommandLine.dll",
+    "Microsoft.Extensions.Configuration.dll",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+    "Microsoft.Extensions.Configuration.FileExtensions.dll",
+    "Microsoft.Extensions.Configuration.Json.dll",
+    "Microsoft.Extensions.Configuration.UserSecrets.dll",
+    "Microsoft.Extensions.Logging.Abstractions.dll",
+    "Microsoft.Extensions.Logging.dll",
+    "Splat.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [
+    {
+      "name": "org.nuget.system.reactive",
+      "expression": "6.0.1",
+      "define": "HAS_NUGET_SYSTEM_REACTIVE"
+    },
+    {
+      "name": "com.unity.addressables",
+      "expression": "1.22.0",
+      "define": "HAS_UNITY_ADDRESSABLES"
+    },
+    {
+      "name": "net.codestage.maintainer",
+      "expression": "1.17.1",
+      "define": "HAS_CODE_STAGE_MAINTAINER"
+    }
+  ],
+  "noEngineReferences": false
 }

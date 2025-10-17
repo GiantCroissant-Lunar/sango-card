@@ -8,9 +8,8 @@ namespace SangoCard.Build.Tool.Core.Patchers;
 /// <summary>
 /// Patcher for JSON files using JSON path.
 /// </summary>
-public class JsonPatcher : IPatcher
+public class JsonPatcher : PatcherBase
 {
-    private readonly ILogger<JsonPatcher> _logger;
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
         WriteIndented = true
@@ -19,84 +18,122 @@ public class JsonPatcher : IPatcher
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonPatcher"/> class.
     /// </summary>
-    public JsonPatcher(ILogger<JsonPatcher> logger)
+    public JsonPatcher(ILogger<JsonPatcher> logger) : base(logger)
     {
-        _logger = logger;
     }
 
     /// <inheritdoc/>
-    public PatchType PatchType => PatchType.Json;
+    public override PatchType PatchType => PatchType.Json;
 
     /// <inheritdoc/>
-    public async Task<bool> ApplyPatchAsync(string filePath, CodePatch patch)
+    protected override Task<string> ApplyPatchInternalAsync(string content, CodePatch patch)
     {
-        _logger.LogDebug("Applying JSON patch to: {File}", filePath);
+        var jsonNode = JsonNode.Parse(content);
+
+        if (jsonNode == null)
+        {
+            throw new InvalidOperationException("Failed to parse JSON content");
+        }
+
+        // Apply patch based on mode
+        var modified = patch.Mode switch
+        {
+            PatchMode.Replace => ApplyReplace(jsonNode, patch),
+            PatchMode.Delete => ApplyDelete(jsonNode, patch),
+            _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported for JSON")
+        };
+
+        if (!modified)
+        {
+            return Task.FromResult(content); // Return original if not modified
+        }
+
+        // Convert back to string
+        var updatedJson = jsonNode.ToJsonString(_jsonOptions);
+        return Task.FromResult(updatedJson);
+    }
+
+    /// <inheritdoc/>
+    protected override Task<ValidationResult> ValidateInternalAsync(string filePath, string content, CodePatch patch)
+    {
+        var errors = new List<string>();
 
         try
         {
-            var jsonText = await File.ReadAllTextAsync(filePath);
-            var jsonNode = JsonNode.Parse(jsonText);
-
+            var jsonNode = JsonNode.Parse(content);
             if (jsonNode == null)
             {
-                _logger.LogError("Failed to parse JSON: {File}", filePath);
-                return false;
+                errors.Add("Invalid JSON format");
             }
 
-            // Apply patch based on mode
-            var modified = patch.Mode switch
+            return Task.FromResult(new ValidationResult
             {
-                PatchMode.Replace => ApplyReplace(jsonNode, patch),
-                PatchMode.Delete => ApplyDelete(jsonNode, patch),
-                _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported for JSON")
-            };
-
-            if (!modified)
-            {
-                _logger.LogWarning("JSON patch did not modify content: {File}", filePath);
-                return false;
-            }
-
-            // Write back to file
-            var updatedJson = jsonNode.ToJsonString(_jsonOptions);
-            await File.WriteAllTextAsync(filePath, updatedJson);
-
-            _logger.LogInformation("JSON patch applied successfully: {File}", filePath);
-            return true;
+                IsValid = errors.Count == 0,
+                Errors = errors,
+                TargetFound = true
+            });
         }
-        catch (Exception ex)
+        catch (JsonException ex)
         {
-            _logger.LogError(ex, "Failed to apply JSON patch: {File}", filePath);
-            return false;
+            errors.Add($"JSON parse error: {ex.Message}");
+            return Task.FromResult(new ValidationResult
+            {
+                IsValid = false,
+                Errors = errors,
+                TargetFound = false
+            });
         }
     }
 
     /// <inheritdoc/>
-    public async Task<bool> CanApplyPatchAsync(string filePath, CodePatch patch)
+    protected override Task<ValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
+    {
+        var errors = new List<string>();
+
+        try
+        {
+            var jsonNode = JsonNode.Parse(patchedContent);
+            if (jsonNode == null)
+            {
+                errors.Add("Patched content is not valid JSON");
+            }
+
+            return Task.FromResult(new ValidationResult
+            {
+                IsValid = errors.Count == 0,
+                Errors = errors,
+                TargetFound = true
+            });
+        }
+        catch (JsonException ex)
+        {
+            errors.Add($"Patched JSON is invalid: {ex.Message}");
+            return Task.FromResult(new ValidationResult
+            {
+                IsValid = false,
+                Errors = errors,
+                TargetFound = true
+            });
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override Task<bool> IsTargetPresentAsync(string content, CodePatch patch)
     {
         try
         {
-            if (!File.Exists(filePath))
-            {
-                return false;
-            }
-
-            var jsonText = await File.ReadAllTextAsync(filePath);
-            var jsonNode = JsonNode.Parse(jsonText);
-
+            var jsonNode = JsonNode.Parse(content);
             if (jsonNode == null)
             {
-                return false;
+                return Task.FromResult(false);
             }
 
-            // Check if the path exists
             var node = GetNodeByPath(jsonNode, patch.Search);
-            return node != null;
+            return Task.FromResult(node != null);
         }
-        catch (Exception ex)
+        catch
         {
-            _logger.LogError(ex, "Failed to validate JSON patch applicability: {File}", filePath);
-            return false;
+            return Task.FromResult(false);
         }
     }
 

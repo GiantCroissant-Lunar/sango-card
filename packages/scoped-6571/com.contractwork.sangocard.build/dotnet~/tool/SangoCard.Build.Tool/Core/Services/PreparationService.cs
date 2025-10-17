@@ -294,26 +294,25 @@ public class PreparationService
                 continue;
             }
 
-            var canApply = await patcher.CanApplyPatchAsync(targetAbs, patch);
-            if (!canApply && !patch.Optional)
+            var validation = await patcher.ValidatePatchAsync(targetAbs, patch);
+            if (!validation.TargetFound && !patch.Optional)
             {
                 _logger.LogWarning("Patch search did not match target, skipping: {File}", patch.File);
                 continue;
             }
 
-            if (!dryRun)
+            var result = await patcher.ApplyPatchAsync(targetAbs, patch, dryRun);
+            if (result.Success && result.Modified)
             {
-                var ok = await patcher.ApplyPatchAsync(targetAbs, patch);
-                if (ok)
+                patched++;
+                if (!dryRun)
                 {
-                    patched++;
                     _modifiedFiles.Add(patch.File);
                 }
             }
-            else
+            else if (!result.Success)
             {
-                _logger.LogInformation("[DRY-RUN] Would apply patch to: {File}", patch.File);
-                patched++;
+                _logger.LogError("Failed to apply patch to {File}: {Message}", patch.File, result.Message);
             }
         }
 

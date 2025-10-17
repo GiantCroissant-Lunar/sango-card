@@ -1,0 +1,198 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "Host": {
+      "type": "string",
+      "enum": [
+        "AppVeyor",
+        "AzurePipelines",
+        "Bamboo",
+        "Bitbucket",
+        "Bitrise",
+        "GitHubActions",
+        "GitLab",
+        "Jenkins",
+        "Rider",
+        "SpaceAutomation",
+        "TeamCity",
+        "Terminal",
+        "TravisCI",
+        "VisualStudio",
+        "VSCode"
+      ]
+    },
+    "ExecutableTarget": {
+      "type": "string",
+      "enum": [
+        "BuildDotNet",
+        "BuildUnity",
+        "Clean",
+        "CleanDotNet",
+        "CleanUnity",
+        "Compile",
+        "ExportUnityPackage",
+        "PackDotNet",
+        "PublishDotNet",
+        "Restore",
+        "RestoreDotNet",
+        "TestDotNet",
+        "TestUnity"
+      ]
+    },
+    "Verbosity": {
+      "type": "string",
+      "description": "",
+      "enum": [
+        "Verbose",
+        "Normal",
+        "Minimal",
+        "Quiet"
+      ]
+    },
+    "NukeBuild": {
+      "properties": {
+        "Continue": {
+          "type": "boolean",
+          "description": "Indicates to continue a previously failed build attempt"
+        },
+        "Help": {
+          "type": "boolean",
+          "description": "Shows the help text for this build assembly"
+        },
+        "Host": {
+          "description": "Host for execution. Default is 'automatic'",
+          "$ref": "#/definitions/Host"
+        },
+        "NoLogo": {
+          "type": "boolean",
+          "description": "Disables displaying the NUKE logo"
+        },
+        "Partition": {
+          "type": "string",
+          "description": "Partition to use on CI"
+        },
+        "Plan": {
+          "type": "boolean",
+          "description": "Shows the execution plan (HTML)"
+        },
+        "Profile": {
+          "type": "array",
+          "description": "Defines the profiles to load",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Root": {
+          "type": "string",
+          "description": "Root directory during build execution"
+        },
+        "Skip": {
+          "type": "array",
+          "description": "List of targets to be skipped. Empty list skips all dependencies",
+          "items": {
+            "$ref": "#/definitions/ExecutableTarget"
+          }
+        },
+        "Target": {
+          "type": "array",
+          "description": "List of targets to be invoked. Default is '{default_target}'",
+          "items": {
+            "$ref": "#/definitions/ExecutableTarget"
+          }
+        },
+        "Verbosity": {
+          "description": "Logging verbosity during build execution. Default is 'Normal'",
+          "$ref": "#/definitions/Verbosity"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "Configuration": {
+          "type": "string",
+          "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
+          "enum": [
+            "Debug",
+            "Release"
+          ]
+        },
+        "DotNetArtifactsRoot": {
+          "type": "string",
+          "description": "Artifacts root directory (default: build/_artifacts)"
+        },
+        "DotNetConfiguration": {
+          "type": "string",
+          "description": ".NET configuration (Debug/Release)",
+          "enum": [
+            "Debug",
+            "Release"
+          ]
+        },
+        "DotNetFramework": {
+          "type": "string",
+          "description": ".NET target framework override (optional)"
+        },
+        "DotNetOutput": {
+          "type": "string",
+          "description": "Output directory for dotnet artifacts (default: <ArtifactsRoot>/<VersionFolder>/tools)"
+        },
+        "DotNetProjects": {
+          "type": "array",
+          "description": "Projects to operate on (globs). If empty, the solution is used",
+          "items": {
+            "type": "string"
+          }
+        },
+        "DotNetPublishSingleFileRaw": {
+          "type": "string",
+          "description": "Publish single file (true/false)"
+        },
+        "DotNetRuntime": {
+          "type": "string",
+          "description": "Runtime identifier for publish (e.g., win-x64, linux-x64) (optional)"
+        },
+        "DotNetSelfContainedRaw": {
+          "type": "string",
+          "description": "Self-contained publish (true/false)"
+        },
+        "DotNetSolutionPath": {
+          "type": "string",
+          "description": "Solution file path. If not provided, the first .sln under root is used"
+        },
+        "DotNetVersionSuffix": {
+          "type": "string",
+          "description": "Version suffix (e.g., 1.2.3 or ci-1234) for pack/publish and artifact folder name"
+        },
+        "UnityBuildOutput": {
+          "type": "string",
+          "description": "Unity build output path"
+        },
+        "UnityBuildProfileName": {
+          "type": "string",
+          "description": "Unity build profile name (Windows, Android, iOS, etc.)"
+        },
+        "UnityBuildPurpose": {
+          "type": "string",
+          "description": "Unity build purpose (UnityPlayer, UnityAssetBundles, UnityAddressables)"
+        },
+        "UnityBuildTarget": {
+          "type": "string",
+          "description": "Unity build target platform (StandaloneWindows64, Android, iOS, etc.)"
+        },
+        "UnityBuildVersion": {
+          "type": "string",
+          "description": "Unity build version"
+        },
+        "UnityPath": {
+          "type": "string",
+          "description": "Unity executable path"
+        }
+      }
+    },
+    {
+      "$ref": "#/definitions/NukeBuild"
+    }
+  ]
+}

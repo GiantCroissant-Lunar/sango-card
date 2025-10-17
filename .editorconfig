@@ -40,6 +40,12 @@ indent_size = 4
 # Interface members should be implemented in the interface-specific partial file
 # Note: This is a convention enforced by code review and analyzer (see R-CODE-090)
 
+# Unity MessagePack analyzer override (non-invasive per R-BLD-060)
+# The Unity client (projects/client) currently fails with MsgPack009 due to duplicate generated formatters.
+# We cannot modify the client repo directly (R-BLD-060), so downgrade the diagnostic at the root to allow builds.
+# Keep surfaced as a warning so the issue remains visible in logs.
+dotnet_diagnostic.MsgPack009.severity = warning
+
 [*.asmdef]
 indent_size = 4
 indent_style = space

@@ -15,6 +15,10 @@ build/_artifacts/*  # Versioned artifacts (R-BLD-070)
 .github/copilot/
 .specify/specs/*/secrets/
 
+# SOPS/age encryption keys - NEVER commit private keys
+infra/terraform/secrets/age.key
+*.age.key
+
 # Agent rules - Allow base rules and adapters, but exclude local overrides
 !.agent/
 !.agent/base/
@@ -27,3 +31,10 @@ build/_artifacts/*  # Versioned artifacts (R-BLD-070)
 !.specify/memory/
 !.specify/scripts/
 !.specify/templates/
+
+[Tt][Ee][Mm][Pp]/
+[Tt][Mm][Pp]/
+
+# Conversation logs - AI agent chat exports
+/*.txt
+/2025-*.txt

@@ -26,7 +26,7 @@ repos:
         args: ['--fix=lf']
         exclude: '\.bat$|\.cmd$|\.ps1$|\.yaml$|\.yml$' # Keep CRLF for Windows scripts, skip YAML
       - id: detect-private-key
-        exclude: 'test.*|mock.*|dummy.*'
+        exclude: 'test.*|mock.*|dummy.*|\.encrypted$|\.sops\.json$'
   - repo: https://github.com/Yelp/detect-secrets
     # Secrets detection
 
@@ -34,7 +34,7 @@ repos:
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
-        exclude: 'test.*|mock.*|\.lock$|projects/code-quality/.*\.meta$|projects/client/.*\.meta$'
+        exclude: 'test.*|mock.*|\.lock$|projects/code-quality/.*\.meta$|projects/client/.*\.meta$|\.encrypted$|\.sops\.json$'
   - repo: https://github.com/gitleaks/gitleaks
     # Gitleaks - Advanced secret scanning
 
@@ -73,12 +73,35 @@ repos:
     rev: 2.7.3
     hooks:
       - id: editorconfig-checker
-        exclude: '\.meta$|\.asset$|\.unity$|\.md$|\.github/gemini/code-review-config\.yaml$|\.pre-commit-config\.yaml$|\.yamllint\.yaml$'
+        exclude: '\.meta$|\.asset$|\.unity$|\.md$|\.gemini/code-review-config\.yaml$|\.pre-commit-config\.yaml$|\.yamllint\.yaml$|\.sops\.yaml$'
   - repo: local
-    # C# partial class pattern validation (R-CODE-090)
-
     hooks:
+      # Prevent committing plaintext Terraform secrets
+      - id: terraform-secrets-check
+        name: Terraform Secrets Protection
+        entry: bash -c 'if git diff --cached --name-only | grep -E "infra/terraform/secrets/.*\.json$" | grep -v "\.example$" | grep -v "\.encrypted$" | grep -v "\.sops\.json$"; then echo "ERROR - Attempting to commit plaintext secrets! Use SOPS encryption first."; exit 1; fi'
+        language: system
+        pass_filenames: false
+        description: Prevents committing plaintext Terraform secrets
+      - id: age-key-check
+        # Prevent committing age private keys
+
+        name: Age Private Key Protection
+        entry: bash -c 'if git diff --cached --name-only | grep -E "age\.key$"; then echo "ERROR - Attempting to commit age private key! This must never be committed."; exit 1; fi'
+        language: system
+        pass_filenames: false
+        description: Prevents committing age private keys
+      - id: sops-config-check
+        # Validate SOPS config before commit
+
+        name: SOPS Config Validation
+        entry: bash -c 'if [ -f infra/terraform/.sops.yaml ]; then grep -q "age1REPLACEME" infra/terraform/.sops.yaml && echo "ERROR - .sops.yaml still has placeholder age key. Run New-AgeKeyPair.ps1 and update .sops.yaml first." && exit 1 || exit 0; fi'
+        language: system
+        pass_filenames: false
+        description: Validates SOPS configuration has real age key
       - id: partial-class-interface-separation
+        # C# partial class pattern validation (R-CODE-090)
+
         name: Partial Class Interface Separation (R-CODE-090)
         entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/git-hooks/pre-commit.ps1
         language: system
@@ -86,6 +109,13 @@ repos:
         exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$'
         pass_filenames: false
         description: Validates partial class pattern for multi-interface classes
+      - id: check-scattered-docs
+        name: Scattered Documentation Detection (R-DOC-001)
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/git-hooks/check-scattered-docs.ps1
+        language: system
+        files: '\.md$'
+        pass_filenames: false
+        description: Blocks markdown files in non-canonical locations
       - id: docs-validate
         name: Documentation Front-Matter Validation (R-DOC-002)
         entry: python scripts/docs_validate.py
@@ -119,5 +149,6 @@ ci:
   autoupdate_schedule: quarterly
   skip:
     - partial-class-interface-separation # Skip PowerShell hook in CI
+    - check-scattered-docs # Scattered docs check runs in CI
     - gitleaks # Skip gitleaks in CI (runs separately)
     - docs-validate # Docs validation runs in dedicated GitHub Action

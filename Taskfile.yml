@@ -237,3 +237,25 @@ tasks:
     cmds:
       - echo "Opening quick reference..."
       - '{{if eq OS "windows"}}start docs\task\QUICK_REFERENCE.md{{else if eq OS "darwin"}}open docs/task/QUICK_REFERENCE.md{{else}}xdg-open docs/task/QUICK_REFERENCE.md{{end}}'
+
+  # Documentation health checks
+
+  docs:check:
+    desc: Check documentation health (scattered docs, front-matter)
+    cmds:
+      - pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/check-docs.ps1
+
+  docs:check:fix:
+    desc: Auto-fix scattered documentation (moves to docs/_inbox/)
+    cmds:
+      - pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/check-docs.ps1 -Fix
+
+  docs:check:report:
+    desc: Generate HTML documentation health report
+    cmds:
+      - pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/check-docs.ps1 -Report
+
+  docs:validate:
+    desc: Validate documentation front-matter and registry
+    cmds:
+      - python scripts/docs_validate.py

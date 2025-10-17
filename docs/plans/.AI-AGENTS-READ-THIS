@@ -1,0 +1,9 @@
+⚠️  AI AGENTS: DO NOT WRITE DIRECTLY TO THIS DIRECTORY
+
+This directory is for CANONICAL plans only.
+
+✅ INSTEAD: Write new docs to docs/_inbox/ first
+✅ THEN: Humans will promote to canonical location
+
+See: docs/DOCUMENTATION-SCHEMA.md
+See: .agent/base/40-documentation.md (R-DOC-001)

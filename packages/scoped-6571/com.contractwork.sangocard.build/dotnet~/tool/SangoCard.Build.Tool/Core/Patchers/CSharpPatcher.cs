@@ -9,96 +9,83 @@ namespace SangoCard.Build.Tool.Core.Patchers;
 /// <summary>
 /// Patcher for C# files using Roslyn.
 /// </summary>
-public class CSharpPatcher : IPatcher
+public class CSharpPatcher : PatcherBase
 {
-    private readonly ILogger<CSharpPatcher> _logger;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="CSharpPatcher"/> class.
     /// </summary>
-    public CSharpPatcher(ILogger<CSharpPatcher> logger)
+    public CSharpPatcher(ILogger<CSharpPatcher> logger) : base(logger)
     {
-        _logger = logger;
     }
 
     /// <inheritdoc/>
-    public PatchType PatchType => PatchType.CSharp;
+    public override PatchType PatchType => PatchType.CSharp;
 
     /// <inheritdoc/>
-    public async Task<bool> ApplyPatchAsync(string filePath, CodePatch patch)
+    protected override Task<string> ApplyPatchInternalAsync(string content, CodePatch patch)
     {
-        _logger.LogDebug("Applying C# patch to: {File}", filePath);
+        // For simplicity, use text-based replacement for now
+        // In a full implementation, we'd use Roslyn's syntax rewriting
+        var modifiedCode = patch.Mode switch
+        {
+            PatchMode.Replace => content.Replace(patch.Search, patch.Replace),
+            PatchMode.InsertBefore => content.Replace(patch.Search, patch.Replace + patch.Search),
+            PatchMode.InsertAfter => content.Replace(patch.Search, patch.Search + patch.Replace),
+            PatchMode.Delete => content.Replace(patch.Search, string.Empty),
+            _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported")
+        };
+
+        return Task.FromResult(modifiedCode);
+    }
+
+    /// <inheritdoc/>
+    protected override async Task<ValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
+    {
+        var errors = new List<string>();
+        var warnings = new List<string>();
 
         try
         {
-            var code = await File.ReadAllTextAsync(filePath);
-            var tree = CSharpSyntaxTree.ParseText(code);
-            var root = await tree.GetRootAsync();
-
-            // For simplicity, use text-based replacement for now
-            // In a full implementation, we'd use Roslyn's syntax rewriting
-            var modifiedCode = patch.Mode switch
-            {
-                PatchMode.Replace => code.Replace(patch.Search, patch.Replace),
-                PatchMode.InsertBefore => code.Replace(patch.Search, patch.Replace + patch.Search),
-                PatchMode.InsertAfter => code.Replace(patch.Search, patch.Search + patch.Replace),
-                PatchMode.Delete => code.Replace(patch.Search, string.Empty),
-                _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported")
-            };
-
-            if (modifiedCode == code)
-            {
-                _logger.LogWarning("C# patch did not modify content: {File}", filePath);
-                return false;
-            }
-
             // Validate syntax after patching
-            var modifiedTree = CSharpSyntaxTree.ParseText(modifiedCode);
-            var diagnostics = modifiedTree.GetDiagnostics();
-            var errors = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
+            var tree = CSharpSyntaxTree.ParseText(patchedContent);
+            var diagnostics = tree.GetDiagnostics();
+            var syntaxErrors = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
 
-            if (errors.Any())
+            if (syntaxErrors.Any())
             {
-                _logger.LogError("C# patch resulted in syntax errors: {File}", filePath);
-                foreach (var error in errors)
+                Logger.LogError("C# patch resulted in syntax errors: {File}", filePath);
+                foreach (var error in syntaxErrors)
                 {
-                    _logger.LogError("  {Error}", error.GetMessage());
+                    var errorMsg = error.GetMessage();
+                    Logger.LogError("  {Error}", errorMsg);
+                    errors.Add(errorMsg);
                 }
-                return false;
             }
 
-            // Write back to file
-            await File.WriteAllTextAsync(filePath, modifiedCode);
-
-            _logger.LogInformation("C# patch applied successfully: {File}", filePath);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to apply C# patch: {File}", filePath);
-            return false;
-        }
-    }
-
-    /// <inheritdoc/>
-    public async Task<bool> CanApplyPatchAsync(string filePath, CodePatch patch)
-    {
-        try
-        {
-            if (!File.Exists(filePath))
+            var syntaxWarnings = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ToList();
+            foreach (var warning in syntaxWarnings)
             {
-                return false;
+                warnings.Add(warning.GetMessage());
             }
 
-            var code = await File.ReadAllTextAsync(filePath);
-
-            // Check if search pattern exists
-            return code.Contains(patch.Search);
+            return new ValidationResult
+            {
+                IsValid = errors.Count == 0,
+                Errors = errors,
+                Warnings = warnings,
+                TargetFound = true
+            };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to validate C# patch applicability: {File}", filePath);
-            return false;
+            Logger.LogError(ex, "Failed to validate patched C# content: {File}", filePath);
+            errors.Add($"Validation error: {ex.Message}");
+            return new ValidationResult
+            {
+                IsValid = false,
+                Errors = errors,
+                TargetFound = true
+            };
         }
     }
 }

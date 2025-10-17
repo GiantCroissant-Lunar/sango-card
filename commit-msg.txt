@@ -1,9 +1,0 @@
-feat: PreparationService + CLI, demo prep.json, and TUI scaffolding
-
-- Add PreparationService with file ops and patch application
-- Add PreparationMessages and event publishing
-- Add CLI commands: config, cache, validate, prepare run
-- Wire services and handlers into DI
-- Add comprehensive tests (100 passing)
-- Add demo prep.json and sample assets under build/preparation/
-- Scaffold TUI mode hooks (MessagePipe subscribers, basic host)

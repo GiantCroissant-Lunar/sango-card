@@ -13,6 +13,7 @@ using Nuke.Common.Tooling;
 /// </summary>
 partial class Build : IUnityBuild
 {
+    public AbsolutePath UnityProjectPath => RootDirectory / "projects" / "client";
     // Interface implementation is provided by IUnityBuild default interface members
     // Override default members here if custom implementation is needed
 }

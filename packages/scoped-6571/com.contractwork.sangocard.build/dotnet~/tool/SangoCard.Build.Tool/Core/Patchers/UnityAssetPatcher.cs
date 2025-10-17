@@ -8,88 +8,52 @@ namespace SangoCard.Build.Tool.Core.Patchers;
 /// Patcher for Unity asset files (YAML format).
 /// Note: Unity uses a custom YAML format. This is a simplified implementation.
 /// </summary>
-public class UnityAssetPatcher : IPatcher
+public class UnityAssetPatcher : PatcherBase
 {
-    private readonly ILogger<UnityAssetPatcher> _logger;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="UnityAssetPatcher"/> class.
     /// </summary>
-    public UnityAssetPatcher(ILogger<UnityAssetPatcher> logger)
+    public UnityAssetPatcher(ILogger<UnityAssetPatcher> logger) : base(logger)
     {
-        _logger = logger;
     }
 
     /// <inheritdoc/>
-    public PatchType PatchType => PatchType.UnityAsset;
+    public override PatchType PatchType => PatchType.UnityAsset;
 
     /// <inheritdoc/>
-    public async Task<bool> ApplyPatchAsync(string filePath, CodePatch patch)
+    protected override Task<string> ApplyPatchInternalAsync(string content, CodePatch patch)
     {
-        _logger.LogDebug("Applying Unity asset patch to: {File}", filePath);
-
-        try
+        // For Unity assets, we'll use simple text replacement for now
+        // A full implementation would parse Unity's custom YAML format
+        var result = patch.Mode switch
         {
-            var content = await File.ReadAllTextAsync(filePath);
-            var originalContent = content;
+            PatchMode.Replace => content.Replace(patch.Search, patch.Replace),
+            PatchMode.InsertBefore => content.Replace(patch.Search, patch.Replace + patch.Search),
+            PatchMode.InsertAfter => content.Replace(patch.Search, patch.Search + patch.Replace),
+            PatchMode.Delete => content.Replace(patch.Search, string.Empty),
+            _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported")
+        };
 
-            // For Unity assets, we'll use simple text replacement for now
-            // A full implementation would parse Unity's custom YAML format
-            content = patch.Mode switch
-            {
-                PatchMode.Replace => content.Replace(patch.Search, patch.Replace),
-                PatchMode.InsertBefore => content.Replace(patch.Search, patch.Replace + patch.Search),
-                PatchMode.InsertAfter => content.Replace(patch.Search, patch.Search + patch.Replace),
-                PatchMode.Delete => content.Replace(patch.Search, string.Empty),
-                _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported")
-            };
-
-            if (content == originalContent)
-            {
-                _logger.LogWarning("Unity asset patch did not modify content: {File}", filePath);
-                return false;
-            }
-
-            // Basic validation: check if it's still valid YAML-like structure
-            if (!ValidateUnityAssetStructure(content))
-            {
-                _logger.LogError("Unity asset patch resulted in invalid structure: {File}", filePath);
-                return false;
-            }
-
-            // Write back to file
-            await File.WriteAllTextAsync(filePath, content);
-
-            _logger.LogInformation("Unity asset patch applied successfully: {File}", filePath);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to apply Unity asset patch: {File}", filePath);
-            return false;
-        }
+        return Task.FromResult(result);
     }
 
     /// <inheritdoc/>
-    public async Task<bool> CanApplyPatchAsync(string filePath, CodePatch patch)
+    protected override Task<ValidationResult> ValidatePatchedContentAsync(string filePath, string patchedContent, CodePatch patch)
     {
-        try
-        {
-            if (!File.Exists(filePath))
-            {
-                return false;
-            }
+        var errors = new List<string>();
 
-            var content = await File.ReadAllTextAsync(filePath);
-
-            // Check if search pattern exists
-            return content.Contains(patch.Search);
-        }
-        catch (Exception ex)
+        // Basic validation: check if it's still valid YAML-like structure
+        if (!ValidateUnityAssetStructure(patchedContent))
         {
-            _logger.LogError(ex, "Failed to validate Unity asset patch applicability: {File}", filePath);
-            return false;
+            errors.Add("Unity asset patch resulted in invalid structure");
         }
+
+        return Task.FromResult(new ValidationResult
+        {
+            IsValid = errors.Count == 0,
+            Errors = errors,
+            TargetFound = true
+        });
     }
 
     private bool ValidateUnityAssetStructure(string content)

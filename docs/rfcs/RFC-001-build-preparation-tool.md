@@ -1,8 +1,28 @@
+---
+doc_id: RFC-2025-00001
+title: Build Preparation Tool
+doc_type: rfc
+status: active
+canonical: true
+created: '2025-10-17'
+tags:
+- build
+- unity
+- tooling
+- rfc
+summary: >
+  RFC for a .NET CLI/TUI tool for managing Unity build preparation configurations
+  with reactive architecture and git root-based path resolution.
+supersedes: []
+related:
+- DOC-2025-00042
+---
+
 # RFC-001: Build Preparation Tool
 
-**Status:** Draft  
-**Created:** 2025-10-17  
-**Author:** Build System Team  
+**Status:** Draft
+**Created:** 2025-10-17
+**Author:** Build System Team
 **Related:** R-BLD-010, R-PATH-010
 
 ## Summary

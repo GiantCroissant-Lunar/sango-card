@@ -14,6 +14,9 @@
     "dependencies": {
     },
     "hideInEditor": false,
+    "testables": [
+        "SangoCard.Cross.Editor.Tests"
+    ],
     "author": {
         "name": "GiantCroissant",
         "email": "apprentice@giantcroissant.com",

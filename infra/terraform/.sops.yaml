@@ -1,0 +1,11 @@
+# SOPS configuration for encrypting Terraform secrets
+# Generate age key with: age-keygen -o infra/terraform/secrets/age.key
+# Extract public key: (Get-Content infra/terraform/secrets/age.key | Select-String 'public key:').ToString()
+# Replace the placeholder below with your actual public key
+creation_rules:
+  - path_regex: >-
+      (infra/terraform/secrets/.*\.(encrypted|sops\.json)$| infra/terraform/github/secrets/.*\.(encrypted|sops\.json)$)
+    age:
+      - "age1p78y8k4pk2ttznzd07wtawzs5vpmpmtksuyf84ktvw80w7m8m4hsjeygcl" # pragma: allowlist secret (public age key)
+    encrypted_regex: '^(.*_TOKEN|.*_SECRET|.*_KEY|.*_PASS.*|.*_LICENSE|.*_SERIAL|.*_BASE64|.*_CERTIFICATE|GITHUB_TOKEN|UNITY_.*)$'
+    # Encrypt only sensitive-looking keys; others stay plaintext for easier diffs

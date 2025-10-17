@@ -1,0 +1,175 @@
+---
+name: Terraform CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'infra/terraform/**'
+      - '.github/workflows/terraform-cd.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'infra/terraform/**'
+      - '.github/workflows/terraform-cd.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  TF_IN_AUTOMATION: true
+  TF_INPUT: false
+
+jobs:
+  terraform:
+    name: Terraform Plan & Apply
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.x
+
+      - name: Install SOPS
+        run: |
+          # Install SOPS
+          SOPS_VERSION="3.8.1"
+          curl -sL "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64" \
+            -o /tmp/sops
+          sudo mv /tmp/sops /usr/local/bin/sops
+          sudo chmod +x /usr/local/bin/sops
+          sops --version
+
+      - name: Install age
+        run: |
+          # Install age
+          sudo apt-get update
+          sudo apt-get install -y age
+          age --version
+
+      - name: Setup age key for decryption
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          if [ -z "$SOPS_AGE_KEY" ]; then
+            echo "::error::SOPS_AGE_KEY secret is not set"
+            exit 1
+          fi
+
+          # Write age key to file
+          mkdir -p infra/terraform/secrets
+          echo "$SOPS_AGE_KEY" > infra/terraform/secrets/age.key
+          chmod 600 infra/terraform/secrets/age.key
+
+          # Export for SOPS to use
+          echo "SOPS_AGE_KEY<<EOF" >> $GITHUB_ENV
+          echo "$SOPS_AGE_KEY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Decrypt secrets
+        working-directory: infra/terraform
+        run: |
+          # Check if encrypted secrets file exists
+          if [ -f "secrets/terraform-secrets.json.encrypted" ]; then
+            echo "Decrypting terraform-secrets.json.encrypted..."
+            sops -d secrets/terraform-secrets.json.encrypted > secrets/terraform-secrets.json
+            echo "✓ Secrets decrypted successfully"
+          else
+            echo "::warning::No encrypted secrets file found at secrets/terraform-secrets.json.encrypted"
+            echo "Skipping decryption step"
+          fi
+
+      - name: Apply secrets to Terraform variables
+        working-directory: infra/terraform
+        run: |
+          if [ -f "secrets/terraform-secrets.json" ]; then
+            echo "Applying secrets to Terraform variables..."
+            pwsh scripts/Apply-SecretsToTerraform.ps1 -Force
+            echo "✓ Secrets applied to terraform.tfvars"
+          else
+            echo "::warning::No decrypted secrets file found"
+            echo "Terraform will use default variables or fail if required vars are missing"
+          fi
+
+      - name: Terraform Format Check
+        id: fmt
+        working-directory: infra/terraform/github
+        run: terraform fmt -check -diff
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        working-directory: infra/terraform/github
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        working-directory: infra/terraform/github
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: infra/terraform/github
+        run: |
+          terraform plan -no-color -out=tfplan
+          # Save plan output for PR comment
+          terraform show -no-color tfplan > plan_output.txt
+        continue-on-error: true
+
+      - name: Comment PR with plan
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          PLAN: ${{ steps.plan.outputs.stdout }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('infra/terraform/github/plan_output.txt', 'utf8');
+
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`terraform
+            ${planOutput}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        working-directory: infra/terraform/github
+        run: terraform apply -auto-approve tfplan
+
+      - name: Cleanup sensitive files
+        if: always()
+        run: |
+          # Remove decrypted secrets and tfvars
+          rm -f infra/terraform/secrets/terraform-secrets.json
+          rm -f infra/terraform/secrets/age.key
+          rm -f infra/terraform/github/terraform.tfvars
+          rm -f infra/terraform/github/tfplan
+          echo "✓ Cleaned up sensitive files"
