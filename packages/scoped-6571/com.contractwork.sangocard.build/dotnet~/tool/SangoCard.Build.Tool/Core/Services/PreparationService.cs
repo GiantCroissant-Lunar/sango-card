@@ -64,7 +64,7 @@ public class PreparationService
         bool validate = true)
     {
         _logger.LogInformation("Preparation started{DryRun}", dryRun ? " (DRY-RUN)" : "");
-        _prepStarted.Publish(new PreparationStartedMessage(configRelativePath));
+        _prepStarted.Publish(new PreparationStartedMessage(configRelativePath, "client", dryRun));
 
         try
         {
@@ -327,7 +327,7 @@ public class PreparationService
                 config.ScriptingDefineSymbols.ClearExisting);
         }
 
-        var summary = new PreparationCompletedMessage(copied, moved, deleted, patched);
+        var summary = new PreparationCompletedMessage(copied, moved, deleted, patched, TimeSpan.Zero, null);
         _prepCompleted.Publish(summary);
         _logger.LogInformation("Preparation complete: copied={Copied}, moved={Moved}, deleted={Deleted}, patched={Patched}",
             copied, moved, deleted, patched);

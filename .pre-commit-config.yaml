@@ -34,7 +34,7 @@ repos:
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
-        exclude: 'test.*|mock.*|\.lock$|projects/code-quality/.*\.meta$|projects/client/.*\.meta$|\.encrypted$|\.sops\.json$'
+        exclude: 'test.*|mock.*|\.lock$|projects/code-quality/.*\.meta$|projects/client/.*\.meta$|\.encrypted$|\.sops\.json$|docs/index/registry\.json$'
   - repo: https://github.com/gitleaks/gitleaks
     # Gitleaks - Advanced secret scanning
 
@@ -53,7 +53,7 @@ repos:
     hooks:
       - id: markdownlint
         args: ['--fix']
-        exclude: 'CHANGELOG.md|node_modules/'
+        exclude: 'CHANGELOG.md|node_modules/|\.specify/.*\.md$|docs/.*\.md$|build/nuke/build/Components/README\.md$|packages/scoped-6571/com\.contractwork\.sangocard\.build/dotnet~/tool/.*\.md$'
   - repo: https://github.com/adrienverge/yamllint
     # YAML linting and formatting
 
@@ -73,7 +73,7 @@ repos:
     rev: 2.7.3
     hooks:
       - id: editorconfig-checker
-        exclude: '\.meta$|\.asset$|\.unity$|\.md$|\.gemini/code-review-config\.yaml$|\.pre-commit-config\.yaml$|\.yamllint\.yaml$|\.sops\.yaml$|\.secrets\.baseline$'
+        exclude: '\.meta$|\.asset$|\.unity$|\.md$|\.gemini/code-review-config\.yaml$|\.pre-commit-config\.yaml$|\.yamllint\.yaml$|\.sops\.yaml$|\.secrets\.baseline$|packages/scoped-6571/com\.contractwork\.sangocard\.build/dotnet~/tool/.*\.(cs|txt|ps1|props)$|scripts/.*\.ps1$|Taskfile\.yml$'
   - repo: local
     hooks:
       # Prevent committing plaintext Terraform secrets

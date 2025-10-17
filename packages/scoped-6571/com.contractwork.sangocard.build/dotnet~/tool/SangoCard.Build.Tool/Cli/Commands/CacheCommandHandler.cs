@@ -62,4 +62,95 @@ public class CacheCommandHandler
         Console.WriteLine($"Removed {count} item(s) from cache");
         return Task.CompletedTask;
     }
+
+    public async Task AddPackageAsync(string configRelativePath, string name, string version, string sourceFilePath)
+    {
+        if (string.IsNullOrWhiteSpace(configRelativePath))
+        {
+            Console.Error.WriteLine("Error: Config path is required");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Console.Error.WriteLine("Error: Package name is required");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(version))
+        {
+            Console.Error.WriteLine("Error: Package version is required");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(sourceFilePath))
+        {
+            Console.Error.WriteLine("Error: Source file path is required");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        if (!File.Exists(sourceFilePath))
+        {
+            Console.Error.WriteLine($"Error: Source file not found: {sourceFilePath}");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        var config = await _configService.LoadAsync(configRelativePath);
+        var cacheItem = await _cacheService.AddPackageAsync(config, name, version, sourceFilePath);
+        await _configService.SaveAsync(config, configRelativePath);
+
+        Console.WriteLine($"Added package to cache: {name}@{version}");
+        Console.WriteLine($"  Cache path: {_paths.Resolve(cacheItem.Path)}");
+        Console.WriteLine($"  Size: {cacheItem.Size} bytes");
+        Console.WriteLine($"Updated config: {_paths.Resolve(configRelativePath)}");
+    }
+
+    public async Task AddAssemblyAsync(string configRelativePath, string name, string sourceFilePath, string? version = null)
+    {
+        if (string.IsNullOrWhiteSpace(configRelativePath))
+        {
+            Console.Error.WriteLine("Error: Config path is required");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Console.Error.WriteLine("Error: Assembly name is required");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(sourceFilePath))
+        {
+            Console.Error.WriteLine("Error: Source file path is required");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        if (!File.Exists(sourceFilePath))
+        {
+            Console.Error.WriteLine($"Error: Source file not found: {sourceFilePath}");
+            Environment.ExitCode = 1;
+            return;
+        }
+
+        var config = await _configService.LoadAsync(configRelativePath);
+        var cacheItem = await _cacheService.AddAssemblyAsync(config, name, version, sourceFilePath);
+        await _configService.SaveAsync(config, configRelativePath);
+
+        Console.WriteLine($"Added assembly to cache: {name}");
+        if (!string.IsNullOrEmpty(version))
+        {
+            Console.WriteLine($"  Version: {version}");
+        }
+        Console.WriteLine($"  Cache path: {_paths.Resolve(cacheItem.Path)}");
+        Console.WriteLine($"  Size: {cacheItem.Size} bytes");
+        Console.WriteLine($"Updated config: {_paths.Resolve(configRelativePath)}");
+    }
 }

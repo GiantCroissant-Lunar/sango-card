@@ -56,16 +56,12 @@ public static class HostBuilderExtensions
         var mode = DetermineMode(args);
         if (mode == ToolMode.Tui)
         {
-            // TUI services (will be implemented in Task 5.x)
-            // services.AddSingleton<TuiHost>();
-            // services.AddTransient<MainViewModel>();
-            // services.AddTransient<CacheViewModel>();
-            // services.AddTransient<ConfigViewModel>();
-        }
-        else
-        {
-            // CLI services (will be implemented in Task 4.x)
-            // services.AddSingleton<CliHost>();
+            // TUI services
+            services.AddSingleton<Tui.TuiHost>();
+            services.AddTransient<Tui.Views.CacheManagementView>();
+            services.AddTransient<Tui.Views.ConfigEditorView>();
+            services.AddTransient<Tui.Views.ValidationView>();
+            services.AddTransient<Tui.Views.PreparationExecutionView>();
         }
 
         return services;

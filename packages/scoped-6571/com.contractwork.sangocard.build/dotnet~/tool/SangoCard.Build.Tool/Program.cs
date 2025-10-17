@@ -96,14 +96,17 @@ internal class Program
 
     private static async Task<int> RunTuiMode(IHost host)
     {
-        // TUI mode will be implemented in Task 5.1
         var logger = host.Services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("TUI mode - Not yet implemented");
-
-        Console.WriteLine("Sango Card Build Preparation Tool - TUI Mode");
-        Console.WriteLine("TUI mode - Coming soon!");
-
-        return 0;
+        try
+        {
+            var tui = host.Services.GetRequiredService<SangoCard.Build.Tool.Tui.TuiHost>();
+            return await tui.StartAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "TUI execution failed");
+            return 1;
+        }
     }
 }
 

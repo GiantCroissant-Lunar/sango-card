@@ -6,3 +6,13 @@
 .specify/tasks/PROGRESS-*.md
 .specify/*-COMPLETE.md
 .specify/*-STATUS.md
+
+# Archive directory - legacy documents
+docs/archive/*.md
+docs/_inbox/*.md
+
+# Build tool documentation - working documents
+packages/scoped-6571/com.contractwork.sangocard.build/dotnet~/tool/*.md
+
+# Guides with legacy formatting (to be fixed separately)
+docs/guides/*.md

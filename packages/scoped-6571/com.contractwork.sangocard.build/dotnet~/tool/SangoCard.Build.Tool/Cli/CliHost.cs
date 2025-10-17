@@ -161,25 +161,69 @@ public class CliHost
     {
         var prepare = new Command("prepare", "Execute build preparation");
 
-        var run = new Command("run", "Run preparation from a config file");
+        // NEW: inject command (recommended - two-phase workflow)
+        var inject = new Command("inject", "Inject preparation into target project (Phase 2)");
         var configOption = new Option<string>(
             aliases: new[] { "--config", "-c" },
             description: "Configuration file path (relative to git root)"
+        ) { IsRequired = true };
+        var targetOption = new Option<string>(
+            aliases: new[] { "--target", "-t" },
+            description: "Target project path (must be 'projects/client/' per R-BLD-060)"
         ) { IsRequired = true };
         var levelOption = new Option<string>(
             aliases: new[] { "--level", "-l" },
             getDefaultValue: () => "Full",
             description: "Validation level before running: Schema, FileExistence, UnityPackages, Full"
         );
+        var verboseOption = new Option<bool>(
+            aliases: new[] { "--verbose", "-v" },
+            getDefaultValue: () => false,
+            description: "Show detailed output"
+        );
+        var forceOption = new Option<bool>(
+            aliases: new[] { "--force", "-f" },
+            getDefaultValue: () => false,
+            description: "Proceed despite validation errors"
+        );
 
-        run.AddOption(configOption);
-        run.AddOption(levelOption);
-        run.SetHandler(async (string config, string level) =>
+        inject.AddOption(configOption);
+        inject.AddOption(targetOption);
+        inject.AddOption(levelOption);
+        inject.AddOption(verboseOption);
+        inject.AddOption(forceOption);
+        inject.SetHandler(async (string config, string target, string level, bool verbose, bool force) =>
         {
             var handler = _host.Services.GetRequiredService<PrepareCommandHandler>();
-            await handler.RunAsync(config, level);
-        }, configOption, levelOption);
+            await handler.InjectAsync(config, target, level, verbose, force);
+        }, configOption, targetOption, levelOption, verboseOption, forceOption);
 
+        // DEPRECATED: run command (backward compatibility)
+        var run = new Command("run", "[DEPRECATED] Use 'inject --target projects/client/' instead");
+        var runConfigOption = new Option<string>(
+            aliases: new[] { "--config", "-c" },
+            description: "Configuration file path (relative to git root)"
+        ) { IsRequired = true };
+        var runLevelOption = new Option<string>(
+            aliases: new[] { "--level", "-l" },
+            getDefaultValue: () => "Full",
+            description: "Validation level before running: Schema, FileExistence, UnityPackages, Full"
+        );
+
+        run.AddOption(runConfigOption);
+        run.AddOption(runLevelOption);
+        run.SetHandler(async (string config, string level) =>
+        {
+            Console.WriteLine("⚠️  WARNING: 'prepare run' is deprecated.");
+            Console.WriteLine("   Use 'prepare inject --target projects/client/' instead.");
+            Console.WriteLine("   This command will be removed in the next major version.");
+            Console.WriteLine();
+
+            var handler = _host.Services.GetRequiredService<PrepareCommandHandler>();
+            await handler.InjectAsync(config, "projects/client/", level, verbose: false, force: false);
+        }, runConfigOption, runLevelOption);
+
+        prepare.AddCommand(inject);
         prepare.AddCommand(run);
         return prepare;
     }
