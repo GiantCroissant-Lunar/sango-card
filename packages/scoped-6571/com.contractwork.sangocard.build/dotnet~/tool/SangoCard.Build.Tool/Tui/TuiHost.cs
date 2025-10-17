@@ -154,6 +154,11 @@ public class TuiHost : Toplevel
                     new("_Validation", "", () => SwitchToValidationView()),
                     new("_Preparation", "", () => SwitchToPreparationView())
                 }),
+                new MenuBarItem("_Manage", new MenuItem[]
+                {
+                    new("_Preparation Sources (Phase 1)", "", () => SwitchToPreparationSourcesView()),
+                    new("_Build Injections (Phase 2)", "", () => MessageBox.Query("Coming Soon", "Build Injections management view coming in Phase 3.2b", "OK"))
+                }),
                 new MenuBarItem("_Help", new MenuItem[]
                 {
                     new("_About", "", () => ShowAboutDialog()),
@@ -201,18 +206,25 @@ Two-Phase System:
     1. PREPARATION SOURCES (Phase 1)
        → Collect packages/assemblies from external locations
        → Items copied to local cache
-       → Use: F5 Manual Sources
+       → Use: Manage → Preparation Sources (dedicated CRUD screen)
+       → Or: F5 Manual Sources (quick add)
 
     2. BUILD INJECTIONS (Phase 2)
        → Define what gets injected to Unity client
        → Maps cache items to client targets
-       → Use: F3 Config Editor (coming soon: dedicated injection view)
+       → Use: Manage → Build Injections (coming soon)
+
+MENU SHORTCUTS:
+    • View - Switch between different screens
+    • Manage - Full CRUD for Phase 1 & 2 configs
+    • Help - Documentation and about
 
 FEATURES:
     • Config Type Selection - Understand and choose config types
     • Configuration Management - Create and edit configs
     • Cache Management - Manage Unity packages and assemblies cache
-    • Manual Source Management - Add packages/assemblies from anywhere
+    • Manual Source Management - Quick add packages/assemblies
+    • Preparation Sources Management - Full CRUD for Phase 1 (NEW!)
     • Validation - Validate configs before execution
     • Preparation - Execute build preparation with progress tracking
 
@@ -221,8 +233,8 @@ STATUS:
     ✅ Services Layer - Complete
     ✅ Code Patchers - Complete
     ✅ CLI Commands - Complete (14 commands)
-    ✅ TUI Views - Complete (6 views)
-    ⏳ Management Screens - In Progress (Wave 3.2)
+    ✅ TUI Views - 7 views
+    🔄 Management Screens - Phase 3.2a Complete, 3.2b In Progress
 
 Use the menu bar (Alt+letter) or function keys to navigate.
 Press F10 or select File > Quit to exit.
@@ -270,6 +282,12 @@ Build: 2025-10-17
     {
         var view = _serviceProvider.GetRequiredService<ManualSourcesView>();
         SwitchToView("Manual Source Management", view);
+    }
+
+    private void SwitchToPreparationSourcesView()
+    {
+        var view = _serviceProvider.GetRequiredService<PreparationSourcesManagementView>();
+        SwitchToView("Preparation Sources Management", view);
     }
 
     private void SwitchToView(string viewName, View view)
@@ -328,14 +346,21 @@ Build: 2025-10-17
             "  F2  - Config Type Selection\n" +
             "  F3  - Config Editor\n" +
             "  F4  - Cache Manager\n" +
-            "  F5  - Manual Sources\n" +
+            "  F5  - Manual Sources (Quick Add)\n" +
             "  F6  - Validation View\n" +
             "  F7  - Preparation View\n" +
             "  F10 - Quit Application\n\n" +
+            "MENU BAR:\n" +
+            "  File - Open/Save configs\n" +
+            "  View - Switch between views\n" +
+            "  Manage - Full CRUD screens:\n" +
+            "    • Preparation Sources (Phase 1)\n" +
+            "    • Build Injections (Phase 2 - coming soon)\n" +
+            "  Help - Documentation and about\n\n" +
             "WORKFLOW:\n" +
             "  1. Start with F2 to understand config types\n" +
-            "  2. Use F5 to add sources (Phase 1)\n" +
-            "  3. Use F3 to configure injections (Phase 2)\n" +
+            "  2. Use Manage menu for full source management\n" +
+            "  3. Or use F5 for quick manual additions\n" +
             "  4. Use F6 to validate, F7 to prepare\n\n" +
             "NAVIGATION:\n" +
             "  Tab/Shift+Tab - Move between controls\n" +
@@ -357,12 +382,13 @@ Build: 2025-10-17
             "Features:\n" +
             "  ✅ Configuration Management\n" +
             "  ✅ Cache Management\n" +
-            "  ✅ Manual Source Management\n" +
+            "  ✅ Manual Source Management (Quick Add)\n" +
+            "  ✅ Preparation Sources (Full CRUD)\n" +
             "  ✅ Config Type Selection\n" +
             "  ✅ Code Patching (4 types)\n" +
             "  ✅ CLI Interface (14 commands)\n" +
-            "  ✅ TUI Interface (6 views)\n" +
-            "  ⏳ Management Screens (Wave 3.2)\n\n" +
+            "  ✅ TUI Interface (7 views)\n" +
+            "  🔄 Build Injections (Phase 3.2b)\n\n" +
             "Licensed under MIT",
             "OK");
     }
