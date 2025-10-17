@@ -47,7 +47,7 @@ public class PrepareCommandHandler
             return;
         }
 
-        var result = await _preparationService.RunAsync(config, configRelativePath);
+        var result = await _preparationService.ExecuteAsync(config, configRelativePath, validate: false);
         Console.WriteLine($"Preparation complete: copied={result.Copied}, moved={result.Moved}, deleted={result.Deleted}, patched={result.Patched}");
     }
 

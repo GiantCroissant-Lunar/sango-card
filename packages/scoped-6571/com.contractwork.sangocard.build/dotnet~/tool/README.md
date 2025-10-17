@@ -59,30 +59,77 @@ SangoCard.Build.Tool.Tests/
 
 ## Development Status
 
-### ✅ Task 1.1: Project Setup (Complete)
+### ✅ Epic 1-2: Core Infrastructure & Services (Complete)
 
-- .NET 8.0 project created
-- NuGet packages configured
+**Task 1.1: Project Setup**
+
+- .NET 8.0 project created with all dependencies
 - Solution structure established
 - EditorConfig configured
 - Test project created
 
-### 🔄 Task 1.2: DI Setup (In Progress)
+**Task 1.2: DI Setup**
 
-- Host builder setup
-- Service registration
+- Host builder with Microsoft.Extensions.Hosting
+- Service registration and DI container
 - Logging configuration
 - MessagePipe integration
 
-### ⏳ Upcoming Tasks
+**Task 1.3: PathResolver**
 
-- Task 1.3: PathResolver implementation
-- Task 1.4: Core models
-- Task 2.x: Services (Config, Cache, Validation, Preparation)
-- Task 3.x: Code patchers (C#, JSON, Unity, Text)
-- Task 4.x: CLI commands
-- Task 5.x: TUI views
-- Task 6.x: Integration and testing
+- Git root detection
+- Path resolution relative to git root
+- Cross-platform path handling
+
+**Task 1.4: Core Models**
+
+- PreparationConfig, AssetManipulation, CodePatch
+- ScriptingDefineSymbols, CacheItem, ValidationResult
+- JSON serialization support
+
+**Task 2.1: ConfigService**
+
+- Load/Save JSON configurations
+- Add/Remove packages, assemblies, defines, patches
+- MessagePipe event publishing
+
+**Task 2.2: CacheService**
+
+- Populate from code-quality
+- Add/Remove cached items
+- Bidirectional config-cache sync
+
+**Task 2.3: ValidationService**
+
+- 4-level validation (Schema, FileExistence, UnityPackages, Full)
+- Clear error messages with file paths
+- Validation summary
+
+**Task 2.4: ManifestService**
+
+- Read/Write Unity manifest.json
+- Add/Remove packages
+- Format preservation
+
+**Task 2.5: PreparationService** ✅ JUST COMPLETED
+
+- ExecuteAsync() with full orchestration
+- Backup/restore mechanism
+- Rollback on error
+- Dry-run mode support
+- Pre-execution validation
+- Progress reporting via MessagePipe
+- 10/10 unit tests passing
+
+### ⏳ Next: Task 3.1 - Patcher Interface & Base (Wave 6)
+
+**Upcoming Tasks:**
+
+- Epic 3: Code Patchers (Tasks 3.1-3.5)
+- Epic 4: CLI Implementation (Tasks 4.1-4.3)
+- Epic 5: TUI Implementation (Tasks 5.1-5.5)
+- Epic 6: Testing & Integration (Tasks 6.1-6.4)
+- Epic 7: Documentation & Deployment (Tasks 7.1-7.3)
 
 ## Technology Stack
 

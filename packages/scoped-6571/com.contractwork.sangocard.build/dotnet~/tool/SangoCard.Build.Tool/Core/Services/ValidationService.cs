@@ -45,7 +45,7 @@ public class ValidationService
     /// <param name="config">Configuration to validate.</param>
     /// <param name="level">Validation level.</param>
     /// <returns>Validation result.</returns>
-    public ValidationResult Validate(PreparationConfig config, ValidationLevel level)
+    public virtual ValidationResult Validate(PreparationConfig config, ValidationLevel level)
     {
         _logger.LogInformation("Starting validation at level: {Level}", level);
         _validationStartedPublisher.Publish(new ValidationStartedMessage(level));

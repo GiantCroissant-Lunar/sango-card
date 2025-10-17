@@ -7,6 +7,7 @@ using SangoCard.Build.Tool.Core.Patchers;
 using SangoCard.Build.Tool.Core.Services;
 using SangoCard.Build.Tool.Core.Utilities;
 using SangoCard.Build.Tool.Messages;
+using System.IO.Compression;
 using Xunit;
 
 namespace SangoCard.Build.Tool.Tests.Core.Services;
@@ -15,6 +16,7 @@ public class PreparationServiceTests : IDisposable
 {
     private readonly GitHelper _gitHelper;
     private readonly PathResolver _pathResolver;
+    private readonly Mock<ValidationService> _validationService;
     private readonly PreparationService _prepService;
     private readonly string _testDir;
     private readonly string _srcDir;
@@ -35,6 +37,16 @@ public class PreparationServiceTests : IDisposable
         _gitHelper = new GitHelper(gitLogger.Object);
         _pathResolver = new PathResolver(_gitHelper, pathLogger.Object);
 
+        // Mock ValidationService
+        _validationService = new Mock<ValidationService>(
+            MockBehavior.Loose,
+            _pathResolver,
+            Mock.Of<ILogger<ValidationService>>(),
+            Mock.Of<IPublisher<ValidationStartedMessage>>(),
+            Mock.Of<IPublisher<ValidationCompletedMessage>>(),
+            Mock.Of<IPublisher<ValidationErrorFoundMessage>>(),
+            Mock.Of<IPublisher<ValidationWarningFoundMessage>>());
+
         // Prepare patchers
         var textPatcher = new TextPatcher(new Mock<ILogger<TextPatcher>>().Object);
         var jsonPatcher = new JsonPatcher(new Mock<ILogger<JsonPatcher>>().Object);
@@ -43,6 +55,7 @@ public class PreparationServiceTests : IDisposable
 
         _prepService = new PreparationService(
             _pathResolver,
+            _validationService.Object,
             new[] { (IPatcher)textPatcher, jsonPatcher, csPatcher, unityPatcher },
             prepLogger.Object,
             _prepStarted.Object,
@@ -69,7 +82,7 @@ public class PreparationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task RunAsync_ShouldCopyPackagesAndAssemblies()
+    public async Task ExecuteAsync_ShouldCopyPackagesAndAssemblies()
     {
         // Arrange
         var pkgSrc = Path.Combine(_srcDir, "com.example.pkg-1.0.0.tgz");
@@ -106,7 +119,7 @@ public class PreparationServiceTests : IDisposable
         };
 
         // Act
-        var summary = await _prepService.RunAsync(config);
+        var summary = await _prepService.ExecuteAsync(config, validate: false);
 
         // Assert
         File.Exists(pkgTarget).Should().BeTrue();
@@ -117,7 +130,7 @@ public class PreparationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task RunAsync_ShouldPerformAssetManipulations()
+    public async Task ExecuteAsync_ShouldPerformAssetManipulations()
     {
         // Arrange
         var sourceFile = Path.Combine(_srcDir, "a.txt");
@@ -139,7 +152,7 @@ public class PreparationServiceTests : IDisposable
         };
 
         // Act
-        var summary = await _prepService.RunAsync(config);
+        var summary = await _prepService.ExecuteAsync(config, validate: false);
 
         // Assert
         File.Exists(copyTarget).Should().BeFalse();
@@ -154,7 +167,7 @@ public class PreparationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task RunAsync_ShouldApplyTextPatch()
+    public async Task ExecuteAsync_ShouldApplyTextPatch()
     {
         // Arrange
         var targetFile = Path.Combine(_dstDir, "x.txt");
@@ -177,7 +190,7 @@ public class PreparationServiceTests : IDisposable
         };
 
         // Act
-        var summary = await _prepService.RunAsync(config);
+        var summary = await _prepService.ExecuteAsync(config, validate: false);
 
         // Assert
         var content = await File.ReadAllTextAsync(targetFile);
@@ -186,7 +199,7 @@ public class PreparationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task RunAsync_ShouldSkipOptionalPatchWhenFileMissing()
+    public async Task ExecuteAsync_ShouldSkipOptionalPatchWhenFileMissing()
     {
         // Arrange
         var config = new PreparationConfig
@@ -207,9 +220,203 @@ public class PreparationServiceTests : IDisposable
         };
 
         // Act
-        var summary = await _prepService.RunAsync(config);
+        var summary = await _prepService.ExecuteAsync(config, validate: false);
 
         // Assert
         summary.Patched.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WithValidation_ShouldValidateConfig()
+    {
+        // Arrange
+        var config = new PreparationConfig
+        {
+            Version = "1.0"
+        };
+
+        var validationResult = new ValidationResult
+        {
+            IsValid = true,
+            Summary = "All validations passed"
+        };
+
+        _validationService
+            .Setup(v => v.Validate(config, ValidationLevel.Full))
+            .Returns(validationResult);
+
+        // Act
+        await _prepService.ExecuteAsync(config, validate: true);
+
+        // Assert
+        _validationService.Verify(v => v.Validate(config, ValidationLevel.Full), Times.Once);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WithFailedValidation_ShouldThrow()
+    {
+        // Arrange
+        var config = new PreparationConfig
+        {
+            Version = "1.0"
+        };
+
+        var validationResult = new ValidationResult
+        {
+            IsValid = false,
+            Summary = "Validation failed with 5 errors"
+        };
+
+        _validationService
+            .Setup(v => v.Validate(config, ValidationLevel.Full))
+            .Returns(validationResult);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await _prepService.ExecuteAsync(config, validate: true));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WithDryRun_ShouldNotModifyFiles()
+    {
+        // Arrange
+        var sourceFile = Path.Combine(_srcDir, "test.txt");
+        var targetFile = Path.Combine(_dstDir, "test.txt");
+        await File.WriteAllTextAsync(sourceFile, "test content");
+
+        var config = new PreparationConfig
+        {
+            Version = "1.0",
+            AssetManipulations =
+            {
+                new AssetManipulation
+                {
+                    Operation = AssetOperation.Copy,
+                    Source = _pathResolver.MakeRelative(sourceFile),
+                    Target = _pathResolver.MakeRelative(targetFile),
+                    Overwrite = true
+                }
+            }
+        };
+
+        // Act
+        await _prepService.ExecuteAsync(config, validate: false, dryRun: true);
+
+        // Assert
+        File.Exists(targetFile).Should().BeFalse("File should not be created in dry-run mode");
+        _fileCopied.Verify(p => p.Publish(It.IsAny<FileCopiedMessage>()), Times.Once,
+            "Messages should still be published in dry-run mode");
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_OnError_ShouldRollback()
+    {
+        // Arrange
+        var sourceFile = Path.Combine(_srcDir, "source.txt");
+        var targetFile = Path.Combine(_dstDir, "target.txt");
+        await File.WriteAllTextAsync(sourceFile, "new content");
+        await File.WriteAllTextAsync(targetFile, "original content");
+
+        var config = new PreparationConfig
+        {
+            Version = "1.0",
+            AssetManipulations =
+            {
+                new AssetManipulation
+                {
+                    Operation = AssetOperation.Copy,
+                    Source = _pathResolver.MakeRelative(sourceFile),
+                    Target = _pathResolver.MakeRelative(targetFile),
+                    Overwrite = true
+                },
+                // This will cause an error
+                new AssetManipulation
+                {
+                    Operation = AssetOperation.Copy,
+                    Source = _pathResolver.MakeRelative(Path.Combine(_srcDir, "nonexistent.txt")),
+                    Target = _pathResolver.MakeRelative(Path.Combine(_dstDir, "other.txt")),
+                    Overwrite = true
+                }
+            }
+        };
+
+        // Act & Assert
+        await Assert.ThrowsAnyAsync<Exception>(
+            async () => await _prepService.ExecuteAsync(config, validate: false));
+
+        // Verify rollback - original content should be restored
+        var content = await File.ReadAllTextAsync(targetFile);
+        content.Should().Be("original content", "File should be rolled back to original state");
+    }
+
+    [Fact]
+    public async Task RestoreAsync_ShouldRestoreFromBackup()
+    {
+        // Arrange
+        var testFile = Path.Combine(_dstDir, "important.txt");
+        await File.WriteAllTextAsync(testFile, "original data");
+
+        // Manually create a backup to test restore functionality
+        var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+        var backupPath = Path.Combine(Path.GetTempPath(), $"build_prep_backup_test_{timestamp}");
+        Directory.CreateDirectory(backupPath);
+
+        var archivePath = Path.Combine(backupPath, "backup.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            var relativePath = _pathResolver.MakeRelative(testFile);
+            archive.CreateEntryFromFile(testFile, relativePath);
+        }
+
+        // Delete the original file
+        File.Delete(testFile);
+        File.Exists(testFile).Should().BeFalse("File should be deleted");
+
+        // Act - Restore
+        await _prepService.RestoreAsync(backupPath);
+
+        // Assert
+        File.Exists(testFile).Should().BeTrue("File should be restored");
+        var content = await File.ReadAllTextAsync(testFile);
+        content.Should().Be("original data", "Content should match original");
+
+        // Cleanup
+        if (Directory.Exists(backupPath))
+        {
+            Directory.Delete(backupPath, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldCompleteInReasonableTime()
+    {
+        // Arrange - Create 20 small files
+        for (int i = 0; i < 20; i++)
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(_srcDir, $"file{i}.txt"),
+                $"content {i}");
+        }
+
+        var config = new PreparationConfig
+        {
+            Version = "1.0",
+            AssetManipulations = Enumerable.Range(0, 20).Select(i => new AssetManipulation
+            {
+                Operation = AssetOperation.Copy,
+                Source = _pathResolver.MakeRelative(Path.Combine(_srcDir, $"file{i}.txt")),
+                Target = _pathResolver.MakeRelative(Path.Combine(_dstDir, $"file{i}.txt")),
+                Overwrite = true
+            }).ToList()
+        };
+
+        // Act
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        await _prepService.ExecuteAsync(config, validate: false);
+        sw.Stop();
+
+        // Assert - Should complete well under 30 seconds
+        sw.Elapsed.TotalSeconds.Should().BeLessThan(10,
+            "20 file operations should complete in under 10 seconds");
     }
 }
