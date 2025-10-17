@@ -1,39 +1,37 @@
 {
-  "generated_at": "2025-10-17T10:37:11.604854Z",
-  "total_docs": 26,
+  "generated_at": "2025-10-17T10:57:56.747886Z",
+  "total_docs": 30,
   "by_type": {
-    "guide": 22,
+    "guide": 26,
     "finding": 1,
     "plan": 1,
     "rfc": 1,
     "spec": 1
   },
   "by_status": {
-    "active": 26
+    "active": 30
   },
   "docs": [
     {
       "path": "docs/DOCUMENTATION-SCHEMA.md",
-      "doc_id": "DOC-2025-00001",
-      "title": "Documentation Front-Matter Schema",
+      "doc_id": "DOC-2025-00143",
+      "title": "DOCUMENTATION SCHEMA",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "docs",
-        "schema",
-        "meta"
+        "documentation-schema"
       ],
       "created": "2025-10-17",
-      "summary": "Mandatory front-matter schema for all documentation files",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "60f8b55be0afe67b8ccfe8d55d6803fac2e96ed26dcc25caf6254aff02468a3e",
-      "simhash": "10019682047067228804"
+      "sha256": "badab05f24c13fb33e31ca80955d0887861037edd94e608bb95a5feeae267f96",
+      "simhash": "9875636127821269636"
     },
     {
       "path": "docs/README.md",
-      "doc_id": "DOC-2025-00093",
+      "doc_id": "DOC-2025-00144",
       "title": "README",
       "doc_type": "guide",
       "status": "active",
@@ -45,12 +43,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "e657c1a4ab2ba62b283ee3c4f0957e6056e24ce20e69e74c590e1f0bdfed613d",
-      "simhash": "10202918974340600343"
+      "sha256": "3732e40c8227bf2aa95ea4867364d8adc3c54d0d74cfea1b2f1585b13a6d9eb5",
+      "simhash": "9878730169914102293"
     },
     {
       "path": "docs/findings/nuke-api-compatibility.md",
-      "doc_id": "DOC-2025-00111",
+      "doc_id": "DOC-2025-00165",
       "title": "Nuke Api Compatibility",
       "doc_type": "finding",
       "status": "active",
@@ -62,12 +60,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "4ee516e27d2929e132004f393f24f67fa5426155d252a68404b01c0887b06ab4",
-      "simhash": "6001263824309856063"
+      "sha256": "c247b29699fdead3b1d539ae7724e3102f7e6c77a6a1db35bcd505dacf0472ed",
+      "simhash": "6002388624706250557"
     },
     {
       "path": "docs/guides/agent-orchestration.md",
-      "doc_id": "DOC-2025-00112",
+      "doc_id": "DOC-2025-00166",
       "title": "Agent Orchestration",
       "doc_type": "guide",
       "status": "active",
@@ -79,12 +77,29 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "3b56e82e22d61de97f281c1ce397ea67f7c5398dd68eeb91b8e600434eedf7b6",
-      "simhash": "11978568839457624799"
+      "sha256": "83014ea75da4c55ee2c8cfb4c602a12d60bd830e7c2985de9ab4183a33df1110",
+      "simhash": "11825446452127027869"
+    },
+    {
+      "path": "docs/guides/build-artifact-structure.md",
+      "doc_id": "DOC-2025-00167",
+      "title": "Build Artifact Structure",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": false,
+      "tags": [
+        "build-artifact-structure"
+      ],
+      "created": "2025-10-17",
+      "summary": "(Add summary here)\n",
+      "supersedes": [],
+      "related": [],
+      "sha256": "bded263e192863220bc72c0728ec1b89ed3c9c9ceda106a333e56f3b1363b12c",
+      "simhash": "4561195996861098034"
     },
     {
       "path": "docs/guides/build-preparation-workflow.md",
-      "doc_id": "DOC-2025-00113",
+      "doc_id": "DOC-2025-00168",
       "title": "Build Preparation Workflow",
       "doc_type": "guide",
       "status": "active",
@@ -96,12 +111,46 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "6170a20dbcf27acc5cb110eeb70715366e6401969dfa8025ce7a01b4e3f9e217",
-      "simhash": "9392432944000082615"
+      "sha256": "11e9e62fdd4d2b44a175377849b97fb076d07d0190f665f6f45ff319e885a6cb",
+      "simhash": "9392431845025325750"
+    },
+    {
+      "path": "docs/guides/build-tool-migration-guide.md",
+      "doc_id": "DOC-2025-00169",
+      "title": "Build Tool Migration Guide",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": false,
+      "tags": [
+        "build-tool-migration-guide"
+      ],
+      "created": "2025-10-17",
+      "summary": "(Add summary here)\n",
+      "supersedes": [],
+      "related": [],
+      "sha256": "5a681bb2dd3729194dca06f278087298098dfc9f130a3864017e082e02c5c8c3",
+      "simhash": "9303518720554840743"
+    },
+    {
+      "path": "docs/guides/build-tool-tui-testing-guide.md",
+      "doc_id": "DOC-2025-00170",
+      "title": "Build Tool Tui Testing Guide",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": false,
+      "tags": [
+        "build-tool-tui-testing-guide"
+      ],
+      "created": "2025-10-17",
+      "summary": "(Add summary here)\n",
+      "supersedes": [],
+      "related": [],
+      "sha256": "6b5a3883794673dead881fe1a1a3938c0d4c8fddec055b5eef918840596f1a09",
+      "simhash": "4779822150496094902"
     },
     {
       "path": "docs/guides/coding-patterns.md",
-      "doc_id": "DOC-2025-00114",
+      "doc_id": "DOC-2025-00171",
       "title": "Coding Patterns",
       "doc_type": "guide",
       "status": "active",
@@ -113,12 +162,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "2feb06f8a1194cdbdcfa7dd71248a9ee9f82bf54a470e083d30f95ac8668e87f",
-      "simhash": "4849370466161871548"
+      "sha256": "f09a99631aba0a1eda3a2ff98be776100622f49c0b48728b4e80274640c2dcb8",
+      "simhash": "4849370466161863348"
     },
     {
       "path": "docs/guides/documentation-enforcement.md",
-      "doc_id": "DOC-2025-00115",
+      "doc_id": "DOC-2025-00172",
       "title": "Documentation Enforcement",
       "doc_type": "guide",
       "status": "active",
@@ -130,12 +179,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "dc0b608c1893707b58a19551a084afbbf44f00af31263b5dafab06eca3bd3c05",
-      "simhash": "796073629072562844"
+      "sha256": "542a3a00c092dbbe6195e0e9da9187c25c913093a1168830a842614a2c8b0b40",
+      "simhash": "796078018495582868"
     },
     {
       "path": "docs/guides/documentation-migration-guide.md",
-      "doc_id": "DOC-2025-00116",
+      "doc_id": "DOC-2025-00173",
       "title": "Documentation Migration Guide",
       "doc_type": "guide",
       "status": "active",
@@ -147,12 +196,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "12125e2a05b508b22f41e003386c563ef3fe3053989735127838663bb513ce75",
-      "simhash": "11172461730369180164"
+      "sha256": "d92c54ec248df2034f35685309d982b0e31fdfec51b0d6d6a54c1440a5ada408",
+      "simhash": "1372699309955158548"
     },
     {
       "path": "docs/guides/multi-agent-quickstart.md",
-      "doc_id": "DOC-2025-00117",
+      "doc_id": "DOC-2025-00174",
       "title": "Multi Agent Quickstart",
       "doc_type": "guide",
       "status": "active",
@@ -164,12 +213,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "74973aaecdd7b08a5c492e8161189d1aae8c3701e64828bc656cdb1f8e0ad02c",
-      "simhash": "9239225829349416701"
+      "sha256": "bb1049113b37be6e8a1365f069e16887306385098dd06d3b61bf5b9e08d470aa",
+      "simhash": "9249341336324939517"
     },
     {
       "path": "docs/guides/multi-agent-workflow.md",
-      "doc_id": "DOC-2025-00118",
+      "doc_id": "DOC-2025-00175",
       "title": "Multi Agent Workflow",
       "doc_type": "guide",
       "status": "active",
@@ -181,12 +230,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "82f06941a2e77f0cada1541232d7b35d34c5122ab5d5858cc6a3cfe4711aaf59",
-      "simhash": "11753943016244468341"
+      "sha256": "9e1630e95054c0e5582b6821605064229d1d5ecffd239816778a0e82ddb59072",
+      "simhash": "10601021511637621365"
     },
     {
       "path": "docs/guides/pre-commit.md",
-      "doc_id": "DOC-2025-00119",
+      "doc_id": "DOC-2025-00176",
       "title": "Pre Commit",
       "doc_type": "guide",
       "status": "active",
@@ -198,12 +247,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "8c81a91b843e2b2c7971f22a0408b7dee649a038a214117c76654aa089baf87e",
-      "simhash": "9842457165411591933"
+      "sha256": "173ad0892d932189d700ade160757629209b2e9d7d3dcea0335b248ad7d933d8",
+      "simhash": "691142722594744061"
     },
     {
       "path": "docs/guides/spec-kit-quickstart.md",
-      "doc_id": "DOC-2025-00120",
+      "doc_id": "DOC-2025-00177",
       "title": "Spec Kit Quickstart",
       "doc_type": "guide",
       "status": "active",
@@ -215,12 +264,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "f72b8922eb094196dc10e91650c885d58b1e400473f7456f570286b67a4dfd53",
-      "simhash": "9443147879135772839"
+      "sha256": "3449c78e783d946c689433b875364038e51ba9e441a68bc3cec81886f89658a5",
+      "simhash": "9443147604257865895"
     },
     {
       "path": "docs/guides/spec-kit-to-github-issues.md",
-      "doc_id": "DOC-2025-00121",
+      "doc_id": "DOC-2025-00178",
       "title": "Spec Kit To Github Issues",
       "doc_type": "guide",
       "status": "active",
@@ -232,12 +281,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "67f7a6576f9a3d6bfed974f7612ec552a15455fdda5adad28a89cce2bc1f502f",
-      "simhash": "11420398565222586553"
+      "sha256": "a049064cdf3523d3d8186fe52265c384d9c5de47b8744e3f6ecc528944b65dcd",
+      "simhash": "11276283377146730681"
     },
     {
       "path": "docs/guides/spec-kit.md",
-      "doc_id": "DOC-2025-00122",
+      "doc_id": "DOC-2025-00179",
       "title": "Spec Kit",
       "doc_type": "guide",
       "status": "active",
@@ -249,12 +298,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "a06f96f7bd608233e7a703ac020aa370c9ec9960b2b308bb6e6535c79c643631",
-      "simhash": "10541818144964412045"
+      "sha256": "8cfa5316ede1626e2a52d9e75a2064c81614a649abca3fb795d7be23c2a396fe",
+      "simhash": "1390503693557629581"
     },
     {
       "path": "docs/guides/task-alternatives.md",
-      "doc_id": "DOC-2025-00123",
+      "doc_id": "DOC-2025-00180",
       "title": "Task Alternatives",
       "doc_type": "guide",
       "status": "active",
@@ -266,12 +315,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "579b2f0b116431b50a065221f8f845658df319a7378b3c4710185dc72cac9760",
-      "simhash": "1084503010521762335"
+      "sha256": "4b2f8b1f17d0c5aeecaab7775bd81d2cfbf89cd236756519379f29b4fec11305",
+      "simhash": "1084503010521763359"
     },
     {
       "path": "docs/guides/task-getting-started.md",
-      "doc_id": "DOC-2025-00124",
+      "doc_id": "DOC-2025-00181",
       "title": "Task Getting Started",
       "doc_type": "guide",
       "status": "active",
@@ -283,12 +332,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "e7b148f341dc9750bc0794104d87916830facdfbfa23f89c975ed47d5e9a7574",
-      "simhash": "922409716232953871"
+      "sha256": "64df9e675fd72e0e3bc1385029e50bf2bebdddb3023f060e3e1d4dedca069d78",
+      "simhash": "634179331491308047"
     },
     {
       "path": "docs/guides/task-index.md",
-      "doc_id": "DOC-2025-00125",
+      "doc_id": "DOC-2025-00182",
       "title": "Task Index",
       "doc_type": "guide",
       "status": "active",
@@ -300,12 +349,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "fc5d34b372476022c2c87ab67605509169aad0bbfd1ac702ea48856efab9b596",
-      "simhash": "9988506466886695582"
+      "sha256": "3882494f7cb60ac0a227b1ba053768fa97870ace630c1ffa07259119d47df5e0",
+      "simhash": "9988508700269689502"
     },
     {
       "path": "docs/guides/task-integration.md",
-      "doc_id": "DOC-2025-00126",
+      "doc_id": "DOC-2025-00183",
       "title": "Task Integration",
       "doc_type": "guide",
       "status": "active",
@@ -317,12 +366,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "8ebec848d7e5430952b88f375f13a1c0970a012491c134d1818acde97642ddd6",
-      "simhash": "9987909475022875287"
+      "sha256": "79f849314ca089a47a032f2ac87afe2a3acffe5636b56a2daf58af81fc741958",
+      "simhash": "764537429586553494"
     },
     {
       "path": "docs/guides/task-quick-reference.md",
-      "doc_id": "DOC-2025-00127",
+      "doc_id": "DOC-2025-00184",
       "title": "Task Quick Reference",
       "doc_type": "guide",
       "status": "active",
@@ -334,12 +383,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "89bdeb778d858c8fc065b7f383b0a58c5cfe0b62d74ac0231fc18e7fe3fdf88a",
-      "simhash": "781390752403551943"
+      "sha256": "ecb73a0fbd17394bc8128d7723c68357a2cdf0a92659ce91b76ab94d814da076",
+      "simhash": "205000360248063687"
     },
     {
       "path": "docs/guides/task-runner.md",
-      "doc_id": "DOC-2025-00128",
+      "doc_id": "DOC-2025-00185",
       "title": "Task Runner",
       "doc_type": "guide",
       "status": "active",
@@ -351,12 +400,29 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "b1549d1ede0b897db4f30447fd167916e01490331d954661390ca778ce85e8f1",
-      "simhash": "10976447390448165391"
+      "sha256": "015964f4d68420c7ac34e1965d753258b3e8b8202968fe9cbfe9dea3d1d684b5",
+      "simhash": "10397807406098489871"
+    },
+    {
+      "path": "docs/guides/terminal-gui-v2-migration.md",
+      "doc_id": "DOC-2025-00186",
+      "title": "Terminal Gui V2 Migration",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": false,
+      "tags": [
+        "terminal-gui-v2-migration"
+      ],
+      "created": "2025-10-17",
+      "summary": "(Add summary here)\n",
+      "supersedes": [],
+      "related": [],
+      "sha256": "e50a7ee32c3ec4d752cc48d23ebebcd37a58dfeefc8ca3d6daeb982874559d76",
+      "simhash": "4705495207809608333"
     },
     {
       "path": "docs/guides/terraform-cloud-setup.md",
-      "doc_id": "DOC-2025-00129",
+      "doc_id": "DOC-2025-00187",
       "title": "Terraform Cloud Setup",
       "doc_type": "guide",
       "status": "active",
@@ -368,12 +434,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "4f6e8522a64467e88773c3eb14a65d4fbbde9e8f2b3b2c4efffdee2488d1f3ce",
+      "sha256": "4804e9c24ed280f869a67398d8dc703464d91f7d7ca5b7999be7da4a004d371d",
       "simhash": "14357314948994932885"
     },
     {
       "path": "docs/guides/terraform-quickstart.md",
-      "doc_id": "DOC-2025-00130",
+      "doc_id": "DOC-2025-00188",
       "title": "Terraform Quickstart",
       "doc_type": "guide",
       "status": "active",
@@ -385,12 +451,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "b91902fa0bf2800979f09ad171262b9131e0a0d5bd37a478aad1f702da852551",
-      "simhash": "2511969278173567636"
+      "sha256": "767ebc2f23670a084e56ae6e26fabf9fa75c9229dc4b366738bc881a288116d1",
+      "simhash": "2511969278173568660"
     },
     {
       "path": "docs/guides/terraform-security.md",
-      "doc_id": "DOC-2025-00131",
+      "doc_id": "DOC-2025-00189",
       "title": "Terraform Security",
       "doc_type": "guide",
       "status": "active",
@@ -402,12 +468,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "6c61875a239ee28140c8f4396d5d81ae7c271f205183f1f896f6b53fc2d94aa0",
+      "sha256": "90e3091ff9f7ecde11ed555aad3a3b46b378db3e675ba5bafe9ec6386fd8c04a",
       "simhash": "3629724209336275659"
     },
     {
       "path": "docs/plans/project-phases.md",
-      "doc_id": "DOC-2025-00132",
+      "doc_id": "DOC-2025-00190",
       "title": "Project Phases",
       "doc_type": "plan",
       "status": "active",
@@ -419,12 +485,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "21f4c094060f1df723dc2fe26bbfba8c3008247326f96cab7a9d071977bf9b4a",
-      "simhash": "14684108596235276959"
+      "sha256": "f2749040b8cb676b01bbb8a83cf87d9097d7dbddbf04fd99d4af35aa8c0ebd93",
+      "simhash": "14648044614844224157"
     },
     {
       "path": "docs/rfcs/RFC-001-build-preparation-tool.md",
-      "doc_id": "DOC-2025-00133",
+      "doc_id": "DOC-2025-00191",
       "title": "RFC 001 Build Preparation Tool",
       "doc_type": "rfc",
       "status": "active",
@@ -436,12 +502,12 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "c7ced10dc28708e423c5afefcd58e76b6a893bdd3953b4ba818fce1d412eb9d6",
-      "simhash": "14649347500958237343"
+      "sha256": "8dfe1397d594158be026399a4fcd524af5338abbca553dbdf35f774921ce65b2",
+      "simhash": "14649347500958237335"
     },
     {
       "path": "docs/specs/build-preparation-tool.md",
-      "doc_id": "DOC-2025-00134",
+      "doc_id": "DOC-2025-00192",
       "title": "Build Preparation Tool",
       "doc_type": "spec",
       "status": "active",
@@ -453,8 +519,8 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "be833a1fe4faeddc22ee4d334ba185655cc5e63b38252bb75c637bd98f782599",
-      "simhash": "14649169371484480159"
+      "sha256": "724296f857d79414720da60535173202240bd4f66136da94711651201b909229",
+      "simhash": "14649169371484611231"
     }
   ]
 }

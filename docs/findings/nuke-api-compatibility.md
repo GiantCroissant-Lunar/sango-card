@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00111
+doc_id: DOC-2025-00165
+title: Nuke Api Compatibility
+doc_type: finding
+status: active
+canonical: false
+created: 2025-10-17
+tags: [nuke-api-compatibility]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00116
 title: Nuke Api Compatibility
 doc_type: finding
 status: active

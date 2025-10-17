@@ -1,4 +1,30 @@
 ---
+doc_id: DOC-2025-00161
+title: Terraform Sops Setup Complete
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [terraform-sops-setup-complete]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00112
+title: Terraform Sops Setup Complete
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [terraform-sops-setup-complete]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00107
 title: Terraform Sops Setup Complete
 doc_type: guide

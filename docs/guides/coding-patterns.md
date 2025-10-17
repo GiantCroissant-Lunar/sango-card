@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00114
+doc_id: DOC-2025-00171
+title: Coding Patterns
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [coding-patterns]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00121
 title: Coding Patterns
 doc_type: guide
 status: active

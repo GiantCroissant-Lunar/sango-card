@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00121
+doc_id: DOC-2025-00178
+title: Spec Kit To Github Issues
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [spec-kit-to-github-issues]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00128
 title: Spec Kit To Github Issues
 doc_type: guide
 status: active

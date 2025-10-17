@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00124
+doc_id: DOC-2025-00181
+title: Task Getting Started
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-getting-started]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00131
 title: Task Getting Started
 doc_type: guide
 status: active

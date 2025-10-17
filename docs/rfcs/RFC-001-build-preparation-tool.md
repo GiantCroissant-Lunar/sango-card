@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00133
+doc_id: DOC-2025-00191
+title: RFC 001 Build Preparation Tool
+doc_type: rfc
+status: active
+canonical: false
+created: 2025-10-17
+tags: [rfc-001-build-preparation-tool]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00141
 title: RFC 001 Build Preparation Tool
 doc_type: rfc
 status: active

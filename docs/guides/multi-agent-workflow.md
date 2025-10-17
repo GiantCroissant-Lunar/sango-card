@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00118
+doc_id: DOC-2025-00175
+title: Multi Agent Workflow
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [multi-agent-workflow]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00125
 title: Multi Agent Workflow
 doc_type: guide
 status: active

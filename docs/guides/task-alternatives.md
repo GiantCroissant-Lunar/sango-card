@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00123
+doc_id: DOC-2025-00180
+title: Task Alternatives
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-alternatives]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00130
 title: Task Alternatives
 doc_type: guide
 status: active

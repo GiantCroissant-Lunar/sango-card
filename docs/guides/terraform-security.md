@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00131
+doc_id: DOC-2025-00189
+title: Terraform Security
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [terraform-security]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00139
 title: Terraform Security
 doc_type: guide
 status: active

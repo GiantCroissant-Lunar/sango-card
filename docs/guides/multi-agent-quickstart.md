@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00117
+doc_id: DOC-2025-00174
+title: Multi Agent Quickstart
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [multi-agent-quickstart]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00124
 title: Multi Agent Quickstart
 doc_type: guide
 status: active

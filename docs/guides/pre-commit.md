@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00119
+doc_id: DOC-2025-00176
+title: Pre Commit
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [pre-commit]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00126
 title: Pre Commit
 doc_type: guide
 status: active

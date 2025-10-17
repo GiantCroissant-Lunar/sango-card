@@ -1,4 +1,30 @@
 ---
+doc_id: DOC-2025-00160
+title: Terraform IMPLEMENTATION SUMMARY
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [terraform-implementation_summary]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00111
+title: Terraform IMPLEMENTATION SUMMARY
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [terraform-implementation_summary]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00106
 title: Terraform IMPLEMENTATION SUMMARY
 doc_type: guide

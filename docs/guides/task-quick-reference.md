@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00127
+doc_id: DOC-2025-00184
+title: Task Quick Reference
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-quick-reference]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00134
 title: Task Quick Reference
 doc_type: guide
 status: active

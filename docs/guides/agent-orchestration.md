@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00112
+doc_id: DOC-2025-00166
+title: Agent Orchestration
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [agent-orchestration]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00117
 title: Agent Orchestration
 doc_type: guide
 status: active

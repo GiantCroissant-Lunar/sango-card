@@ -1,4 +1,30 @@
 ---
+doc_id: DOC-2025-00164
+title: TOOL DESIGN
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [tool-design]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00115
+title: TOOL DESIGN
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [tool-design]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00110
 title: TOOL DESIGN
 doc_type: guide

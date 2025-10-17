@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00120
+doc_id: DOC-2025-00177
+title: Spec Kit Quickstart
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [spec-kit-quickstart]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00127
 title: Spec Kit Quickstart
 doc_type: guide
 status: active

@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00126
+doc_id: DOC-2025-00183
+title: Task Integration
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-integration]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00133
 title: Task Integration
 doc_type: guide
 status: active

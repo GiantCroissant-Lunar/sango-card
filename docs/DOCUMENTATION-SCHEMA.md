@@ -1,4 +1,30 @@
 ---
+doc_id: DOC-2025-00143
+title: DOCUMENTATION SCHEMA
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [documentation-schema]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00094
+title: DOCUMENTATION SCHEMA
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [documentation-schema]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00001
 title: Documentation Front-Matter Schema
 doc_type: guide

@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00130
+doc_id: DOC-2025-00188
+title: Terraform Quickstart
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [terraform-quickstart]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00138
 title: Terraform Quickstart
 doc_type: guide
 status: active

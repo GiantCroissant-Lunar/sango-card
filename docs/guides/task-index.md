@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00125
+doc_id: DOC-2025-00182
+title: Task Index
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-index]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00132
 title: Task Index
 doc_type: guide
 status: active
