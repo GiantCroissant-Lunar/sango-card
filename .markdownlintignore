@@ -1,7 +1,7 @@
 # Markdownlint ignore patterns
 # Coordination and tracking documents - working files with looser formatting
 .specify/*.md
-.specify/specs/*-AMD-*.md
+.specify/specs/*amendment*.md
 .specify/tasks/TASK-*.md
 .specify/tasks/PROGRESS-*.md
 .specify/*-COMPLETE.md

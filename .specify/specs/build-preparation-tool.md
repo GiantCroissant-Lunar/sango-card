@@ -1,8 +1,9 @@
 # SPEC: Build Preparation Tool
 
 **ID:** SPEC-BPT-001  
-**Status:** Draft  
+**Status:** Complete  
 **Created:** 2025-10-17  
+**Completed:** 2025-10-17  
 **Owner:** Build System Team  
 **Related RFC:** RFC-001
 
