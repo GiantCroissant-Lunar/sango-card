@@ -6,6 +6,7 @@ using Nuke.Common.Tools.Git;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.Git.GitTasks;
+using static Nuke.Common.Tooling.ProcessTasks;
 
 /// <summary>
 /// Build preparation component implementing two-phase workflow.
@@ -37,15 +38,15 @@ partial class Build
             Serilog.Log.Information("Source: {Source}", CodeQualityProject);
             Serilog.Log.Information("Config: {Config}", PreparationConfig);
 
-            DotNetRun(s => s
-                .SetProjectFile(PreparationToolProject)
-                .SetApplicationArguments(
-                    "cache populate " +
-                    $"--source {CodeQualityProject.ToRelativePath(RootDirectory)} " +
-                    $"--config {PreparationConfig.ToRelativePath(RootDirectory)}")
-                .SetProcessWorkingDirectory(RootDirectory)
-                .SetProcessLogOutput(true)
+            var relativeSource = RootDirectory.GetRelativePathTo(CodeQualityProject);
+            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+
+            var process = StartProcess(
+                "dotnet",
+                $"run --project \"{PreparationToolProject}\" -- cache populate --source {relativeSource} --config {relativeConfig}",
+                workingDirectory: RootDirectory
             );
+            process.AssertZeroExitCode();
 
             Serilog.Log.Information("✅ Cache population complete");
         });
@@ -71,16 +72,15 @@ partial class Build
             Serilog.Log.Information("Config: {Config}", PreparationConfig);
             Serilog.Log.Information("Target: projects/client/");
 
-            DotNetRun(s => s
-                .SetProjectFile(PreparationToolProject)
-                .SetApplicationArguments(
-                    "prepare inject " +
-                    $"--config {PreparationConfig.ToRelativePath(RootDirectory)} " +
-                    "--target projects/client/ " +
-                    "--verbose")
-                .SetProcessWorkingDirectory(RootDirectory)
-                .SetProcessLogOutput(true)
+            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+            var relativeClient = RootDirectory.GetRelativePathTo(ClientProject);
+
+            var process = StartProcess(
+                "dotnet",
+                $"run --project \"{PreparationToolProject}\" -- prepare inject --config {relativeConfig} --target {relativeClient} --verbose",
+                workingDirectory: RootDirectory
             );
+            process.AssertZeroExitCode();
 
             Serilog.Log.Information("✅ Client preparation complete");
         });
@@ -111,15 +111,14 @@ partial class Build
             Serilog.Log.Information("=== Validating Preparation Config ===");
             Serilog.Log.Information("Config: {Config}", PreparationConfig);
 
-            DotNetRun(s => s
-                .SetProjectFile(PreparationToolProject)
-                .SetApplicationArguments(
-                    "config validate " +
-                    $"--file {PreparationConfig.ToRelativePath(RootDirectory)} " +
-                    "--level Full")
-                .SetProcessWorkingDirectory(RootDirectory)
-                .SetProcessLogOutput(true)
+            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+
+            var process = StartProcess(
+                "dotnet",
+                $"run --project \"{PreparationToolProject}\" -- validate --file {relativeConfig} --level Full",
+                workingDirectory: RootDirectory
             );
+            process.AssertZeroExitCode();
 
             Serilog.Log.Information("✅ Validation complete");
         });
@@ -149,17 +148,15 @@ partial class Build
             Serilog.Log.Information("=== Dry-Run: Preparation Injection ===");
             Serilog.Log.Information("Config: {Config}", PreparationConfig);
 
-            DotNetRun(s => s
-                .SetProjectFile(PreparationToolProject)
-                .SetApplicationArguments(
-                    "prepare inject " +
-                    $"--config {PreparationConfig.ToRelativePath(RootDirectory)} " +
-                    "--target projects/client/ " +
-                    "--verbose " +
-                    "--dry-run")
-                .SetProcessWorkingDirectory(RootDirectory)
-                .SetProcessLogOutput(true)
+            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+            var relativeClient = RootDirectory.GetRelativePathTo(ClientProject);
+
+            var process = StartProcess(
+                "dotnet",
+                $"run --project \"{PreparationToolProject}\" -- prepare inject --config {relativeConfig} --target {relativeClient} --verbose --dry-run",
+                workingDirectory: RootDirectory
             );
+            process.AssertZeroExitCode();
 
             Serilog.Log.Information("✅ Dry-run complete (no files modified)");
         });

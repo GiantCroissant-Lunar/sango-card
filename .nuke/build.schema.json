@@ -26,17 +26,23 @@
       "enum": [
         "BuildDotNet",
         "BuildUnity",
+        "BuildUnityWithPreparation",
         "Clean",
         "CleanDotNet",
         "CleanUnity",
         "Compile",
+        "DryRunPreparation",
         "ExportUnityPackage",
         "PackDotNet",
+        "PrepareCache",
+        "PrepareClient",
         "PublishDotNet",
         "Restore",
+        "RestoreClient",
         "RestoreDotNet",
         "TestDotNet",
-        "TestUnity"
+        "TestUnity",
+        "ValidatePreparation"
       ]
     },
     "Verbosity": {
@@ -176,6 +182,10 @@
         "IsolatedUnityProjectPath": {
           "type": "string",
           "description": "Path of isolated Unity project for tests"
+        },
+        "PreparationConfig": {
+          "type": "string",
+          "description": "Path to preparation config"
         },
         "UnityBuildOutput": {
           "type": "string",
