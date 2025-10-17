@@ -47,9 +47,9 @@ function Test-PartialClassPattern {
     Write-ColorOutput "🔍 Checking partial class interface separation pattern (R-CODE-090)..." $Blue
 
     # Get staged .cs files
-    $stagedFiles = git diff --cached --name-only --diff-filter=ACM | Where-Object { $_ -match '\.cs$' }
+    $stagedFiles = @(git diff --cached --name-only --diff-filter=ACM | Where-Object { $_ -match '\.cs$' })
 
-    if (-not $stagedFiles -or $stagedFiles.Count -eq 0) {
+    if ($stagedFiles.Count -eq 0) {
         Write-ColorOutput "✅ No C# files staged for commit." $Green
         return $true
     }

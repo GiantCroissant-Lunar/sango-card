@@ -118,9 +118,10 @@ repos:
         description: Blocks markdown files in non-canonical locations
       - id: docs-validate
         name: Documentation Front-Matter Validation (R-DOC-002)
-        entry: python scripts/docs_validate.py
+        entry: python scripts/docs_validate.py --pre-commit
         language: python
         files: '^docs/.*\.md$'
+        exclude: 'docs/index/registry\.json$'
         pass_filenames: false
         description: Validates documentation front-matter and detects duplicates
         additional_dependencies:

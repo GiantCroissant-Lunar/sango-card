@@ -17,7 +17,7 @@ import re
 import json
 import hashlib
 from typing import Dict, List, Tuple, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 try:
     import yaml
@@ -306,7 +306,7 @@ def generate_registry(entries: List[Dict]):
     REGISTRY.parent.mkdir(parents=True, exist_ok=True)
 
     registry = {
-        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "generated_at": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
         "total_docs": len(entries),
         "by_type": {},
         "by_status": {},
@@ -331,6 +331,13 @@ def generate_registry(entries: List[Dict]):
 
 
 def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Validate documentation and generate registry")
+    parser.add_argument("--pre-commit", action="store_true",
+                        help="Pre-commit mode: validate only, don't regenerate registry")
+    args = parser.parse_args()
+
     print("Validating documentation...")
     print()
 
@@ -341,9 +348,13 @@ def main():
     errors.extend(validate_canonical_uniqueness(entries))
     errors.extend(detect_near_duplicates(entries))
 
-    # Generate registry (even if errors exist)
-    generate_registry(entries)
-    print()
+    # Generate registry (skip in pre-commit mode to avoid infinite loop)
+    if not args.pre_commit:
+        generate_registry(entries)
+        print()
+    else:
+        print("(Pre-commit mode: skipping registry regeneration)")
+        print()
 
     # Report errors
     if errors:
