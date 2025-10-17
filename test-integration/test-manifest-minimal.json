@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "packages": [
+    {
+      "name": "com.unity.test.package",
+      "sourcePath": "D:/test/packages/com.unity.test.package",
+      "targetFileName": "com.unity.test.package-1.0.0.tgz"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "TestAssembly",
+      "sourcePath": "D:/test/assemblies/TestAssembly.dll"
+    }
+  ],
+  "assets": [
+    {
+      "name": "TestAsset",
+      "sourcePath": "D:/test/assets/TestAsset.prefab"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "clientPath": 12345,
+  "packages": "should be array",
+  "assemblies": [
+    {
+      "wrongKey": "value"
+    }
+  ]
+}

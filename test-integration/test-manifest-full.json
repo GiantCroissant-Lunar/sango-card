@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "packages": [
+    {
+      "name": "com.unity.addressables",
+      "sourcePath": "D:/Unity/Packages/com.unity.addressables",
+      "targetFileName": "com.unity.addressables-1.21.0.tgz"
+    },
+    {
+      "name": "com.unity.ui.toolkit",
+      "sourcePath": "D:/Unity/Packages/com.unity.ui.toolkit",
+      "targetFileName": "com.unity.ui.toolkit-2.0.0.tgz"
+    },
+    {
+      "name": "com.custom.gameplay",
+      "sourcePath": "D:/Projects/CustomPackages/com.custom.gameplay",
+      "targetFileName": "com.custom.gameplay-0.5.0.tgz"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "GameplayCore",
+      "sourcePath": "D:/Projects/Assemblies/GameplayCore.dll"
+    },
+    {
+      "name": "NetworkingLib",
+      "sourcePath": "D:/Projects/Assemblies/NetworkingLib.dll"
+    },
+    {
+      "name": "AnalyticsSDK",
+      "sourcePath": "D:/ThirdParty/SDKs/Analytics/AnalyticsSDK.dll"
+    }
+  ],
+  "assets": [
+    {
+      "name": "CharacterPrefabs",
+      "sourcePath": "D:/Projects/Assets/Characters/Prefabs"
+    },
+    {
+      "name": "UIAssets",
+      "sourcePath": "D:/Projects/Assets/UI"
+    },
+    {
+      "name": "AudioFiles",
+      "sourcePath": "D:/Projects/Assets/Audio"
+    },
+    {
+      "name": "ConfigFiles",
+      "sourcePath": "D:/Projects/Config"
+    }
+  ]
+}

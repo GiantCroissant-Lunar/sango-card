@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "clientPath": "D:/test/client",
+  "packages": [
+    {
+      "sourceFileName": "com.unity.test.package-1.0.0.tgz",
+      "targetPath": "Packages"
+    }
+  ],
+  "assemblies": [
+    {
+      "sourceFileName": "TestAssembly.dll",
+      "targetPath": "Assets/Plugins"
+    }
+  ],
+  "assets": [
+    {
+      "sourcePattern": "TestAsset.prefab",
+      "targetPath": "Assets/Prefabs",
+      "operation": "Copy"
+    }
+  ]
+}

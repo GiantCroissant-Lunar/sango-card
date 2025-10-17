@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "packages": [
+    {
+      "invalidKey": "this should cause an error"
+    }
+  ],
+  "assemblies": "this should be an array",
+  "missingAssets": true
+}
