@@ -73,7 +73,7 @@ repos:
     rev: 2.7.3
     hooks:
       - id: editorconfig-checker
-        exclude: '\.meta$|\.asset$|\.unity$|\.md$|\.gemini/code-review-config\.yaml$|\.pre-commit-config\.yaml$|\.yamllint\.yaml$|\.sops\.yaml$'
+        exclude: '\.meta$|\.asset$|\.unity$|\.md$|\.gemini/code-review-config\.yaml$|\.pre-commit-config\.yaml$|\.yamllint\.yaml$|\.sops\.yaml$|\.secrets\.baseline$'
   - repo: local
     hooks:
       # Prevent committing plaintext Terraform secrets
