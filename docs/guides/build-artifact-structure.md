@@ -1,3 +1,16 @@
+---
+doc_id: DOC-2025-00167
+title: Build Artifact Structure
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [build-artifact-structure]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
 # Example Versioned Artifact Directory Structure
 
 This file demonstrates the expected structure for a versioned build artifact.
