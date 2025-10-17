@@ -372,6 +372,12 @@ interface IUnityBuild : INukeBuild
                        "}\n";
         File.WriteAllText(manifestPath, manifest);
 
+        // Ensure C# language level supports file-scoped namespaces (C# 10+)
+        var assetsDirIso = isoPath / "Assets";
+        Directory.CreateDirectory(assetsDirIso);
+        var cscRspIso = assetsDirIso / "csc.rsp";
+        File.WriteAllText(cscRspIso, "-langversion:preview" + Environment.NewLine);
+
         // Copy our local packages into the isolated project's Packages folder
         var rootPackages = RootDirectory / "packages";
         if (Directory.Exists(rootPackages))

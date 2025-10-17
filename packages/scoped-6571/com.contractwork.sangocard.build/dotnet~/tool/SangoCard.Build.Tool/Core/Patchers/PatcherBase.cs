@@ -116,7 +116,7 @@ public abstract class PatcherBase : IPatcher
     }
 
     /// <inheritdoc/>
-    public async Task<ValidationResult> ValidatePatchAsync(string filePath, CodePatch patch)
+    public async Task<PatchValidationResult> ValidatePatchAsync(string filePath, CodePatch patch)
     {
         var errors = new List<string>();
         var warnings = new List<string>();
@@ -125,7 +125,7 @@ public abstract class PatcherBase : IPatcher
         if (!File.Exists(filePath))
         {
             errors.Add($"File not found: {filePath}");
-            return new ValidationResult
+            return new PatchValidationResult
             {
                 IsValid = false,
                 Errors = errors,
@@ -150,7 +150,7 @@ public abstract class PatcherBase : IPatcher
             errors.AddRange(customValidation.Errors);
             warnings.AddRange(customValidation.Warnings);
 
-            return new ValidationResult
+            return new PatchValidationResult
             {
                 IsValid = errors.Count == 0,
                 Errors = errors,
@@ -162,7 +162,7 @@ public abstract class PatcherBase : IPatcher
         {
             _logger.LogError(ex, "Failed to validate patch for: {File}", filePath);
             errors.Add($"Validation error: {ex.Message}");
-            return new ValidationResult
+            return new PatchValidationResult
             {
                 IsValid = false,
                 Errors = errors,

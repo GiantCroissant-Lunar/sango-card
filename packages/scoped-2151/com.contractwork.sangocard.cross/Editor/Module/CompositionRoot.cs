@@ -1,11 +1,12 @@
 using System;
 using System.IO;
-using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Pure.DI;
 
 namespace SangoCard.Cross.Editor.Module;
+
+#if SANGOCARD_PURE_DI
+using Pure.DI;
 
 /// <summary>
 /// Pure.DI composition root for the SangoCard Tool module
@@ -37,18 +38,46 @@ internal partial class CompositionRoot
                     builder
                         .AddConfiguration(configuration)
                         .SetMinimumLevel(LogLevel.Debug);
-                    // Use sinks for logging
-                    // .AddProvider(new Plate.Shared.Logging.Providers.UnityConsoleLoggerProvider())
-                    // .AddProvider(new Logging.Providers.CliPipeLoggerProvider());
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    builder
-                        .SetMinimumLevel(LogLevel.Debug);
-                    // .AddProvider(new Plate.Shared.Logging.Providers.UnityConsoleLoggerProvider())
-                    // .AddProvider(new Logging.Providers.CliPipeLoggerProvider());
+                    builder.SetMinimumLevel(LogLevel.Debug);
                 }
             })
         )
         .Root<ILoggerFactory>("LoggerFactory");
 }
+#else
+/// <summary>
+/// Fallback CompositionRoot without Pure.DI. Provides minimal Resolve<T> support.
+/// </summary>
+internal class CompositionRoot
+{
+    public T? Resolve<T>()
+    {
+        if (typeof(T) == typeof(ILoggerFactory))
+        {
+            var factory = LoggerFactory.Create(builder =>
+            {
+                try
+                {
+                    // Optional: load configuration if available, but avoid requiring Logging.Configuration extensions
+                    var configuration = new ConfigurationBuilder()
+                        .SetBasePath(Path.GetFullPath(Path.Combine(Define.PackageName, "Package Resources", "settings")))
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .Build();
+
+                    builder.SetMinimumLevel(LogLevel.Debug);
+                }
+                catch
+                {
+                    builder.SetMinimumLevel(LogLevel.Debug);
+                }
+            });
+            return (T)(object)factory;
+        }
+
+        return default;
+    }
+}
+#endif

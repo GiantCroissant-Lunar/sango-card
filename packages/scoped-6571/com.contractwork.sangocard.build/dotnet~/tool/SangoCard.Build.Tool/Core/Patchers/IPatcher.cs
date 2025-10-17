@@ -27,7 +27,7 @@ public interface IPatcher
     /// <param name="filePath">Absolute path to the file.</param>
     /// <param name="patch">The patch to validate.</param>
     /// <returns>Validation result with details.</returns>
-    Task<ValidationResult> ValidatePatchAsync(string filePath, CodePatch patch);
+    Task<PatchValidationResult> ValidatePatchAsync(string filePath, CodePatch patch);
 
     /// <summary>
     /// Creates a rollback point for a file before patching.
@@ -85,7 +85,7 @@ public record PatchResult
 /// <summary>
 /// Result of patch validation.
 /// </summary>
-public record ValidationResult
+public record PatchValidationResult
 {
     /// <summary>
     /// Gets a value indicating whether the patch is valid.
