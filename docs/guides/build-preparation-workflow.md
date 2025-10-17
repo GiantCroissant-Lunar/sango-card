@@ -1,5 +1,18 @@
 ---
-doc_id: DOC-2025-00113
+doc_id: DOC-2025-00168
+title: Build Preparation Workflow
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [build-preparation-workflow]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00118
 title: Build Preparation Workflow
 doc_type: guide
 status: active
@@ -141,21 +154,45 @@ dotnet run -- prepare inject --config build/preparation/configs/default.json --t
 ```json
 {
   "version": "1.0",
+  "description": "Build preparation configuration",
   "packages": [
     {
       "name": "com.example.package",
-      "source": "cache",
-      "destination": "Packages/com.example.package"
+      "version": "1.0.0",
+      "source": "build/preparation/cache/com.example.package-1.0.0.tgz",
+      "target": "projects/client/Packages/com.example.package-1.0.0.tgz"
+    },
+    {
+      "name": "com.example.folderpkg",
+      "version": "2.0.0",
+      "source": "build/preparation/cache/com.example.folderpkg",
+      "target": "projects/client/Packages/com.example.folderpkg"
     }
   ],
-  "scriptingDefines": [
-    "CUSTOM_DEFINE",
-    "FEATURE_FLAG"
+  "assemblies": [
+    {
+      "name": "Microsoft.Extensions.DependencyInjection",
+      "version": "8.0.0",
+      "source": "build/preparation/cache/Microsoft.Extensions.DependencyInjection.dll",
+      "target": "projects/client/Assets/Plugins/Microsoft.Extensions.DependencyInjection.dll"
+    },
+    {
+      "name": "MyPluginFolder",
+      "version": "1.0.0",
+      "source": "build/preparation/cache/MyPluginFolder",
+      "target": "projects/client/Assets/Plugins/MyPluginFolder"
+    }
   ],
+  "scriptingDefineSymbols": {
+    "add": ["CUSTOM_DEFINE", "FEATURE_FLAG"],
+    "remove": [],
+    "platform": null,
+    "clearExisting": false
+  },
   "codePatches": [
     {
-      "type": "csharp",
-      "file": "Assets/Scripts/Example.cs",
+      "type": "CSharp",
+      "file": "projects/client/Assets/Scripts/Example.cs",
       "operations": [
         {
           "type": "remove_using",
@@ -163,9 +200,14 @@ dotnet run -- prepare inject --config build/preparation/configs/default.json --t
         }
       ]
     }
-  ]
+  ],
+  "assetManipulations": []
 }
 ```
+
+**Note:** Both `packages` and `assemblies` now support:
+- ✅ **Single files** (e.g., `.tgz`, `.dll`)
+- ✅ **Folders** (copied recursively)
 
 ### Configuration Management
 
@@ -355,6 +397,10 @@ dotnet run -- tui
 **Cache Location:** `build/preparation/cache/`
 
 **Client Destination:** `projects/client/Packages/`
+
+**Supported Formats:**
+- ✅ **Single files** (e.g., `.tgz` archives)
+- ✅ **Folders** (copied recursively with all contents)
 
 ### Package Detection
 

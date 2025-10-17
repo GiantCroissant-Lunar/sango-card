@@ -180,7 +180,7 @@ public class PreparationService
         var deleted = 0;
         var patched = 0;
 
-        // 1) Copy Unity packages
+        // 1) Copy Unity packages (supports both files and folders)
         foreach (var pkg in config.Packages)
         {
             var src = _paths.Resolve(pkg.Source);
@@ -188,18 +188,34 @@ public class PreparationService
 
             if (!dryRun)
             {
-                EnsureDirectoryOf(dst);
-                File.Copy(src, dst, overwrite: true);
-                _modifiedFiles.Add(pkg.Target);
+                // Support both files and directories
+                if (Directory.Exists(src))
+                {
+                    // Copy directory recursively
+                    CopyDirectory(src, dst, overwrite: true);
+                    _modifiedFiles.Add(pkg.Target);
+                }
+                else if (File.Exists(src))
+                {
+                    // Copy single file
+                    EnsureDirectoryOf(dst);
+                    File.Copy(src, dst, overwrite: true);
+                    _modifiedFiles.Add(pkg.Target);
+                }
+                else
+                {
+                    throw new FileNotFoundException($"Package source not found: {src}");
+                }
             }
 
             copied++;
-            _logger.LogInformation("{Action}Copied package: {Name} -> {Target}",
-                dryRun ? "[DRY-RUN] " : "", pkg.Name, pkg.Target);
+            var sourceType = Directory.Exists(src) ? "folder" : "file";
+            _logger.LogInformation("{Action}Copied package ({Type}): {Name} -> {Target}",
+                dryRun ? "[DRY-RUN] " : "", sourceType, pkg.Name, pkg.Target);
             _fileCopied.Publish(new FileCopiedMessage(pkg.Source, pkg.Target));
         }
 
-        // 2) Copy assemblies
+        // 2) Copy assemblies (supports both files and folders)
         foreach (var asm in config.Assemblies)
         {
             var src = _paths.Resolve(asm.Source);
@@ -207,14 +223,30 @@ public class PreparationService
 
             if (!dryRun)
             {
-                EnsureDirectoryOf(dst);
-                File.Copy(src, dst, overwrite: true);
-                _modifiedFiles.Add(asm.Target);
+                // Support both files and directories
+                if (Directory.Exists(src))
+                {
+                    // Copy directory recursively
+                    CopyDirectory(src, dst, overwrite: true);
+                    _modifiedFiles.Add(asm.Target);
+                }
+                else if (File.Exists(src))
+                {
+                    // Copy single file
+                    EnsureDirectoryOf(dst);
+                    File.Copy(src, dst, overwrite: true);
+                    _modifiedFiles.Add(asm.Target);
+                }
+                else
+                {
+                    throw new FileNotFoundException($"Assembly source not found: {src}");
+                }
             }
 
             copied++;
-            _logger.LogInformation("{Action}Copied assembly: {Name} -> {Target}",
-                dryRun ? "[DRY-RUN] " : "", asm.Name, asm.Target);
+            var sourceType = Directory.Exists(src) ? "folder" : "file";
+            _logger.LogInformation("{Action}Copied assembly ({Type}): {Name} -> {Target}",
+                dryRun ? "[DRY-RUN] " : "", sourceType, asm.Name, asm.Target);
             _fileCopied.Publish(new FileCopiedMessage(asm.Source, asm.Target));
         }
 
@@ -453,6 +485,28 @@ public class PreparationService
         if (!string.IsNullOrEmpty(dir))
         {
             Directory.CreateDirectory(dir);
+        }
+    }
+
+    private void CopyDirectory(string sourceDir, string targetDir, bool overwrite)
+    {
+        // Create target directory if it doesn't exist
+        Directory.CreateDirectory(targetDir);
+
+        // Copy all files
+        foreach (var file in Directory.GetFiles(sourceDir))
+        {
+            var fileName = Path.GetFileName(file);
+            var targetFile = Path.Combine(targetDir, fileName);
+            File.Copy(file, targetFile, overwrite);
+        }
+
+        // Recursively copy subdirectories
+        foreach (var subDir in Directory.GetDirectories(sourceDir))
+        {
+            var dirName = Path.GetFileName(subDir);
+            var targetSubDir = Path.Combine(targetDir, dirName);
+            CopyDirectory(subDir, targetSubDir, overwrite);
         }
     }
 
