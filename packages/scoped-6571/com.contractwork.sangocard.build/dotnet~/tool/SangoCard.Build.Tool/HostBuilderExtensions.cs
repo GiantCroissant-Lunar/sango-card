@@ -67,6 +67,7 @@ public static class HostBuilderExtensions
             services.AddTransient<Tui.Views.PreparationExecutionView>();
             services.AddTransient<Tui.Views.ManualSourcesView>();
             services.AddTransient<Tui.Views.PreparationSourcesManagementView>();
+            services.AddTransient<Tui.Views.BuildInjectionsManagementView>();
         }
 
         return services;
