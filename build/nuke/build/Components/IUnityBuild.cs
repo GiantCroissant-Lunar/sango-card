@@ -366,6 +366,15 @@ interface IUnityBuild : INukeBuild
             return;
         }
 
+        // Resolve config path relative to git root (RootDirectory)
+        var configArg = BuildToolConfigPath!;
+        var configAbs = Path.IsPathRooted(configArg) ? configArg : (RootDirectory / configArg).ToString();
+        if (!File.Exists(configAbs))
+        {
+            Serilog.Log.Warning($"Build Tool config file not found at '{configAbs}'. Skipping build preparation.");
+            return;
+        }
+
         var dotnet = Environment.GetEnvironmentVariable("DOTNET_EXE");
         if (string.IsNullOrWhiteSpace(dotnet))
         {
@@ -381,7 +390,7 @@ interface IUnityBuild : INukeBuild
             "prepare",
             "run",
             "--config",
-            $"\"{BuildToolConfigPath}\""
+            $"\"{configAbs}\""
         };
 
         Serilog.Log.Information("Running Build Preparation Tool: {Args}", string.Join(" ", args));
