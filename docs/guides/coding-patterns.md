@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00114
+title: Coding Patterns
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [coding-patterns]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00066
 title: Coding Patterns Guide
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - code
 - patterns
 - best-practices
 summary: Coding patterns and best practices for the project.
+
 ---
 
 # Coding Patterns

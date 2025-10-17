@@ -1,8 +1,8 @@
 ---
-doc_id: DOC-2025-00109
+doc_id: DOC-2025-00136
 title: TOOL DESIGN V3
 doc_type: guide
-status: archived
+status: draft
 canonical: false
 created: 2025-10-17
 tags: [tool-design-v3]

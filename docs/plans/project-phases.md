@@ -1,4 +1,18 @@
 ---
+doc_id: DOC-2025-00132
+title: Project Phases
+doc_type: plan
+status: active
+canonical: false
+created: 2025-10-17
+tags: [project-phases]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+
 doc_id: DOC-2025-00050
 title: Project Implementation Phases
 doc_type: plan

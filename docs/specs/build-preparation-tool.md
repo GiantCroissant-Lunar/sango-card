@@ -1,4 +1,18 @@
 ---
+doc_id: DOC-2025-00134
+title: Build Preparation Tool
+doc_type: spec
+status: active
+canonical: false
+created: 2025-10-17
+tags: [build-preparation-tool]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+
 doc_id: DOC-2025-00042
 title: Build Preparation Tool Specification
 doc_type: spec

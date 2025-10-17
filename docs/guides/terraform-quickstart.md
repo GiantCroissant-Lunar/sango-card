@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00130
+title: Terraform Quickstart
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [terraform-quickstart]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00080
 title: Terraform SOPS Quick Start
 doc_type: guide
@@ -6,11 +19,13 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - terraform
 - sops
 - quickstart
 - infrastructure
 summary: 5-minute setup guide for SOPS encrypted secrets with Terraform.
+
 ---
 
 # Quick Start Guide - SOPS Encrypted Secrets

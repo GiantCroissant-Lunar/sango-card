@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00121
+title: Spec Kit To Github Issues
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [spec-kit-to-github-issues]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00063
 title: Spec Kit to GitHub Issues
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - spec-kit
 - github
 - issues
 summary: Guide for converting Spec Kit artifacts to GitHub issues.
+
 ---
 
 # Spec-Kit to GitHub Issues Workflow

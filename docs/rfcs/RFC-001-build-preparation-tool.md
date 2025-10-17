@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00133
+title: RFC 001 Build Preparation Tool
+doc_type: rfc
+status: active
+canonical: false
+created: 2025-10-17
+tags: [rfc-001-build-preparation-tool]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: RFC-2025-00001
 title: Build Preparation Tool
 doc_type: rfc
@@ -6,6 +19,7 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - build
 - unity
 - tooling
@@ -16,6 +30,7 @@ summary: >
 supersedes: []
 related:
 - DOC-2025-00042
+
 ---
 
 # RFC-001: Build Preparation Tool

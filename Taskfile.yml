@@ -114,6 +114,32 @@ tasks:
     desc: Build Unity project for WebGL
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} BuildUnity --unity-build-target WebGL'
+  # Build preparation tasks
+
+  build:prepare:cache:
+    desc: Populate build preparation cache (safe anytime)
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} PrepareCache'
+  build:prepare:client:
+    desc: Inject preparation into client (build-time only, includes git reset)
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} PrepareClient'
+  build:prepare:restore:
+    desc: Restore client to clean state (git reset)
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} RestoreClient'
+  build:prepare:validate:
+    desc: Validate build preparation configuration
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} ValidatePreparation'
+  build:prepare:dry-run:
+    desc: Preview preparation changes without applying
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} DryRunPreparation'
+  build:unity:prepared:
+    desc: Build Unity with full preparation workflow
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} BuildUnityWithPreparation'
   # Test tasks
 
   test:
@@ -237,25 +263,78 @@ tasks:
     cmds:
       - echo "Opening quick reference..."
       - '{{if eq OS "windows"}}start docs\task\QUICK_REFERENCE.md{{else if eq OS "darwin"}}open docs/task/QUICK_REFERENCE.md{{else}}xdg-open docs/task/QUICK_REFERENCE.md{{end}}'
-
   # Documentation health checks
 
   docs:check:
     desc: Check documentation health (scattered docs, front-matter)
     cmds:
       - pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/check-docs.ps1
-
   docs:check:fix:
     desc: Auto-fix scattered documentation (moves to docs/_inbox/)
     cmds:
       - pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/check-docs.ps1 -Fix
-
   docs:check:report:
     desc: Generate HTML documentation health report
     cmds:
       - pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/check-docs.ps1 -Report
-
   docs:validate:
     desc: Validate documentation front-matter and registry
     cmds:
       - python scripts/docs_validate.py
+  # Linting and formatting tasks
+
+  lint:
+    desc: Run all linters (same as pre-commit hooks)
+    cmds:
+      - task: lint:all
+  lint:all:
+    desc: Run all pre-commit hooks on all files
+    cmds:
+      - pre-commit run --all-files
+  lint:staged:
+    desc: Run pre-commit hooks on staged files only
+    cmds:
+      - pre-commit run
+  lint:markdown:
+    desc: Lint markdown files
+    cmds:
+      - pre-commit run markdownlint --all-files
+  lint:yaml:
+    desc: Lint YAML files
+    cmds:
+      - pre-commit run yamllint --all-files
+  lint:secrets:
+    desc: Check for secrets and sensitive data
+    cmds:
+      - pre-commit run detect-secrets --all-files
+      - pre-commit run gitleaks --all-files
+  lint:csharp:
+    desc: Check C# partial class patterns (R-CODE-090)
+    cmds:
+      - pre-commit run partial-class-interface-separation --all-files
+  format:
+    desc: Auto-fix formatting issues (markdown, YAML, whitespace)
+    cmds:
+      - task: format:all
+  format:all:
+    desc: Run all auto-fixable pre-commit hooks
+    cmds:
+      - pre-commit run trailing-whitespace --all-files
+      - pre-commit run end-of-file-fixer --all-files
+      - pre-commit run mixed-line-ending --all-files
+      - pre-commit run markdownlint --all-files
+      - pre-commit run yamlfmt --all-files
+  format:markdown:
+    desc: Auto-fix markdown formatting
+    cmds:
+      - pre-commit run markdownlint --all-files
+  format:yaml:
+    desc: Auto-format YAML files
+    cmds:
+      - pre-commit run yamlfmt --all-files
+  check:
+    desc: Run all checks (lint + validate + docs check)
+    cmds:
+      - task: lint:all
+      - task: docs:check
+      - echo "✓ All checks passed!"

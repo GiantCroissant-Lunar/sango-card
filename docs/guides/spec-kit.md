@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00122
+title: Spec Kit
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [spec-kit]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00064
 title: Spec Kit Guide
 doc_type: guide
@@ -6,9 +19,11 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - spec-kit
 - workflow
 summary: Complete guide to using Spec Kit for feature development.
+
 ---
 
 # Spec-Kit Integration Guide

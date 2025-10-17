@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00128
+title: Task Runner
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-runner]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00070
 title: Task Runner Guide
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - task
 - build
 - automation
 summary: Complete guide to using Task for building and development.
+
 ---
 
 # Task Runner Integration Guide

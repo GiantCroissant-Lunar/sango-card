@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00124
+title: Task Getting Started
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-getting-started]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00071
 title: Task Runner Getting Started
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - task
 - quickstart
 - setup
 summary: Quick start guide for Task runner setup and basic usage.
+
 ---
 
 # Getting Started with Task

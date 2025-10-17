@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00112
+title: Agent Orchestration
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [agent-orchestration]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00060
 title: Agent Orchestration Guide
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - agents
 - orchestration
 - multi-agent
 summary: Guide for orchestrating multiple AI agents in development workflow.
+
 ---
 
 # Agent Orchestration System

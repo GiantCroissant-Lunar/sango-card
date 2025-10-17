@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00119
+title: Pre Commit
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [pre-commit]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00067
 title: Pre-Commit Hooks Guide
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - pre-commit
 - git
 - hooks
 summary: Guide for setting up and using pre-commit hooks.
+
 ---
 
 # Pre-commit Hooks

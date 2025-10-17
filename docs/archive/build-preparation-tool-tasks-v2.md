@@ -1,3 +1,16 @@
+---
+doc_id: DOC-2025-00096
+title: Build Preparation Tool Tasks V2
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [build-preparation-tool-tasks-v2]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
 # TASKS: Build Preparation Tool Implementation v2
 
 **Spec:** SPEC-BPT-001  

@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00125
+title: Task Index
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-index]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00075
 title: Task Documentation Index
 doc_type: guide
@@ -6,9 +19,11 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - task
 - index
 summary: Index of all Task runner documentation.
+
 ---
 
 # Task Runner Documentation

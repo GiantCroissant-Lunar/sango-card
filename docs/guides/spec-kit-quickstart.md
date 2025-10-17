@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00120
+title: Spec Kit Quickstart
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [spec-kit-quickstart]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00065
 title: Spec Kit Quick Start
 doc_type: guide
@@ -6,9 +19,11 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - spec-kit
 - quickstart
 summary: Quick start guide for Spec Kit workflow.
+
 ---
 
 # Spec-Kit Quick Start Guide

@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00126
+title: Task Integration
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-integration]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00073
 title: Task Runner Integration
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - task
 - integration
 - ci-cd
 summary: Technical overview of Task runner integration with build system.
+
 ---
 
 # Task Integration Summary

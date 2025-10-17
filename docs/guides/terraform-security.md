@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00131
+title: Terraform Security
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [terraform-security]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00081
 title: Terraform Security Guide
 doc_type: guide
@@ -6,11 +19,13 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - terraform
 - security
 - sops
 - encryption
 summary: Security best practices for managing encrypted Terraform secrets.
+
 ---
 
 # Security Guide - SOPS & Terraform

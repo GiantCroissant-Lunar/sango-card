@@ -28,8 +28,10 @@ $ALLOWED_PATTERNS = @(
     ".*/README\.md$",
     ".*/LICENSE\.md$",
     ".*/CHANGELOG\.md$",
-    "^build/preparation/.*\.md$",      # Unity packages can have docs
+    "^build/nuke/build/.*\.md$",       # Nuke build system docs
+    "^build/preparation/.*\.md$",      # Build preparation docs
     "^projects/client/.*\.md$",        # Unity project docs
+    "^projects/code-quality/.*\.md$",  # Code quality project docs
     "^packages/.*/dotnet~/.*\.md$"     # .NET tool docs
 )
 

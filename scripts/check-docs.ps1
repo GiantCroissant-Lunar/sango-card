@@ -61,9 +61,11 @@ $ALLOWED_PATTERNS = @(
     "^packages/.*/dotnet~/.*\.md$"
 )
 
-# Find all markdown files
+# Find all markdown files (excluding build artifacts, Unity cache, and third-party packages)
 $allMdFiles = Get-ChildItem -Path . -Recurse -Filter "*.md" -File `
-    | Where-Object { $_.FullName -notmatch "node_modules|\.git" } `
+    | Where-Object {
+        $_.FullName -notmatch "node_modules|\.git|Library[\\/]PackageCache|output[\\/]|build[\\/]_artifacts|_artifacts[\\/]|Assets[\\/]Packages[\\/]"
+    } `
     | ForEach-Object { $_.FullName.Replace("$PWD\", "").Replace("\", "/") }
 
 Write-Host "Found $($allMdFiles.Count) markdown files total" -ForegroundColor Gray

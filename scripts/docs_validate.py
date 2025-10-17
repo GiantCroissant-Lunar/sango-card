@@ -320,8 +320,9 @@ def generate_registry(entries: List[Dict]):
         registry["by_type"][doc_type] = registry["by_type"].get(doc_type, 0) + 1
         registry["by_status"][status] = registry["by_status"].get(status, 0) + 1
 
-    with open(REGISTRY, "w", encoding="utf-8") as f:
+    with open(REGISTRY, "w", encoding="utf-8", newline='\n') as f:
         json.dump(registry, f, indent=2, ensure_ascii=False)
+        f.write('\n')  # Ensure final newline
 
     print(f"Registry generated: {REGISTRY.relative_to(ROOT)}")
     print(f"   Total docs: {len(entries)}")

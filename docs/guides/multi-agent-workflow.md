@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00118
+title: Multi Agent Workflow
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [multi-agent-workflow]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00061
 title: Multi-Agent Workflow Summary
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - agents
 - workflow
 - multi-agent
 summary: Summary of multi-agent workflow patterns and best practices.
+
 ---
 
 # Multi-Agent Workflow - Complete System

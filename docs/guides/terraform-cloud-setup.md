@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00129
+title: Terraform Cloud Setup
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [terraform-cloud-setup]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00082
 title: Terraform Cloud Setup Guide
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - terraform
 - terraform-cloud
 - setup
 summary: Complete guide for setting up Terraform Cloud backend.
+
 ---
 
 # Terraform Cloud Setup Guide

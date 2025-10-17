@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00111
+title: Nuke Api Compatibility
+doc_type: finding
+status: active
+canonical: false
+created: 2025-10-17
+tags: [nuke-api-compatibility]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00090
 title: Nuke Build API Compatibility Issue
 doc_type: finding
@@ -6,6 +19,7 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - nuke
 - build
 - compatibility
@@ -13,6 +27,7 @@ tags:
 summary: Analysis of Nuke 8.x to 9.x API incompatibilities affecting IUnityBuild component.
 supersedes: []
 related: []
+
 ---
 
 # Nuke Build API Compatibility Issue

@@ -1,4 +1,18 @@
 ---
+doc_id: DOC-2025-00116
+title: Documentation Migration Guide
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [documentation-migration-guide]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+
 doc_id: DOC-2025-00002
 title: Documentation Migration Guide
 doc_type: guide
@@ -7,7 +21,7 @@ canonical: true
 created: 2025-10-17
 tags: [docs, migration, cleanup]
 summary: >
-  Step-by-step guide for migrating existing scattered documentation to the new structured system.
+  Step-by-step guide for migrating existing scattered documentation to the new structured system
 ---
 
 # Documentation Migration Guide

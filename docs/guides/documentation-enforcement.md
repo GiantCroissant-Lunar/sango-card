@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00115
+title: Documentation Enforcement
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [documentation-enforcement]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00091
 title: Documentation Enforcement Guide
 doc_type: guide
@@ -6,6 +19,7 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - documentation
 - enforcement
 - automation
@@ -15,6 +29,7 @@ supersedes: []
 related:
 - DOC-2025-00001
 - DOC-2025-00002
+
 ---
 
 # Documentation Enforcement Guide
@@ -41,6 +56,7 @@ git commit -m "feat: add feature"
 ```
 
 **Setup:**
+
 ```bash
 # Install pre-commit framework
 pip install pre-commit
@@ -54,6 +70,7 @@ pre-commit install
 ```
 
 **Manual run:**
+
 ```bash
 # Check all files
 pre-commit run check-scattered-docs --all-files
@@ -76,6 +93,7 @@ The CI workflow runs on every PR and push:
 ```
 
 **View results:**
+
 - Check "Actions" tab in GitHub
 - PR will have ❌ or ✅ status check
 - Automatic comment with fix instructions
@@ -99,6 +117,7 @@ task docs:validate
 ```
 
 **Or directly:**
+
 ```powershell
 # Check for issues
 .\scripts\check-docs.ps1
@@ -115,6 +134,7 @@ task docs:validate
 ### ✅ Canonical Locations
 
 **Root Level (Limited):**
+
 - `README.md` - Project overview
 - `AGENTS.md` - Agent configuration
 - `CLAUDE.md` - Claude instructions
@@ -122,6 +142,7 @@ task docs:validate
 - `CONTRIBUTING.md` - Standard file
 
 **Documentation System:**
+
 - `docs/_inbox/` - New docs (temporary)
 - `docs/guides/` - How-to guides
 - `docs/specs/` - Specifications
@@ -132,6 +153,7 @@ task docs:validate
 - `docs/archive/` - Obsolete docs
 
 **Infrastructure:**
+
 - `*/README.md` - Module documentation
 - `*/LICENSE.md` - License files
 - `*/CHANGELOG.md` - Change logs
@@ -140,6 +162,7 @@ task docs:validate
 - `packages/**/dotnet~/**` - .NET tool docs
 
 **Configuration:**
+
 - `.agent/**/*.md` - Agent rules
 - `.github/**/*.md` - GitHub templates
 - `.specify/**/*.md` - Spec-kit files
@@ -233,6 +256,7 @@ To fix:
 ```
 
 **Fix:**
+
 ```bash
 # Move to inbox
 git mv my-feature-doc.md docs/_inbox/
@@ -404,20 +428,26 @@ Manually resolve duplicates by checking `docs/index/registry.json`.
 ## Configuration Files
 
 ### Pre-commit Hook
+
 **File:** `scripts/git-hooks/check-scattered-docs.ps1`
+
 - Runs on commit
 - PowerShell script
 - Checks staged .md files only
 
 ### GitHub Actions
+
 **File:** `.github/workflows/docs-scattered-check.yml`
+
 - Runs on PR/push
 - Bash script
 - Checks all .md files
 - Comments on PR
 
 ### Manual Linter
+
 **File:** `scripts/check-docs.ps1`
+
 - Run anytime
 - PowerShell script
 - Comprehensive checks
@@ -485,6 +515,7 @@ python scripts/docs_validate.py
 3. **Manual Linter** - Check anytime, auto-fix capability
 
 **Result:**
+
 - ✅ Zero scattered docs slip through
 - ✅ Automated enforcement
 - ✅ Clear fix instructions
@@ -492,6 +523,7 @@ python scripts/docs_validate.py
 - ✅ Consistent documentation structure
 
 **See Also:**
+
 - [Documentation Schema](DOCUMENTATION-SCHEMA.md) - Front-matter requirements
 - [Migration Guide](documentation-migration-guide.md) - Moving existing docs
 - [Agent Rules](../.agent/base/40-documentation.md) - Rules for AI agents

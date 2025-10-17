@@ -1,15 +1,15 @@
 {
-  "generated_at": "2025-10-17T07:57:48.968854Z",
-  "total_docs": 24,
+  "generated_at": "2025-10-17T10:37:11.604854Z",
+  "total_docs": 26,
   "by_type": {
-    "guide": 20,
+    "guide": 22,
     "finding": 1,
     "plan": 1,
     "rfc": 1,
     "spec": 1
   },
   "by_status": {
-    "active": 24
+    "active": 26
   },
   "docs": [
     {
@@ -29,456 +29,432 @@
       "supersedes": [],
       "related": [],
       "sha256": "60f8b55be0afe67b8ccfe8d55d6803fac2e96ed26dcc25caf6254aff02468a3e",
-      "simhash": null
+      "simhash": "10019682047067228804"
+    },
+    {
+      "path": "docs/README.md",
+      "doc_id": "DOC-2025-00093",
+      "title": "README",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": false,
+      "tags": [
+        "readme"
+      ],
+      "created": "2025-10-17",
+      "summary": "(Add summary here)\n",
+      "supersedes": [],
+      "related": [],
+      "sha256": "e657c1a4ab2ba62b283ee3c4f0957e6056e24ce20e69e74c590e1f0bdfed613d",
+      "simhash": "10202918974340600343"
     },
     {
       "path": "docs/findings/nuke-api-compatibility.md",
-      "doc_id": "DOC-2025-00090",
-      "title": "Nuke Build API Compatibility Issue",
+      "doc_id": "DOC-2025-00111",
+      "title": "Nuke Api Compatibility",
       "doc_type": "finding",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "nuke",
-        "build",
-        "compatibility",
-        "api"
+        "nuke-api-compatibility"
       ],
       "created": "2025-10-17",
-      "summary": "Analysis of Nuke 8.x to 9.x API incompatibilities affecting IUnityBuild component.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "de5b2581ce5a405e17ec9d64be3b1b7c9d10a0b7273e82777146761a180c7324",
-      "simhash": null
+      "sha256": "4ee516e27d2929e132004f393f24f67fa5426155d252a68404b01c0887b06ab4",
+      "simhash": "6001263824309856063"
     },
     {
       "path": "docs/guides/agent-orchestration.md",
-      "doc_id": "DOC-2025-00060",
-      "title": "Agent Orchestration Guide",
+      "doc_id": "DOC-2025-00112",
+      "title": "Agent Orchestration",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "agents",
-        "orchestration",
-        "multi-agent"
+        "agent-orchestration"
       ],
       "created": "2025-10-17",
-      "summary": "Guide for orchestrating multiple AI agents in development workflow.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "4fb8e777c22793fafefb147ddbfbf183112a6d8435d7b86d2e1a81f0142e01e1",
-      "simhash": null
+      "sha256": "3b56e82e22d61de97f281c1ce397ea67f7c5398dd68eeb91b8e600434eedf7b6",
+      "simhash": "11978568839457624799"
+    },
+    {
+      "path": "docs/guides/build-preparation-workflow.md",
+      "doc_id": "DOC-2025-00113",
+      "title": "Build Preparation Workflow",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": false,
+      "tags": [
+        "build-preparation-workflow"
+      ],
+      "created": "2025-10-17",
+      "summary": "(Add summary here)\n",
+      "supersedes": [],
+      "related": [],
+      "sha256": "6170a20dbcf27acc5cb110eeb70715366e6401969dfa8025ce7a01b4e3f9e217",
+      "simhash": "9392432944000082615"
     },
     {
       "path": "docs/guides/coding-patterns.md",
-      "doc_id": "DOC-2025-00066",
-      "title": "Coding Patterns Guide",
+      "doc_id": "DOC-2025-00114",
+      "title": "Coding Patterns",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "code",
-        "patterns",
-        "best-practices"
+        "coding-patterns"
       ],
       "created": "2025-10-17",
-      "summary": "Coding patterns and best practices for the project.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "686c33bf63eadde6aacf1144fe7c6d8816043ad25cda6c1a22da385b9ed35060",
-      "simhash": null
+      "sha256": "2feb06f8a1194cdbdcfa7dd71248a9ee9f82bf54a470e083d30f95ac8668e87f",
+      "simhash": "4849370466161871548"
     },
     {
       "path": "docs/guides/documentation-enforcement.md",
-      "doc_id": "DOC-2025-00091",
-      "title": "Documentation Enforcement Guide",
+      "doc_id": "DOC-2025-00115",
+      "title": "Documentation Enforcement",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "documentation",
-        "enforcement",
-        "automation",
-        "quality"
+        "documentation-enforcement"
       ],
       "created": "2025-10-17",
-      "summary": "Automated tools and workflows for preventing scattered documentation and enforcing documentation standards.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
-      "related": [
-        "DOC-2025-00001",
-        "DOC-2025-00002"
-      ],
-      "sha256": "645af2ae44a7edb7023c27a8703becab0a78c6afff4c386220772261ae096db3",
-      "simhash": null
+      "related": [],
+      "sha256": "dc0b608c1893707b58a19551a084afbbf44f00af31263b5dafab06eca3bd3c05",
+      "simhash": "796073629072562844"
     },
     {
       "path": "docs/guides/documentation-migration-guide.md",
-      "doc_id": "DOC-2025-00002",
+      "doc_id": "DOC-2025-00116",
       "title": "Documentation Migration Guide",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "docs",
-        "migration",
-        "cleanup"
+        "documentation-migration-guide"
       ],
       "created": "2025-10-17",
-      "summary": "Step-by-step guide for migrating existing scattered documentation to the new structured system.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "9dafee965d705159f5e2d5bc3cf662c853afdfc3f5679157d6bf61f9cabc4223",
-      "simhash": null
+      "sha256": "12125e2a05b508b22f41e003386c563ef3fe3053989735127838663bb513ce75",
+      "simhash": "11172461730369180164"
     },
     {
       "path": "docs/guides/multi-agent-quickstart.md",
-      "doc_id": "DOC-2025-00062",
-      "title": "Multi-Agent Quick Start",
+      "doc_id": "DOC-2025-00117",
+      "title": "Multi Agent Quickstart",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "agents",
-        "quickstart",
-        "multi-agent"
+        "multi-agent-quickstart"
       ],
       "created": "2025-10-17",
-      "summary": "Quick start guide for setting up multi-agent development environment.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "d0c6c9794c9049fe3028991d1ac7af9c8f2282171a56fab8a0fab3323a50a7b3",
-      "simhash": null
+      "sha256": "74973aaecdd7b08a5c492e8161189d1aae8c3701e64828bc656cdb1f8e0ad02c",
+      "simhash": "9239225829349416701"
     },
     {
       "path": "docs/guides/multi-agent-workflow.md",
-      "doc_id": "DOC-2025-00061",
-      "title": "Multi-Agent Workflow Summary",
+      "doc_id": "DOC-2025-00118",
+      "title": "Multi Agent Workflow",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "agents",
-        "workflow",
-        "multi-agent"
+        "multi-agent-workflow"
       ],
       "created": "2025-10-17",
-      "summary": "Summary of multi-agent workflow patterns and best practices.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "905194861a66eab820f97f838bafad2fa14447456dd895e3db606c9281a0563f",
-      "simhash": null
+      "sha256": "82f06941a2e77f0cada1541232d7b35d34c5122ab5d5858cc6a3cfe4711aaf59",
+      "simhash": "11753943016244468341"
     },
     {
       "path": "docs/guides/pre-commit.md",
-      "doc_id": "DOC-2025-00067",
-      "title": "Pre-Commit Hooks Guide",
+      "doc_id": "DOC-2025-00119",
+      "title": "Pre Commit",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "pre-commit",
-        "git",
-        "hooks"
+        "pre-commit"
       ],
       "created": "2025-10-17",
-      "summary": "Guide for setting up and using pre-commit hooks.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "c6057fa389f28d1799e58170d654ca893935f6091928cb7e97df2841fd4f1dd1",
-      "simhash": null
+      "sha256": "8c81a91b843e2b2c7971f22a0408b7dee649a038a214117c76654aa089baf87e",
+      "simhash": "9842457165411591933"
     },
     {
       "path": "docs/guides/spec-kit-quickstart.md",
-      "doc_id": "DOC-2025-00065",
-      "title": "Spec Kit Quick Start",
+      "doc_id": "DOC-2025-00120",
+      "title": "Spec Kit Quickstart",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "spec-kit",
-        "quickstart"
+        "spec-kit-quickstart"
       ],
       "created": "2025-10-17",
-      "summary": "Quick start guide for Spec Kit workflow.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "a4841c26e7a48cc92bf771208b7ca7f92ca1fa3f7de22bd759f7e5df9cac35f6",
-      "simhash": null
+      "sha256": "f72b8922eb094196dc10e91650c885d58b1e400473f7456f570286b67a4dfd53",
+      "simhash": "9443147879135772839"
     },
     {
       "path": "docs/guides/spec-kit-to-github-issues.md",
-      "doc_id": "DOC-2025-00063",
-      "title": "Spec Kit to GitHub Issues",
+      "doc_id": "DOC-2025-00121",
+      "title": "Spec Kit To Github Issues",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "spec-kit",
-        "github",
-        "issues"
+        "spec-kit-to-github-issues"
       ],
       "created": "2025-10-17",
-      "summary": "Guide for converting Spec Kit artifacts to GitHub issues.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "b603443db7ac07f8590d063fbe681fda4a4a44aa465a8851239ab34481df7692",
-      "simhash": null
+      "sha256": "67f7a6576f9a3d6bfed974f7612ec552a15455fdda5adad28a89cce2bc1f502f",
+      "simhash": "11420398565222586553"
     },
     {
       "path": "docs/guides/spec-kit.md",
-      "doc_id": "DOC-2025-00064",
-      "title": "Spec Kit Guide",
+      "doc_id": "DOC-2025-00122",
+      "title": "Spec Kit",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "spec-kit",
-        "workflow"
+        "spec-kit"
       ],
       "created": "2025-10-17",
-      "summary": "Complete guide to using Spec Kit for feature development.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "7846c57b459f9ad3a721f660e284ba59b3c7ab6c99e34d11b4732ff6b45ff18f",
-      "simhash": null
+      "sha256": "a06f96f7bd608233e7a703ac020aa370c9ec9960b2b308bb6e6535c79c643631",
+      "simhash": "10541818144964412045"
     },
     {
       "path": "docs/guides/task-alternatives.md",
-      "doc_id": "DOC-2025-00074",
-      "title": "Task Runner Alternatives Comparison",
+      "doc_id": "DOC-2025-00123",
+      "title": "Task Alternatives",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "task",
-        "comparison",
-        "alternatives"
+        "task-alternatives"
       ],
       "created": "2025-10-17",
-      "summary": "Comparison of Task runner with alternative build tools.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "2ad3846b5036a14fb414a1ad7799b7ffc39a51fc4adcd420dd6f702257424b4d",
-      "simhash": null
+      "sha256": "579b2f0b116431b50a065221f8f845658df319a7378b3c4710185dc72cac9760",
+      "simhash": "1084503010521762335"
     },
     {
       "path": "docs/guides/task-getting-started.md",
-      "doc_id": "DOC-2025-00071",
-      "title": "Task Runner Getting Started",
+      "doc_id": "DOC-2025-00124",
+      "title": "Task Getting Started",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "task",
-        "quickstart",
-        "setup"
+        "task-getting-started"
       ],
       "created": "2025-10-17",
-      "summary": "Quick start guide for Task runner setup and basic usage.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "8aab343d9863416b924307826105daa1692ae72e4f01594d1fcd3b36d677664e",
-      "simhash": null
+      "sha256": "e7b148f341dc9750bc0794104d87916830facdfbfa23f89c975ed47d5e9a7574",
+      "simhash": "922409716232953871"
     },
     {
       "path": "docs/guides/task-index.md",
-      "doc_id": "DOC-2025-00075",
-      "title": "Task Documentation Index",
+      "doc_id": "DOC-2025-00125",
+      "title": "Task Index",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "task",
-        "index"
+        "task-index"
       ],
       "created": "2025-10-17",
-      "summary": "Index of all Task runner documentation.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "a5a350c49aeda698d10bbbad571ea28adfe271dcba732ca8dba5be7a84933dfb",
-      "simhash": null
+      "sha256": "fc5d34b372476022c2c87ab67605509169aad0bbfd1ac702ea48856efab9b596",
+      "simhash": "9988506466886695582"
     },
     {
       "path": "docs/guides/task-integration.md",
-      "doc_id": "DOC-2025-00073",
-      "title": "Task Runner Integration",
+      "doc_id": "DOC-2025-00126",
+      "title": "Task Integration",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "task",
-        "integration",
-        "ci-cd"
+        "task-integration"
       ],
       "created": "2025-10-17",
-      "summary": "Technical overview of Task runner integration with build system.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "995429f885998ab90e3f71f6c3eeb9c9a893512d7c3cd8820f075884b4b34aec",
-      "simhash": null
+      "sha256": "8ebec848d7e5430952b88f375f13a1c0970a012491c134d1818acde97642ddd6",
+      "simhash": "9987909475022875287"
     },
     {
       "path": "docs/guides/task-quick-reference.md",
-      "doc_id": "DOC-2025-00072",
-      "title": "Task Runner Quick Reference",
+      "doc_id": "DOC-2025-00127",
+      "title": "Task Quick Reference",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "task",
-        "reference",
-        "cheatsheet"
+        "task-quick-reference"
       ],
       "created": "2025-10-17",
-      "summary": "Quick reference card for Task runner commands.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "93e92941db490beb2a705b3fe43b886aa945bea80e0756ee0e2db56e86e1a9e3",
-      "simhash": null
+      "sha256": "89bdeb778d858c8fc065b7f383b0a58c5cfe0b62d74ac0231fc18e7fe3fdf88a",
+      "simhash": "781390752403551943"
     },
     {
       "path": "docs/guides/task-runner.md",
-      "doc_id": "DOC-2025-00070",
-      "title": "Task Runner Guide",
+      "doc_id": "DOC-2025-00128",
+      "title": "Task Runner",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "task",
-        "build",
-        "automation"
+        "task-runner"
       ],
       "created": "2025-10-17",
-      "summary": "Complete guide to using Task for building and development.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "560d4052932fb2d4f32343b280c51154d12f84c0ff2136b3eb20c3e54af6bca6",
-      "simhash": null
+      "sha256": "b1549d1ede0b897db4f30447fd167916e01490331d954661390ca778ce85e8f1",
+      "simhash": "10976447390448165391"
     },
     {
       "path": "docs/guides/terraform-cloud-setup.md",
-      "doc_id": "DOC-2025-00082",
-      "title": "Terraform Cloud Setup Guide",
+      "doc_id": "DOC-2025-00129",
+      "title": "Terraform Cloud Setup",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "terraform",
-        "terraform-cloud",
-        "setup"
+        "terraform-cloud-setup"
       ],
       "created": "2025-10-17",
-      "summary": "Complete guide for setting up Terraform Cloud backend.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "61a3dea8f8b1340145fb964c00866aa2bb48ec47d694dc1217f3976474129437",
-      "simhash": null
+      "sha256": "4f6e8522a64467e88773c3eb14a65d4fbbde9e8f2b3b2c4efffdee2488d1f3ce",
+      "simhash": "14357314948994932885"
     },
     {
       "path": "docs/guides/terraform-quickstart.md",
-      "doc_id": "DOC-2025-00080",
-      "title": "Terraform SOPS Quick Start",
+      "doc_id": "DOC-2025-00130",
+      "title": "Terraform Quickstart",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "terraform",
-        "sops",
-        "quickstart",
-        "infrastructure"
+        "terraform-quickstart"
       ],
       "created": "2025-10-17",
-      "summary": "5-minute setup guide for SOPS encrypted secrets with Terraform.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "0b4d46d5b74029c314e963acce7f4911d303fb8f2c94e043d9f4ef8f3e26959b",
-      "simhash": null
+      "sha256": "b91902fa0bf2800979f09ad171262b9131e0a0d5bd37a478aad1f702da852551",
+      "simhash": "2511969278173567636"
     },
     {
       "path": "docs/guides/terraform-security.md",
-      "doc_id": "DOC-2025-00081",
-      "title": "Terraform Security Guide",
+      "doc_id": "DOC-2025-00131",
+      "title": "Terraform Security",
       "doc_type": "guide",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "terraform",
-        "security",
-        "sops",
-        "encryption"
+        "terraform-security"
       ],
       "created": "2025-10-17",
-      "summary": "Security best practices for managing encrypted Terraform secrets.",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "b3e934d79c23583fc4933870c400728d868a681e078f8ae680b0b09465056fe6",
-      "simhash": null
+      "sha256": "6c61875a239ee28140c8f4396d5d81ae7c271f205183f1f896f6b53fc2d94aa0",
+      "simhash": "3629724209336275659"
     },
     {
       "path": "docs/plans/project-phases.md",
-      "doc_id": "DOC-2025-00050",
-      "title": "Project Implementation Phases",
+      "doc_id": "DOC-2025-00132",
+      "title": "Project Phases",
       "doc_type": "plan",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "planning",
-        "milestones",
-        "phases"
+        "project-phases"
       ],
       "created": "2025-10-17",
-      "summary": "Unified timeline of project implementation phases and milestones.\n",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "24ab25a0204e3ec28538f354f82dfba621c95fd1c94532dcbf61e81ebdb890e9",
-      "simhash": null
+      "sha256": "21f4c094060f1df723dc2fe26bbfba8c3008247326f96cab7a9d071977bf9b4a",
+      "simhash": "14684108596235276959"
     },
     {
       "path": "docs/rfcs/RFC-001-build-preparation-tool.md",
-      "doc_id": "RFC-2025-00001",
-      "title": "Build Preparation Tool",
+      "doc_id": "DOC-2025-00133",
+      "title": "RFC 001 Build Preparation Tool",
       "doc_type": "rfc",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "build",
-        "unity",
-        "tooling",
-        "rfc"
+        "rfc-001-build-preparation-tool"
       ],
       "created": "2025-10-17",
-      "summary": "RFC for a .NET CLI/TUI tool for managing Unity build preparation configurations with reactive architecture and git root-based path resolution.\n",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
-      "related": [
-        "DOC-2025-00042"
-      ],
-      "sha256": "3bda1d6561bb1e580877e8eb453fb372e8e350aa4691b7f03ef59d7f01db5901",
-      "simhash": null
+      "related": [],
+      "sha256": "c7ced10dc28708e423c5afefcd58e76b6a893bdd3953b4ba818fce1d412eb9d6",
+      "simhash": "14649347500958237343"
     },
     {
       "path": "docs/specs/build-preparation-tool.md",
-      "doc_id": "DOC-2025-00042",
-      "title": "Build Preparation Tool Specification",
+      "doc_id": "DOC-2025-00134",
+      "title": "Build Preparation Tool",
       "doc_type": "spec",
       "status": "active",
-      "canonical": true,
+      "canonical": false,
       "tags": [
-        "build",
-        "unity",
-        "tooling",
-        "roslyn",
-        "cli",
-        "tui"
+        "build-preparation-tool"
       ],
-      "created": "2025-10-16",
-      "summary": "Automated build preparation tool for Unity projects with reactive architecture, git root-based path resolution, and Roslyn-based code patching capabilities.\n",
+      "created": "2025-10-17",
+      "summary": "(Add summary here)\n",
       "supersedes": [],
-      "related": [
-        "RFC-2025-00001"
-      ],
-      "sha256": "51ff1ab52a1ae68cbbb84539c3a964dc646a32f9be0a26473a2c26b137c4b5be",
-      "simhash": null
+      "related": [],
+      "sha256": "be833a1fe4faeddc22ee4d334ba185655cc5e63b38252bb75c637bd98f782599",
+      "simhash": "14649169371484480159"
     }
   ]
 }

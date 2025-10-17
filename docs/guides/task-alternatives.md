@@ -1,4 +1,17 @@
 ---
+doc_id: DOC-2025-00123
+title: Task Alternatives
+doc_type: guide
+status: active
+canonical: false
+created: 2025-10-17
+tags: [task-alternatives]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00074
 title: Task Runner Alternatives Comparison
 doc_type: guide
@@ -6,10 +19,12 @@ status: active
 canonical: true
 created: '2025-10-17'
 tags:
+
 - task
 - comparison
 - alternatives
 summary: Comparison of Task runner with alternative build tools.
+
 ---
 
 # Task Alternatives & Migration

@@ -1,3 +1,16 @@
+---
+doc_id: DOC-2025-00094
+title: BUILD PLAN
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [build-plan]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
 # Unity Build Plan for Sango Card Client
 
 ## Current Situation

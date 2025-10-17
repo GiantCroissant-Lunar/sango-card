@@ -1,3 +1,16 @@
+---
+doc_id: DOC-2025-00095
+title: Build Preparation Tool Specify
+doc_type: guide
+status: archived
+canonical: false
+created: 2025-10-17
+tags: [build-preparation-tool-specify]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
 # SPEC: Build Preparation Tool
 
 **ID:** SPEC-BPT-001  
