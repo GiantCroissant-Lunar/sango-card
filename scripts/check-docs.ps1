@@ -150,7 +150,8 @@ $missingFrontmatter = @()
 
 foreach ($file in $docsFiles) {
     $content = Get-Content -Path $file.FullName -Raw
-    if (-not ($content -match '^---\s*\n.*?\n---')) {
+    # Use (?s) for singleline mode and match both LF and CRLF
+    if (-not ($content -match '(?s)^---\s*\r?\n.*?\r?\n---')) {
         $relativePath = $file.FullName.Replace("$PWD\", "").Replace("\", "/")
         $missingFrontmatter += $relativePath
     }

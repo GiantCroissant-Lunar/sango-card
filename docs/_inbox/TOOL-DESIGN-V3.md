@@ -1,4 +1,30 @@
 ---
+doc_id: DOC-2025-00198
+title: TOOL DESIGN V3
+doc_type: guide
+status: draft
+canonical: false
+created: 2025-10-17
+tags: [tool-design-v3]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00148
+title: TOOL DESIGN V3
+doc_type: guide
+status: draft
+canonical: false
+created: 2025-10-17
+tags: [tool-design-v3]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00136
 title: TOOL DESIGN V3
 doc_type: guide

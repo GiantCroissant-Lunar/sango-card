@@ -1,4 +1,30 @@
 ---
+doc_id: DOC-2025-00196
+title: Task Lint Format Commands
+doc_type: guide
+status: draft
+canonical: false
+created: 2025-10-17
+tags: [task-lint-format-commands]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00146
+title: Task Lint Format Commands
+doc_type: guide
+status: draft
+canonical: false
+created: 2025-10-17
+tags: [task-lint-format-commands]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00139
 title: Task Lint and Format Commands Reference
 doc_type: guide

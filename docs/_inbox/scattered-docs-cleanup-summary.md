@@ -1,4 +1,30 @@
 ---
+doc_id: DOC-2025-00195
+title: Scattered Docs Cleanup Summary
+doc_type: guide
+status: draft
+canonical: false
+created: 2025-10-17
+tags: [scattered-docs-cleanup-summary]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
+doc_id: DOC-2025-00145
+title: Scattered Docs Cleanup Summary
+doc_type: guide
+status: draft
+canonical: false
+created: 2025-10-17
+tags: [scattered-docs-cleanup-summary]
+summary: >
+  (Add summary here)
+source:
+  author: system
+---
+---
 doc_id: DOC-2025-00138
 title: Scattered Documentation Cleanup Summary
 doc_type: finding
