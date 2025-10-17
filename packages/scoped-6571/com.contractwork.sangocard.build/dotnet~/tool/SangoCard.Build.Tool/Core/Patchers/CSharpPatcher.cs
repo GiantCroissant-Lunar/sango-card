@@ -7,7 +7,7 @@ using SangoCard.Build.Tool.Core.Models;
 namespace SangoCard.Build.Tool.Core.Patchers;
 
 /// <summary>
-/// Patcher for C# files using Roslyn.
+/// Patcher for C# files using Roslyn syntax tree manipulation.
 /// </summary>
 public class CSharpPatcher : PatcherBase
 {
@@ -22,10 +22,15 @@ public class CSharpPatcher : PatcherBase
     public override PatchType PatchType => PatchType.CSharp;
 
     /// <inheritdoc/>
-    protected override Task<string> ApplyPatchInternalAsync(string content, CodePatch patch)
+    protected override async Task<string> ApplyPatchInternalAsync(string content, CodePatch patch)
     {
-        // For simplicity, use text-based replacement for now
-        // In a full implementation, we'd use Roslyn's syntax rewriting
+        // Check if patch specifies Roslyn operation or fall back to text-based
+        if (!string.IsNullOrEmpty(patch.Operation))
+        {
+            return await ApplyRoslynOperationAsync(content, patch);
+        }
+
+        // Fall back to simple text-based replacement for backward compatibility
         var modifiedCode = patch.Mode switch
         {
             PatchMode.Replace => content.Replace(patch.Search, patch.Replace),
@@ -35,7 +40,108 @@ public class CSharpPatcher : PatcherBase
             _ => throw new NotSupportedException($"Patch mode {patch.Mode} not supported")
         };
 
-        return Task.FromResult(modifiedCode);
+        return modifiedCode;
+    }
+
+    private async Task<string> ApplyRoslynOperationAsync(string content, CodePatch patch)
+    {
+        var tree = CSharpSyntaxTree.ParseText(content);
+        var root = await tree.GetRootAsync();
+
+        var newRoot = patch.Operation?.ToLowerInvariant() switch
+        {
+            "removeusing" => RemoveUsing(root, patch.Search),
+            "replaceexpression" => ReplaceExpression(root, patch.Search, patch.Replace),
+            "replaceblock" => ReplaceBlock(root, patch.Search, patch.Replace),
+            "removeblock" => RemoveBlock(root, patch.Search),
+            _ => throw new NotSupportedException($"Roslyn operation '{patch.Operation}' not supported")
+        };
+
+        // Preserve formatting by using original trivia where possible
+        return newRoot.ToFullString();
+    }
+
+    private SyntaxNode RemoveUsing(SyntaxNode root, string usingName)
+    {
+        var usingDirectives = root.DescendantNodes()
+            .OfType<UsingDirectiveSyntax>()
+            .Where(u => u.Name?.ToString() == usingName)
+            .ToList();
+
+        if (!usingDirectives.Any())
+        {
+            Logger.LogWarning("Using directive not found: {Using}", usingName);
+            return root;
+        }
+
+        var rewriter = new UsingRemovalRewriter(usingDirectives);
+        return rewriter.Visit(root)!;
+    }
+
+    private SyntaxNode ReplaceExpression(SyntaxNode root, string searchPattern, string replacement)
+    {
+        // Find expression nodes that match the search pattern
+        var expressions = root.DescendantNodes()
+            .OfType<ExpressionSyntax>()
+            .Where(e => e.ToString().Trim() == searchPattern.Trim())
+            .ToList();
+
+        if (!expressions.Any())
+        {
+            Logger.LogWarning("Expression not found: {Expression}", searchPattern);
+            return root;
+        }
+
+        // Parse replacement as expression
+        var replacementExpr = SyntaxFactory.ParseExpression(replacement);
+
+        var rewriter = new ExpressionReplacementRewriter(expressions, replacementExpr);
+        return rewriter.Visit(root)!;
+    }
+
+    private SyntaxNode ReplaceBlock(SyntaxNode root, string searchPattern, string replacement)
+    {
+        // Find block statements that contain the search pattern
+        var blocks = root.DescendantNodes()
+            .OfType<BlockSyntax>()
+            .Where(b => b.ToString().Contains(searchPattern))
+            .ToList();
+
+        if (!blocks.Any())
+        {
+            Logger.LogWarning("Block not found containing: {Pattern}", searchPattern);
+            return root;
+        }
+
+        // Parse replacement as block
+        var replacementBlock = SyntaxFactory.ParseStatement(replacement) as BlockSyntax;
+        if (replacementBlock == null)
+        {
+            // If not a block, wrap in block
+            var stmt = SyntaxFactory.ParseStatement(replacement);
+            replacementBlock = SyntaxFactory.Block(stmt);
+        }
+
+        var rewriter = new BlockReplacementRewriter(blocks, replacementBlock);
+        return rewriter.Visit(root)!;
+    }
+
+    private SyntaxNode RemoveBlock(SyntaxNode root, string searchPattern)
+    {
+        // Find blocks that match the search pattern
+        var blocks = root.DescendantNodes()
+            .OfType<BlockSyntax>()
+            .Where(b => b.ToString().Contains(searchPattern))
+            .ToList();
+
+        if (!blocks.Any())
+        {
+            Logger.LogWarning("Block not found containing: {Pattern}", searchPattern);
+            return root;
+        }
+
+        var rewriter = new BlockRemovalRewriter(blocks);
+        return rewriter.Visit(root)!;
     }
 
     /// <inheritdoc/>
@@ -89,3 +195,134 @@ public class CSharpPatcher : PatcherBase
         }
     }
 }
+
+/// <summary>
+/// Syntax rewriter for removing using directives.
+/// </summary>
+internal class UsingRemovalRewriter : CSharpSyntaxRewriter
+{
+    private readonly HashSet<UsingDirectiveSyntax> _toRemove;
+
+    public UsingRemovalRewriter(IEnumerable<UsingDirectiveSyntax> toRemove)
+    {
+        _toRemove = toRemove.ToHashSet();
+    }
+
+    public override SyntaxNode? VisitUsingDirective(UsingDirectiveSyntax node)
+    {
+        if (_toRemove.Contains(node))
+        {
+            // Remove the using directive but preserve trailing trivia
+            return null;
+        }
+
+        return base.VisitUsingDirective(node);
+    }
+}
+
+/// <summary>
+/// Syntax rewriter for replacing expressions.
+/// </summary>
+internal class ExpressionReplacementRewriter : CSharpSyntaxRewriter
+{
+    private readonly HashSet<ExpressionSyntax> _toReplace;
+    private readonly ExpressionSyntax _replacement;
+
+    public ExpressionReplacementRewriter(IEnumerable<ExpressionSyntax> toReplace, ExpressionSyntax replacement)
+    {
+        _toReplace = toReplace.ToHashSet();
+        _replacement = replacement;
+    }
+
+    public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
+    {
+        if (_toReplace.Contains(node))
+        {
+            // Preserve leading and trailing trivia
+            return _replacement.WithTriviaFrom(node);
+        }
+
+        return base.VisitIdentifierName(node);
+    }
+
+    public override SyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
+    {
+        if (_toReplace.Contains(node))
+        {
+            return _replacement.WithTriviaFrom(node);
+        }
+
+        return base.VisitMemberAccessExpression(node);
+    }
+
+    public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
+    {
+        if (_toReplace.Contains(node))
+        {
+            return _replacement.WithTriviaFrom(node);
+        }
+
+        return base.VisitInvocationExpression(node);
+    }
+
+    public override SyntaxNode? VisitLiteralExpression(LiteralExpressionSyntax node)
+    {
+        if (_toReplace.Contains(node))
+        {
+            return _replacement.WithTriviaFrom(node);
+        }
+
+        return base.VisitLiteralExpression(node);
+    }
+}
+
+/// <summary>
+/// Syntax rewriter for replacing blocks.
+/// </summary>
+internal class BlockReplacementRewriter : CSharpSyntaxRewriter
+{
+    private readonly HashSet<BlockSyntax> _toReplace;
+    private readonly BlockSyntax _replacement;
+
+    public BlockReplacementRewriter(IEnumerable<BlockSyntax> toReplace, BlockSyntax replacement)
+    {
+        _toReplace = toReplace.ToHashSet();
+        _replacement = replacement;
+    }
+
+    public override SyntaxNode? VisitBlock(BlockSyntax node)
+    {
+        if (_toReplace.Contains(node))
+        {
+            // Preserve leading and trailing trivia
+            return _replacement.WithTriviaFrom(node);
+        }
+
+        return base.VisitBlock(node);
+    }
+}
+
+/// <summary>
+/// Syntax rewriter for removing blocks.
+/// </summary>
+internal class BlockRemovalRewriter : CSharpSyntaxRewriter
+{
+    private readonly HashSet<BlockSyntax> _toRemove;
+
+    public BlockRemovalRewriter(IEnumerable<BlockSyntax> toRemove)
+    {
+        _toRemove = toRemove.ToHashSet();
+    }
+
+    public override SyntaxNode? VisitBlock(BlockSyntax node)
+    {
+        if (_toRemove.Contains(node))
+        {
+            // Remove the block entirely
+            return null;
+        }
+
+        return base.VisitBlock(node);
+    }
+}
+

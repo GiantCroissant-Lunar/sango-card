@@ -1,15 +1,15 @@
 {
-  "generated_at": "2025-10-17T07:56:16.628984Z",
-  "total_docs": 23,
+  "generated_at": "2025-10-17T07:57:48.968854Z",
+  "total_docs": 24,
   "by_type": {
-    "guide": 19,
+    "guide": 20,
     "finding": 1,
     "plan": 1,
     "rfc": 1,
     "spec": 1
   },
   "by_status": {
-    "active": 23
+    "active": 24
   },
   "docs": [
     {
@@ -29,7 +29,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "60f8b55be0afe67b8ccfe8d55d6803fac2e96ed26dcc25caf6254aff02468a3e",
-      "simhash": "10019682047067228804"
+      "simhash": null
     },
     {
       "path": "docs/findings/nuke-api-compatibility.md",
@@ -49,7 +49,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "de5b2581ce5a405e17ec9d64be3b1b7c9d10a0b7273e82777146761a180c7324",
-      "simhash": "8317521411956549439"
+      "simhash": null
     },
     {
       "path": "docs/guides/agent-orchestration.md",
@@ -68,7 +68,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "4fb8e777c22793fafefb147ddbfbf183112a6d8435d7b86d2e1a81f0142e01e1",
-      "simhash": "11978568839457624799"
+      "simhash": null
     },
     {
       "path": "docs/guides/coding-patterns.md",
@@ -87,7 +87,30 @@
       "supersedes": [],
       "related": [],
       "sha256": "686c33bf63eadde6aacf1144fe7c6d8816043ad25cda6c1a22da385b9ed35060",
-      "simhash": "14072742503016647348"
+      "simhash": null
+    },
+    {
+      "path": "docs/guides/documentation-enforcement.md",
+      "doc_id": "DOC-2025-00091",
+      "title": "Documentation Enforcement Guide",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": true,
+      "tags": [
+        "documentation",
+        "enforcement",
+        "automation",
+        "quality"
+      ],
+      "created": "2025-10-17",
+      "summary": "Automated tools and workflows for preventing scattered documentation and enforcing documentation standards.",
+      "supersedes": [],
+      "related": [
+        "DOC-2025-00001",
+        "DOC-2025-00002"
+      ],
+      "sha256": "645af2ae44a7edb7023c27a8703becab0a78c6afff4c386220772261ae096db3",
+      "simhash": null
     },
     {
       "path": "docs/guides/documentation-migration-guide.md",
@@ -106,7 +129,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "9dafee965d705159f5e2d5bc3cf662c853afdfc3f5679157d6bf61f9cabc4223",
-      "simhash": "11172496846290227717"
+      "simhash": null
     },
     {
       "path": "docs/guides/multi-agent-quickstart.md",
@@ -125,7 +148,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "d0c6c9794c9049fe3028991d1ac7af9c8f2282171a56fab8a0fab3323a50a7b3",
-      "simhash": "11542817043036004093"
+      "simhash": null
     },
     {
       "path": "docs/guides/multi-agent-workflow.md",
@@ -144,7 +167,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "905194861a66eab820f97f838bafad2fa14447456dd895e3db606c9281a0563f",
-      "simhash": "12051180587355953783"
+      "simhash": null
     },
     {
       "path": "docs/guides/pre-commit.md",
@@ -163,7 +186,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "c6057fa389f28d1799e58170d654ca893935f6091928cb7e97df2841fd4f1dd1",
-      "simhash": "9914515034327426813"
+      "simhash": null
     },
     {
       "path": "docs/guides/spec-kit-quickstart.md",
@@ -181,7 +204,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "a4841c26e7a48cc92bf771208b7ca7f92ca1fa3f7de22bd759f7e5df9cac35f6",
-      "simhash": "9440897213193455799"
+      "simhash": null
     },
     {
       "path": "docs/guides/spec-kit-to-github-issues.md",
@@ -200,7 +223,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "b603443db7ac07f8590d063fbe681fda4a4a44aa465a8851239ab34481df7692",
-      "simhash": "11276283377146730673"
+      "simhash": null
     },
     {
       "path": "docs/guides/spec-kit.md",
@@ -218,7 +241,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "7846c57b459f9ad3a721f660e284ba59b3c7ab6c99e34d11b4732ff6b45ff18f",
-      "simhash": "9370882241848085131"
+      "simhash": null
     },
     {
       "path": "docs/guides/task-alternatives.md",
@@ -237,7 +260,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "2ad3846b5036a14fb414a1ad7799b7ffc39a51fc4adcd420dd6f702257424b4d",
-      "simhash": "1084362273033275935"
+      "simhash": null
     },
     {
       "path": "docs/guides/task-getting-started.md",
@@ -256,7 +279,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "8aab343d9863416b924307826105daa1692ae72e4f01594d1fcd3b36d677664e",
-      "simhash": "10150285352712773647"
+      "simhash": null
     },
     {
       "path": "docs/guides/task-index.md",
@@ -274,7 +297,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "a5a350c49aeda698d10bbbad571ea28adfe271dcba732ca8dba5be7a84933dfb",
-      "simhash": "10276736843038407326"
+      "simhash": null
     },
     {
       "path": "docs/guides/task-integration.md",
@@ -293,7 +316,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "995429f885998ab90e3f71f6c3eeb9c9a893512d7c3cd8820f075884b4b34aec",
-      "simhash": "14599595493450267287"
+      "simhash": null
     },
     {
       "path": "docs/guides/task-quick-reference.md",
@@ -312,7 +335,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "93e92941db490beb2a705b3fe43b886aa945bea80e0756ee0e2db56e86e1a9e3",
-      "simhash": "10004762789258454723"
+      "simhash": null
     },
     {
       "path": "docs/guides/task-runner.md",
@@ -331,7 +354,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "560d4052932fb2d4f32343b280c51154d12f84c0ff2136b3eb20c3e54af6bca6",
-      "simhash": "10976447390448166415"
+      "simhash": null
     },
     {
       "path": "docs/guides/terraform-cloud-setup.md",
@@ -350,7 +373,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "61a3dea8f8b1340145fb964c00866aa2bb48ec47d694dc1217f3976474129437",
-      "simhash": "14357314948994932885"
+      "simhash": null
     },
     {
       "path": "docs/guides/terraform-quickstart.md",
@@ -370,7 +393,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "0b4d46d5b74029c314e963acce7f4911d303fb8f2c94e043d9f4ef8f3e26959b",
-      "simhash": "2511969278190344917"
+      "simhash": null
     },
     {
       "path": "docs/guides/terraform-security.md",
@@ -390,7 +413,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "b3e934d79c23583fc4933870c400728d868a681e078f8ae680b0b09465056fe6",
-      "simhash": "3629724209336275659"
+      "simhash": null
     },
     {
       "path": "docs/plans/project-phases.md",
@@ -409,7 +432,7 @@
       "supersedes": [],
       "related": [],
       "sha256": "24ab25a0204e3ec28538f354f82dfba621c95fd1c94532dcbf61e81ebdb890e9",
-      "simhash": "14685234491838763679"
+      "simhash": null
     },
     {
       "path": "docs/rfcs/RFC-001-build-preparation-tool.md",
@@ -431,7 +454,7 @@
         "DOC-2025-00042"
       ],
       "sha256": "3bda1d6561bb1e580877e8eb453fb372e8e350aa4691b7f03ef59d7f01db5901",
-      "simhash": "14577289906920047263"
+      "simhash": null
     },
     {
       "path": "docs/specs/build-preparation-tool.md",
@@ -455,7 +478,7 @@
         "RFC-2025-00001"
       ],
       "sha256": "51ff1ab52a1ae68cbbb84539c3a964dc646a32f9be0a26473a2c26b137c4b5be",
-      "simhash": "14649169337124741791"
+      "simhash": null
     }
   ]
 }

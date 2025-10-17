@@ -165,6 +165,10 @@
           "type": "string",
           "description": "Version suffix (e.g., 1.2.3 or ci-1234) for pack/publish and artifact folder name"
         },
+        "IsolatedUnityProjectPath": {
+          "type": "string",
+          "description": "Path of isolated Unity project for tests"
+        },
         "UnityBuildOutput": {
           "type": "string",
           "description": "Unity build output path"
@@ -188,6 +192,10 @@
         "UnityPath": {
           "type": "string",
           "description": "Unity executable path"
+        },
+        "UseIsolatedTestsOption": {
+          "type": "string",
+          "description": "Use isolated Unity project for tests (avoids client repo)"
         }
       }
     },

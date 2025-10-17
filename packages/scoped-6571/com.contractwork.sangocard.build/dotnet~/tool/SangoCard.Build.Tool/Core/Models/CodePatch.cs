@@ -50,6 +50,13 @@ public class CodePatch
     public bool Optional { get; set; } = false;
 
     /// <summary>
+    /// Gets or sets the Roslyn operation for C# patches (RemoveUsing, ReplaceExpression, ReplaceBlock, RemoveBlock).
+    /// If specified, takes precedence over Mode for C# patches.
+    /// </summary>
+    [JsonPropertyName("operation")]
+    public string? Operation { get; set; }
+
+    /// <summary>
     /// Gets or sets the description of this patch.
     /// </summary>
     [JsonPropertyName("description")]

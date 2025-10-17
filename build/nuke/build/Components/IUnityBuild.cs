@@ -32,6 +32,12 @@ interface IUnityBuild : INukeBuild
     [Parameter("Unity build purpose (UnityPlayer, UnityAssetBundles, UnityAddressables)")]
     string UnityBuildPurpose => TryGetValue(() => UnityBuildPurpose) ?? "UnityPlayer";
 
+    [Parameter("Use isolated Unity project for tests (avoids client repo)")]
+    string UseIsolatedTestsOption => TryGetValue(() => UseIsolatedTestsOption) ?? "true";
+
+    [Parameter("Path of isolated Unity project for tests")]
+    AbsolutePath IsolatedUnityProjectPath => TryGetValue(() => IsolatedUnityProjectPath) ?? RootDirectory / "output" / "unity-isolated";
+
     /// <summary>
     /// Clean Unity build artifacts
     /// </summary>
@@ -145,77 +151,86 @@ interface IUnityBuild : INukeBuild
             Directory.CreateDirectory(UnityBuildOutput);
 
             var testResultsPath = UnityBuildOutput / "test-results.xml";
+            var useIsolated = string.Equals(UseIsolatedTestsOption, "true", StringComparison.OrdinalIgnoreCase) || UseIsolatedTestsOption == "1";
+            var testProjectPath = useIsolated
+                ? PrepareIsolatedUnityProjectForTests()
+                : UnityProjectPath;
 
-            // Ensure client repo is clean per R-BLD-060
-            try
-            {
-                var gitReset = ProcessTasks.StartProcess(
-                    "git",
-                    $"-C \"{UnityProjectPath}\" reset --hard",
-                    workingDirectory: UnityProjectPath);
-                gitReset.WaitForExit();
-            }
-            catch { /* ignore if not a git repo */ }
-
-            // Non-invasive analyzer override for MessagePack duplicates (MsgPack009)
-            // We cannot modify projects/client permanently (R-BLD-060), so we stage temporary overrides
-            var editorConfigPath = UnityProjectPath / ".editorconfig";
-            var stagedAnalyzerOverride = false;
+            bool stagedAnalyzerOverride = false;
+            bool stagedCscRsp = false;
             string? originalEditorConfig = null;
-            var cscRspPath = UnityProjectPath / "Assets" / "csc.rsp";
-            var stagedCscRsp = false;
             string? originalCscRsp = null;
-            try
+            var editorConfigPath = testProjectPath / ".editorconfig";
+            var cscRspPath = testProjectPath / "Assets" / "csc.rsp";
+
+            if (!useIsolated)
             {
-                if (File.Exists(editorConfigPath))
+                // Ensure client repo is clean per R-BLD-060
+                try
                 {
-                    originalEditorConfig = File.ReadAllText(editorConfigPath);
-                    if (!originalEditorConfig.Contains("dotnet_diagnostic.MsgPack009.severity", StringComparison.Ordinal))
+                    var gitReset = ProcessTasks.StartProcess(
+                        "git",
+                        $"-C \"{UnityProjectPath}\" reset --hard",
+                        workingDirectory: UnityProjectPath);
+                    gitReset.WaitForExit();
+                }
+                catch { /* ignore if not a git repo */ }
+
+                // Stage temporary overrides only when using client project
+                try
+                {
+                    if (File.Exists(editorConfigPath))
                     {
-                        File.AppendAllText(editorConfigPath,
-                            Environment.NewLine + "[*.cs]" + Environment.NewLine +
-                            "dotnet_diagnostic.MsgPack009.severity = warning" + Environment.NewLine);
+                        originalEditorConfig = File.ReadAllText(editorConfigPath);
+                        if (!originalEditorConfig.Contains("dotnet_diagnostic.MsgPack009.severity", StringComparison.Ordinal))
+                        {
+                            File.AppendAllText(editorConfigPath,
+                                Environment.NewLine + "[*.cs]" + Environment.NewLine +
+                                "dotnet_diagnostic.MsgPack009.severity = warning" + Environment.NewLine);
+                            stagedAnalyzerOverride = true;
+                        }
+                    }
+                    else
+                    {
+                        var contents = "root = false" + Environment.NewLine +
+                                       "[*.cs]" + Environment.NewLine +
+                                       "dotnet_diagnostic.MsgPack009.severity = warning" + Environment.NewLine;
+                        File.WriteAllText(editorConfigPath, contents);
                         stagedAnalyzerOverride = true;
                     }
-                }
-                else
-                {
-                    var contents = "root = false" + Environment.NewLine +
-                                   "[*.cs]" + Environment.NewLine +
-                                   "dotnet_diagnostic.MsgPack009.severity = warning" + Environment.NewLine;
-                    File.WriteAllText(editorConfigPath, contents);
-                    stagedAnalyzerOverride = true;
-                }
 
-                // Also add csc.rsp -nowarn to suppress analyzer diagnostic regardless of severity
-                var assetsDir = Path.Combine(UnityProjectPath, "Assets");
-                Directory.CreateDirectory(assetsDir);
-                if (File.Exists(cscRspPath))
-                {
-                    originalCscRsp = File.ReadAllText(cscRspPath);
-                    if (!originalCscRsp.Contains("MsgPack009", StringComparison.Ordinal))
+                    var assetsDir = Path.Combine(testProjectPath, "Assets");
+                    Directory.CreateDirectory(assetsDir);
+                    if (File.Exists(cscRspPath))
                     {
-                        File.AppendAllText(cscRspPath, (originalCscRsp?.EndsWith(Environment.NewLine) == true ? string.Empty : Environment.NewLine) + "-nowarn:MsgPack009" + Environment.NewLine);
+                        originalCscRsp = File.ReadAllText(cscRspPath);
+                        if (!originalCscRsp.Contains("MsgPack009", StringComparison.Ordinal))
+                        {
+                            File.AppendAllText(cscRspPath, (originalCscRsp?.EndsWith(Environment.NewLine) == true ? string.Empty : Environment.NewLine) + "-nowarn:MsgPack009" + Environment.NewLine);
+                            stagedCscRsp = true;
+                        }
+                    }
+                    else
+                    {
+                        File.WriteAllText(cscRspPath, "-nowarn:MsgPack009" + Environment.NewLine);
                         stagedCscRsp = true;
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    File.WriteAllText(cscRspPath, "-nowarn:MsgPack009" + Environment.NewLine);
-                    stagedCscRsp = true;
+                    Serilog.Log.Warning($"Failed to stage overrides: {ex.Message}");
                 }
             }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning($"Failed to stage .editorconfig override: {ex.Message}");
-            }
 
+            var projectPathArg = useIsolated
+                ? Path.GetRelativePath(RootDirectory, testProjectPath)
+                : testProjectPath.ToString();
             var arguments = new[]
             {
                 "-quit",
                 "-batchmode",
                 "-nographics",
-                $"-projectPath \"{UnityProjectPath}\"",
+                $"-projectPath \"{projectPathArg}\"",
                 "-runTests",
                 "-testPlatform EditMode",
                 $"-testResults \"{testResultsPath}\"",
@@ -226,7 +241,7 @@ interface IUnityBuild : INukeBuild
                 var process = ProcessTasks.StartProcess(
                     UnityPath,
                     string.Join(" ", arguments),
-                    workingDirectory: UnityProjectPath,
+                    workingDirectory: (useIsolated ? RootDirectory : testProjectPath),
                     timeout: (int)TimeSpan.FromMinutes(20).TotalMilliseconds);
 
                 process.AssertZeroExitCode();
@@ -236,14 +251,14 @@ interface IUnityBuild : INukeBuild
             finally
             {
                 // Revert any staged analyzer override to keep client repo pristine
-                if (stagedAnalyzerOverride || stagedCscRsp)
+                if (!useIsolated && (stagedAnalyzerOverride || stagedCscRsp))
                 {
                     try
                     {
                         var gitRevert = ProcessTasks.StartProcess(
                             "git",
-                            $"-C \"{UnityProjectPath}\" reset --hard",
-                            workingDirectory: UnityProjectPath);
+                            $"-C \"{testProjectPath}\" reset --hard",
+                            workingDirectory: testProjectPath);
                         gitRevert.WaitForExit();
                     }
                     catch
@@ -316,5 +331,77 @@ interface IUnityBuild : INukeBuild
         }
 
         throw new Exception("Unity executable not found. Please specify using --unity-path parameter.");
+    }
+
+    /// <summary>
+    /// Prepares an isolated Unity project that embeds our local packages.
+    /// This avoids loading the client repository and its scripts (R-BLD-060).
+    /// </summary>
+    private AbsolutePath PrepareIsolatedUnityProjectForTests()
+    {
+        var isoPath = IsolatedUnityProjectPath;
+        if (Directory.Exists(isoPath))
+            Directory.Delete(isoPath, true);
+        Directory.CreateDirectory(isoPath);
+
+        // Create a fresh Unity project at the path so -projectPath is valid
+        var createArgs = new[]
+        {
+            "-quit",
+            "-batchmode",
+            "-nographics",
+            $"-createProject \"{isoPath}\"",
+            $"-logFile \"{UnityBuildOutput / "unity-create.log"}\"",
+        };
+        var createProc = ProcessTasks.StartProcess(
+            UnityPath,
+            string.Join(" ", createArgs),
+            workingDirectory: RootDirectory,
+            timeout: (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
+        createProc.AssertZeroExitCode();
+
+        var packagesDir = isoPath / "Packages";
+        Directory.CreateDirectory(packagesDir);
+
+        // Minimal manifest with test framework to enable EditMode tests
+        var manifestPath = packagesDir / "manifest.json";
+        var manifest = "{\n" +
+                       "  \"dependencies\": {\n" +
+                       "    \"com.unity.test-framework\": \"1.4.5\"\n" +
+                       "  }\n" +
+                       "}\n";
+        File.WriteAllText(manifestPath, manifest);
+
+        // Copy our local packages into the isolated project's Packages folder
+        var rootPackages = RootDirectory / "packages";
+        if (Directory.Exists(rootPackages))
+        {
+            var candidates = Directory.GetDirectories(rootPackages, "com.contractwork.sangocard.*", SearchOption.AllDirectories);
+            foreach (var src in candidates)
+            {
+                var name = Path.GetFileName(src);
+                var dest = packagesDir / name;
+                CopyDirectoryRecursively(src, dest);
+                Serilog.Log.Information($"Embedded package: {name}");
+            }
+        }
+        else
+        {
+            Serilog.Log.Warning("No local packages directory found at 'packages'. Isolated project may be empty.");
+        }
+
+        return isoPath;
+    }
+
+    private static void CopyDirectoryRecursively(string sourceDir, string destDir)
+    {
+        Directory.CreateDirectory(destDir);
+        foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
+        {
+            var relative = Path.GetRelativePath(sourceDir, file);
+            var target = Path.Combine(destDir, relative);
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.Copy(file, target, overwrite: true);
+        }
     }
 }
