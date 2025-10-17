@@ -135,7 +135,7 @@ repos:
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
-        args: [--strict, --force-scope]
+        args: [--strict]
         description: Enforce Conventional Commits format
 # CI-specific configuration
 
