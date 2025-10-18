@@ -3,7 +3,7 @@ vars:
   BUILD_DIR: ./build/nuke
   UNITY_PROJECT: ./projects/client
   OUTPUT_DIR: ./output
-  NUKE_BUILD_SCRIPT: '{{if eq OS "windows"}}./build/nuke/build.ps1{{else}}./build/nuke/build.sh{{end}}'
+  NUKE_BUILD_SCRIPT: '{{if eq OS "windows"}}pwsh -NoProfile -ExecutionPolicy Bypass -File ./build/nuke/build.ps1{{else}}./build/nuke/build.sh{{end}}'
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: "1"
 tasks:
@@ -20,6 +20,7 @@ tasks:
     cmds:
       - task: setup:dotnet
       - task: setup:unity
+      - task: setup:dotnet-tools
       - task: setup:hooks
       - echo "✓ Setup complete!"
   setup:dotnet:
@@ -61,6 +62,20 @@ tasks:
           echo "  Then run: task setup:hooks"
         fi
         {{end}}
+  setup:dotnet-tools:
+    desc: Install .NET code quality tools (Roslynator, JetBrains InspectCode)
+    cmds:
+      - |
+        echo "Installing .NET code quality tools..."
+        dotnet tool install -g roslynator.dotnet.cli || echo "⚠ Roslynator already installed or failed"
+        dotnet tool install -g JetBrains.ReSharper.GlobalTools || echo "⚠ JetBrains tools already installed or failed"
+        echo ""
+        echo "Verifying installations:"
+        dotnet format --version && echo "✓ dotnet format available" || echo "⚠ dotnet format not found"
+        roslynator --version && echo "✓ Roslynator installed" || echo "⚠ Roslynator not found"
+        jb inspectcode --version && echo "✓ JetBrains InspectCode installed" || echo "⚠ JetBrains InspectCode not found"
+        echo ""
+        echo "✓ .NET tools setup complete!"
   # Clean tasks
 
   clean:
@@ -118,24 +133,49 @@ tasks:
 
   build:prepare:cache:
     desc: Populate build preparation cache (safe anytime)
+    summary: |
+      Populate build preparation cache from code-quality project
+      Usage: task build:prepare:cache [CONFIG=preparation]
+      Example: task build:prepare:cache CONFIG=preparation
+    vars:
+      CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} PrepareCache'
+      - '{{.NUKE_BUILD_SCRIPT}} PrepareCache --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
   build:prepare:client:
     desc: Inject preparation into client (build-time only, includes git reset)
+    summary: |
+      Inject packages and code patches into client project
+      Usage: task build:prepare:client [CONFIG=injection]
+      Example: task build:prepare:client CONFIG=injection
+      WARNING: This performs git reset --hard on projects/client
+    vars:
+      CONFIG: '{{.CONFIG | default "injection"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} PrepareClient'
+      - '{{.NUKE_BUILD_SCRIPT}} PrepareClient --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
   build:prepare:restore:
     desc: Restore client to clean state (git reset)
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} RestoreClient'
   build:prepare:validate:
     desc: Validate build preparation configuration
+    summary: |
+      Validate preparation configuration file
+      Usage: task build:prepare:validate [CONFIG=preparation]
+      Example: task build:prepare:validate CONFIG=injection
+    vars:
+      CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} ValidatePreparation'
+      - '{{.NUKE_BUILD_SCRIPT}} ValidatePreparation --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
   build:prepare:dry-run:
     desc: Preview preparation changes without applying
+    summary: |
+      Generate dry-run report showing what would be changed
+      Usage: task build:prepare:dry-run [CONFIG=injection]
+      Example: task build:prepare:dry-run CONFIG=injection
+    vars:
+      CONFIG: '{{.CONFIG | default "injection"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} DryRunPreparation'
+      - '{{.NUKE_BUILD_SCRIPT}} GenerateReportDryRun --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
   build:unity:prepared:
     desc: Build Unity with full preparation workflow
     cmds:
@@ -312,6 +352,36 @@ tasks:
     desc: Check C# partial class patterns (R-CODE-090)
     cmds:
       - pre-commit run partial-class-interface-separation --all-files
+  lint:dotnet:
+    desc: Run all .NET code quality checks (format, Roslynator, InspectCode)
+    cmds:
+      - task: lint:dotnet:format
+      - task: lint:dotnet:roslynator
+      - task: lint:dotnet:inspectcode
+  lint:dotnet:format:
+    desc: Check C# code formatting with dotnet format
+    cmds:
+      - pre-commit run dotnet-format --all-files
+  lint:dotnet:roslynator:
+    desc: Analyze C# code with Roslynator
+    cmds:
+      - pre-commit run roslynator --all-files
+  lint:dotnet:inspectcode:
+    desc: Analyze C# code with JetBrains InspectCode
+    cmds:
+      - pre-commit run inspectcode --all-files
+  lint:dotnet:inspectcode:direct:
+    desc: Run JetBrains InspectCode directly (bypasses pre-commit hook)
+    vars:
+      SOLUTION: '{{.SOLUTION | default "dotnet/SangoCard.sln"}}'
+      OUTPUT: '{{.OUTPUT | default ".inspectcode-temp/inspect-results.xml"}}'
+      FORMAT: '{{.FORMAT | default "Xml"}}'
+      SEVERITY: '{{.SEVERITY | default "WARNING"}}'
+    cmds:
+      - echo "Running JetBrains InspectCode on {{.SOLUTION}}..."
+      - mkdir -p .inspectcode-temp
+      - jb inspectcode {{.SOLUTION}} --output={{.OUTPUT}} --format={{.FORMAT}} --severity={{.SEVERITY}} --build
+      - echo "✓ InspectCode analysis complete. Report saved to {{.OUTPUT}}"
   format:
     desc: Auto-fix formatting issues (markdown, YAML, whitespace)
     cmds:
@@ -332,6 +402,10 @@ tasks:
     desc: Auto-format YAML files
     cmds:
       - pre-commit run yamlfmt --all-files
+  format:dotnet:
+    desc: Auto-fix C# code formatting with dotnet format
+    cmds:
+      - pre-commit run dotnet-format --all-files
   check:
     desc: Run all checks (lint + validate + docs check)
     cmds:
