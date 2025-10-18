@@ -45,7 +45,7 @@ public class ConfigServiceTests : IDisposable
 
         _gitHelper = new GitHelper(_gitLoggerMock.Object);
         _pathResolver = new PathResolver(_gitHelper, _pathLoggerMock.Object);
-        
+
         _configService = new ConfigService(
             _pathResolver,
             _configLoggerMock.Object,

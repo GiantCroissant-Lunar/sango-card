@@ -325,4 +325,3 @@ internal class BlockRemovalRewriter : CSharpSyntaxRewriter
         return base.VisitBlock(node);
     }
 }
-

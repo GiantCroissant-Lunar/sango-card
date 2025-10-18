@@ -54,7 +54,7 @@ public class TextPatcherTests : IDisposable
         // Assert
         result.Success.Should().BeTrue();
         result.Modified.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Be("Hello Universe\nGoodbye Universe");
     }
@@ -82,7 +82,7 @@ public class TextPatcherTests : IDisposable
         // Assert
         result.Success.Should().BeTrue();
         result.Modified.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Contain("Version: 2.0.0");
         content.Should().Contain("Build: 12345");
@@ -110,7 +110,7 @@ public class TextPatcherTests : IDisposable
 
         // Assert
         result.Success.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Contain("Modified Line");
     }
@@ -141,7 +141,7 @@ public class TextPatcherTests : IDisposable
 
         // Assert
         result.Success.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Be("Hello World");
     }
@@ -168,7 +168,7 @@ public class TextPatcherTests : IDisposable
 
         // Assert
         result.Success.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Contain("async function test()");
     }
@@ -199,7 +199,7 @@ public class TextPatcherTests : IDisposable
 
         // Assert
         result.Success.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Be("Hello World");
     }
@@ -226,7 +226,7 @@ public class TextPatcherTests : IDisposable
 
         // Assert
         result.Success.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Contain("using System;\nusing System.Linq;");
     }
@@ -256,7 +256,7 @@ public class TextPatcherTests : IDisposable
 
         // Assert
         result.Success.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Be("Hello\nGoodbye");
     }
@@ -282,7 +282,7 @@ public class TextPatcherTests : IDisposable
 
         // Assert
         result.Success.Should().BeTrue();
-        
+
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().NotContain("DEBUG");
         content.Should().Contain("Line 1");
@@ -456,7 +456,7 @@ public class TextPatcherTests : IDisposable
         result.Modified.Should().BeTrue();
         result.Preview.Should().NotBeNullOrEmpty();
         result.Preview.Should().Contain("Patch Preview");
-        
+
         var actualContent = await File.ReadAllTextAsync(testFile);
         actualContent.Should().Be(originalContent); // File should not be modified
     }

@@ -319,20 +319,25 @@ public class ConfigCommandHandler
 
             if (dryRun)
             {
-                Console.WriteLine("[DRY RUN] Would perform the following actions:");
+                Console.WriteLine("[DRY RUN] Operation: Add source to preparation manifest");
+                Console.WriteLine($"  Source: {result.SourcePath}");
+                Console.WriteLine($"  Cache As: {cacheAs}");
+                Console.WriteLine($"  Type: {type}");
+                Console.WriteLine($"  Manifest: {manifestPath}");
                 Console.WriteLine();
-                Console.WriteLine("1. Copy source:");
-                Console.WriteLine($"   From: {result.SourcePath}");
-                Console.WriteLine($"   To:   {result.CachePath}");
+                Console.WriteLine("[DRY RUN] Would copy:");
+                Console.WriteLine($"  From: {result.SourcePath}");
+                Console.WriteLine($"  To: {result.CachePath}");
+                Console.WriteLine($"  Files: {result.FileCount} files ({FormatBytes(result.TotalSize)})");
+                if (result.DirectoryCount > 0)
+                {
+                    Console.WriteLine($"  Directories: {result.DirectoryCount}");
+                }
                 Console.WriteLine();
-                Console.WriteLine($"2. Add to manifest ({manifestPath}):");
-                Console.WriteLine("   {");
-                Console.WriteLine($"     \"source\": \"{sourcePath}\",");
-                Console.WriteLine($"     \"cacheAs\": \"{cacheAs}\",");
-                Console.WriteLine($"     \"type\": \"{type}\"");
-                Console.WriteLine("   }");
+                Console.WriteLine("[DRY RUN] Would update manifest:");
+                Console.WriteLine($"  + Add item: {cacheAs} ({type})");
                 Console.WriteLine();
-                Console.WriteLine("No changes made (dry run mode).");
+                Console.WriteLine("[DRY RUN] No changes made. Remove --dry-run to execute.");
             }
             else
             {
@@ -402,16 +407,22 @@ public class ConfigCommandHandler
 
             if (dryRun)
             {
-                Console.WriteLine("[DRY RUN] Would add to config:");
+                Console.WriteLine("[DRY RUN] Operation: Add injection to build config");
+                Console.WriteLine($"  Cache Source: {sourceRelativePath}");
+                Console.WriteLine($"  Client Target: {targetRelativePath}");
                 Console.WriteLine($"  Type: {type}");
+                Console.WriteLine($"  Config: {configPath}");
+                Console.WriteLine();
+                Console.WriteLine("[DRY RUN] Would add injection:");
                 Console.WriteLine($"  Name: {itemName}");
-                Console.WriteLine($"  Version: {version ?? "N/A"}");
-                Console.WriteLine($"  Source: {sourceRelativePath}");
-                Console.WriteLine($"  Target: {targetRelativePath}");
+                Console.WriteLine($"  Version: {version ?? "(not specified)"}");
+                Console.WriteLine($"  Source: {_paths.Resolve(sourceRelativePath)}");
+                Console.WriteLine($"  Target: {_paths.Resolve(targetRelativePath)}");
                 Console.WriteLine();
-                Console.WriteLine($"Config file: {_paths.Resolve(configPath)}");
+                Console.WriteLine("[DRY RUN] Would update config:");
+                Console.WriteLine($"  + Add {type}: {itemName}");
                 Console.WriteLine();
-                Console.WriteLine("No changes made (dry run mode).");
+                Console.WriteLine("[DRY RUN] No changes made. Remove --dry-run to execute.");
             }
             else
             {
@@ -587,5 +598,21 @@ public class ConfigCommandHandler
             _logger.LogError(ex, "Failed to process batch manifest");
             Environment.ExitCode = 1;
         }
+    }
+
+    /// <summary>
+    /// Formats bytes into human-readable format (KB, MB, GB).
+    /// </summary>
+    private static string FormatBytes(long bytes)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        double len = bytes;
+        int order = 0;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len = len / 1024;
+        }
+        return $"{len:0.#} {sizes[order]}";
     }
 }

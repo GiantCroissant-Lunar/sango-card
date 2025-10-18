@@ -61,7 +61,7 @@ public class ConfigService
     public async Task<PreparationConfig> LoadAsync(string relativePath)
     {
         var absolutePath = _pathResolver.Resolve(relativePath);
-        
+
         _logger.LogInformation("Loading configuration from: {Path}", absolutePath);
 
         if (!File.Exists(absolutePath))
@@ -98,7 +98,7 @@ public class ConfigService
     public async Task SaveAsync(PreparationConfig config, string relativePath)
     {
         var absolutePath = _pathResolver.Resolve(relativePath);
-        
+
         _logger.LogInformation("Saving configuration to: {Path}", absolutePath);
 
         // Ensure directory exists
@@ -143,7 +143,7 @@ public class ConfigService
         _logger.LogDebug("Adding package: {Name}@{Version}", package.Name, package.Version);
 
         // Check for duplicates
-        var existing = config.Packages.FirstOrDefault(p => 
+        var existing = config.Packages.FirstOrDefault(p =>
             p.Name == package.Name && p.Version == package.Version);
 
         if (existing != null)

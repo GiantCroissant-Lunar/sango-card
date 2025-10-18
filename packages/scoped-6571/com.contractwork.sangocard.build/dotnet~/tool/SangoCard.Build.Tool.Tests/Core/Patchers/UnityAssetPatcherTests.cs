@@ -118,7 +118,7 @@ MonoBehaviour:
         var content = await File.ReadAllTextAsync(testFile);
         var lines = content.Split('\n');
         var rolloffLine = lines.First(l => l.Contains("Rolloff Scale"));
-        
+
         // Should preserve the original indentation (2 spaces)
         rolloffLine.Should().StartWith("  Rolloff Scale: 2.5");
     }
@@ -189,7 +189,7 @@ TestAsset:
 
         var content = await File.ReadAllTextAsync(testFile);
         content.Should().Contain(newComponent);
-        
+
         // Should be added after the marker
         var markerIndex = content.IndexOf("m_EditorClassIdentifier:");
         var componentIndex = content.IndexOf(newComponent);
@@ -353,7 +353,7 @@ TestAsset:
 
         // Act
         var result = await _patcher.ApplyPatchAsync(testFile, patch);
-        
+
         // Assert
         // The patch will fail because validation detects missing header
         result.Success.Should().BeFalse();

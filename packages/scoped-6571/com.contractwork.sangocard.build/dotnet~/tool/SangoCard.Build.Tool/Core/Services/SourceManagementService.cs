@@ -125,6 +125,10 @@ public class SourceManagementService
 
             if (dryRun)
             {
+                // Calculate file/directory info for preview
+                result.FileCount = CountFiles(resolvedSource);
+                result.DirectoryCount = CountDirectories(resolvedSource);
+                result.TotalSize = CalculateSize(resolvedSource);
                 result.Success = true;
                 result.DryRun = true;
                 return result;
@@ -535,6 +539,51 @@ public class SourceManagementService
 
         return result;
     }
+
+    /// <summary>
+    /// Counts the number of files in a path (file or directory).
+    /// </summary>
+    private int CountFiles(string path)
+    {
+        if (File.Exists(path))
+        {
+            return 1;
+        }
+        else if (Directory.Exists(path))
+        {
+            return Directory.GetFiles(path, "*", SearchOption.AllDirectories).Length;
+        }
+        return 0;
+    }
+
+    /// <summary>
+    /// Counts the number of directories in a path.
+    /// </summary>
+    private int CountDirectories(string path)
+    {
+        if (Directory.Exists(path))
+        {
+            return Directory.GetDirectories(path, "*", SearchOption.AllDirectories).Length;
+        }
+        return 0;
+    }
+
+    /// <summary>
+    /// Calculates the total size of files in a path (file or directory).
+    /// </summary>
+    private long CalculateSize(string path)
+    {
+        if (File.Exists(path))
+        {
+            return new FileInfo(path).Length;
+        }
+        else if (Directory.Exists(path))
+        {
+            var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            return files.Sum(f => new FileInfo(f).Length);
+        }
+        return 0;
+    }
 }
 
 /// <summary>
@@ -559,4 +608,7 @@ public class SourceAdditionResult
     public string? CachePath { get; set; }
     public string? CacheRelativePath { get; set; }
     public string? ErrorMessage { get; set; }
+    public int FileCount { get; set; }
+    public int DirectoryCount { get; set; }
+    public long TotalSize { get; set; }
 }

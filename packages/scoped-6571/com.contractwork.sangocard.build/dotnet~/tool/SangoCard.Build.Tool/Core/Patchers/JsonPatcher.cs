@@ -231,7 +231,7 @@ public class JsonPatcher : PatcherBase
         // Parse the path - Search contains the parent path, Replace contains the new property name and value
         // Format: Search="path.to.parent", Replace="propertyName:value" or just the JSON value
         var pathParts = ParseJsonPath(patch.Search);
-        
+
         // Navigate to the parent object
         JsonNode? parent;
         if (pathParts.Length == 0)

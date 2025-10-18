@@ -1,0 +1,15 @@
+[DRY RUN] Operation: Add source to preparation manifest
+  Source: {TestDirectory}\sources\com.example.package
+  Cache As: com.example.package
+  Type: package
+  Manifest: build/preparation/manifests/test.json
+
+[DRY RUN] Would copy:
+  From: {TestDirectory}\sources\com.example.package
+  To: {TestDirectory}\build\preparation\cache\com.example.package
+  Files: 2 files (1.5 KB)
+
+[DRY RUN] Would update manifest:
+  + Add item: com.example.package (package)
+
+[DRY RUN] No changes made. Remove --dry-run to execute.
