@@ -1,0 +1,770 @@
+{
+  "version": "1.0",
+  "description": "Third-party packages from code-quality project PackageCache to be copied to preparation cache",
+  "packages": [
+    {
+      "name": "com.contractwork.sangocard.cross",
+      "version": "0.1.0",
+      "source": "packages/scoped-2151/com.contractwork.sangocard.cross",
+      "target": "build/preparation/cache/com.contractwork.sangocard.cross"
+    },
+    {
+      "name": "com.contractwork.sangocard.game",
+      "version": "0.1.0",
+      "source": "packages/scoped-3208/com.contractwork.sangocard.game",
+      "target": "build/preparation/cache/com.contractwork.sangocard.game"
+    },
+    {
+      "name": "com.contractwork.sangocard.build",
+      "version": "0.1.0",
+      "source": "packages/scoped-6571/com.contractwork.sangocard.build",
+      "target": "build/preparation/cache/com.contractwork.sangocard.build"
+    },
+    {
+      "name": "com.cysharp.messagepipe.vcontainer",
+      "version": "1.8.1",
+      "source": "projects/code-quality/Library/PackageCache/com.cysharp.messagepipe.vcontainer@feee116c0663",
+      "target": "build/preparation/cache/com.cysharp.messagepipe.vcontainer"
+    },
+    {
+      "name": "com.cysharp.messagepipe",
+      "version": "1.8.1",
+      "source": "projects/code-quality/Library/PackageCache/com.cysharp.messagepipe@feee116c0663",
+      "target": "build/preparation/cache/com.cysharp.messagepipe"
+    },
+    {
+      "name": "com.cysharp.r3",
+      "version": "1.3.0",
+      "source": "projects/code-quality/Library/PackageCache/com.cysharp.r3@fe2216b2d5c4",
+      "target": "build/preparation/cache/com.cysharp.r3"
+    },
+    {
+      "name": "com.cysharp.unitask",
+      "version": "2.5.10",
+      "source": "projects/code-quality/Library/PackageCache/com.cysharp.unitask@15a4a7657f99",
+      "target": "build/preparation/cache/com.cysharp.unitask"
+    },
+    {
+      "name": "com.cysharp.zlinq",
+      "version": "1.5.2",
+      "source": "projects/code-quality/Library/PackageCache/com.cysharp.zlinq@72d75520e076",
+      "target": "build/preparation/cache/com.cysharp.zlinq"
+    },
+    {
+      "name": "com.cysharp.zlogger",
+      "version": "2.5.10",
+      "source": "projects/code-quality/Library/PackageCache/com.cysharp.zlogger@3f96813acaea",
+      "target": "build/preparation/cache/com.cysharp.zlogger"
+    },
+    {
+      "name": "com.github-glitchenzo.nugetforunity",
+      "version": "4.5.0",
+      "source": "projects/code-quality/Library/PackageCache/com.github-glitchenzo.nugetforunity@e93995edfb73",
+      "target": "build/preparation/cache/com.github-glitchenzo.nugetforunity"
+    },
+    {
+      "name": "com.tuyoogame.yooasset",
+      "version": "2.3.14",
+      "source": "projects/code-quality/Library/PackageCache/com.tuyoogame.yooasset@51ddb697de2e",
+      "target": "build/preparation/cache/com.tuyoogame.yooasset"
+    },
+    {
+      "name": "com.unity.addressables",
+      "version": "2.6.0",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.addressables@0960051b8c8a",
+      "target": "build/preparation/cache/com.unity.addressables"
+    },
+    {
+      "name": "com.unity.ai.navigation",
+      "version": "2.0.9",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.ai.navigation@5218e4bf7edc",
+      "target": "build/preparation/cache/com.unity.ai.navigation"
+    },
+    {
+      "name": "com.unity.burst",
+      "version": "1.8.25",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.burst@1df634d836b8",
+      "target": "build/preparation/cache/com.unity.burst"
+    },
+    {
+      "name": "com.unity.collab-proxy",
+      "version": "2.9.3",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.collab-proxy@ab839cc7d2ad",
+      "target": "build/preparation/cache/com.unity.collab-proxy"
+    },
+    {
+      "name": "com.unity.collections",
+      "version": "2.5.7",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.collections@d49facba0036",
+      "target": "build/preparation/cache/com.unity.collections"
+    },
+    {
+      "name": "com.unity.ext.nunit",
+      "version": "2.0.5",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.ext.nunit@031a54704bff",
+      "target": "build/preparation/cache/com.unity.ext.nunit"
+    },
+    {
+      "name": "com.unity.ide.rider",
+      "version": "3.0.38",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.ide.rider@1f60b3138684",
+      "target": "build/preparation/cache/com.unity.ide.rider"
+    },
+    {
+      "name": "com.unity.ide.visualstudio",
+      "version": "2.0.25",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.ide.visualstudio@74aa435fc4bb",
+      "target": "build/preparation/cache/com.unity.ide.visualstudio"
+    },
+    {
+      "name": "com.unity.inputsystem",
+      "version": "1.14.2",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.inputsystem@be6c4fd0abf5",
+      "target": "build/preparation/cache/com.unity.inputsystem"
+    },
+    {
+      "name": "com.unity.mathematics",
+      "version": "1.3.2",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.mathematics@8017b507cc74",
+      "target": "build/preparation/cache/com.unity.mathematics"
+    },
+    {
+      "name": "com.unity.multiplayer.center",
+      "version": "1.0.0",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.multiplayer.center@f3fb577b3546",
+      "target": "build/preparation/cache/com.unity.multiplayer.center"
+    },
+    {
+      "name": "com.unity.nuget.mono-cecil",
+      "version": "1.11.5",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.nuget.mono-cecil@d78732e851eb",
+      "target": "build/preparation/cache/com.unity.nuget.mono-cecil"
+    },
+    {
+      "name": "com.unity.profiling.core",
+      "version": "1.0.2",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.profiling.core@aac7b93912bc",
+      "target": "build/preparation/cache/com.unity.profiling.core"
+    },
+    {
+      "name": "com.unity.render-pipelines.core",
+      "version": "17.2.0",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.render-pipelines.core@60896ea171dc",
+      "target": "build/preparation/cache/com.unity.render-pipelines.core"
+    },
+    {
+      "name": "com.unity.render-pipelines.universal-config",
+      "version": "17.0.3",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.render-pipelines.universal-config@8dc1aab4af1d",
+      "target": "build/preparation/cache/com.unity.render-pipelines.universal-config"
+    },
+    {
+      "name": "com.unity.render-pipelines.universal",
+      "version": "17.2.0",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.render-pipelines.universal@cc5029882822",
+      "target": "build/preparation/cache/com.unity.render-pipelines.universal"
+    },
+    {
+      "name": "com.unity.rendering.light-transport",
+      "version": "1.0.1",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.rendering.light-transport@2c9279f90d7c",
+      "target": "build/preparation/cache/com.unity.rendering.light-transport"
+    },
+    {
+      "name": "com.unity.scriptablebuildpipeline",
+      "version": "2.4.3",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.scriptablebuildpipeline@ca3e2d96aa2f",
+      "target": "build/preparation/cache/com.unity.scriptablebuildpipeline"
+    },
+    {
+      "name": "com.unity.searcher",
+      "version": "4.9.3",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.searcher@1e17ce91558d",
+      "target": "build/preparation/cache/com.unity.searcher"
+    },
+    {
+      "name": "com.unity.shadergraph",
+      "version": "17.2.0",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.shadergraph@2c9221ffedf4",
+      "target": "build/preparation/cache/com.unity.shadergraph"
+    },
+    {
+      "name": "com.unity.test-framework.performance",
+      "version": "3.2.0",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.test-framework.performance@0840f58e4562",
+      "target": "build/preparation/cache/com.unity.test-framework.performance"
+    },
+    {
+      "name": "com.unity.test-framework",
+      "version": "1.6.0",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.test-framework@d97b7cd61ded",
+      "target": "build/preparation/cache/com.unity.test-framework"
+    },
+    {
+      "name": "com.unity.timeline",
+      "version": "1.8.9",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.timeline@6b9e48457ddb",
+      "target": "build/preparation/cache/com.unity.timeline"
+    },
+    {
+      "name": "com.unity.ugui",
+      "version": "2.0.0",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.ugui@8d7885e629a4",
+      "target": "build/preparation/cache/com.unity.ugui"
+    },
+    {
+      "name": "com.unity.visualscripting",
+      "version": "1.9.8",
+      "source": "projects/code-quality/Library/PackageCache/com.unity.visualscripting@6279e2b7c485",
+      "target": "build/preparation/cache/com.unity.visualscripting"
+    },
+    {
+      "name": "jp.hadashikick.vcontainer",
+      "version": "1.17.0",
+      "source": "projects/code-quality/Library/PackageCache/jp.hadashikick.vcontainer@f0b2b1c16e6a",
+      "target": "build/preparation/cache/jp.hadashikick.vcontainer"
+    },
+    {
+      "name": "org.nuget.grpc.core.api",
+      "version": "2.71.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.grpc.core.api@344a59591f24",
+      "target": "build/preparation/cache/org.nuget.grpc.core.api"
+    },
+    {
+      "name": "org.nuget.grpc.core",
+      "version": "2.46.6",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.grpc.core@30a46b906ed0",
+      "target": "build/preparation/cache/org.nuget.grpc.core"
+    },
+    {
+      "name": "org.nuget.grpc.net.common",
+      "version": "2.71.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.grpc.net.common@20ac28a66e35",
+      "target": "build/preparation/cache/org.nuget.grpc.net.common"
+    },
+    {
+      "name": "org.nuget.microsoft.bcl.asyncinterfaces",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.bcl.asyncinterfaces@328a307bd65b",
+      "target": "build/preparation/cache/org.nuget.microsoft.bcl.asyncinterfaces"
+    },
+    {
+      "name": "org.nuget.microsoft.bcl.cryptography",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.bcl.cryptography@2e2de2a65161",
+      "target": "build/preparation/cache/org.nuget.microsoft.bcl.cryptography"
+    },
+    {
+      "name": "org.nuget.microsoft.bcl.hashcode",
+      "version": "6.0.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.bcl.hashcode@ec331d48ba55",
+      "target": "build/preparation/cache/org.nuget.microsoft.bcl.hashcode"
+    },
+    {
+      "name": "org.nuget.microsoft.bcl.timeprovider",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.bcl.timeprovider@62a55c3d57cf",
+      "target": "build/preparation/cache/org.nuget.microsoft.bcl.timeprovider"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.configuration.abstractions",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.configuration.abstractions@e21dc58ce365",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.configuration.abstractions"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.configuration.binder",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.configuration.binder@0cb486168647",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.configuration.binder"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.configuration.commandline",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.configuration.commandline@6ae895ecf5f4",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.configuration.commandline"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.configuration.environmentvariables",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.configuration.environmentvariables@e66b934a027f",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.configuration.environmentvariables"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.configuration.fileextensions",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.configuration.fileextensions@21707577d1c5",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.configuration.fileextensions"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.configuration.json",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.configuration.json@54a5e544db95",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.configuration.json"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.configuration.usersecrets",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.configuration.usersecrets@53eab4a1db06",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.configuration.usersecrets"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.configuration",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.configuration@bbb7247b77b4",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.configuration"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.dependencyinjection.abstractions",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.dependencyinjection.abstractions@011670b187e9",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.dependencyinjection.abstractions"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.dependencyinjection",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.dependencyinjection@50cfd603eb43",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.dependencyinjection"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.diagnostics.abstractions",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.diagnostics.abstractions@c4c80eb75c3b",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.diagnostics.abstractions"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.diagnostics",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.diagnostics@c9545f1b64fe",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.diagnostics"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.fileproviders.abstractions",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.fileproviders.abstractions@723cf52f3914",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.fileproviders.abstractions"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.fileproviders.physical",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.fileproviders.physical@b72baee772c5",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.fileproviders.physical"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.filesystemglobbing",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.filesystemglobbing@150d01d49708",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.filesystemglobbing"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.hosting.abstractions",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.hosting.abstractions@539aee7477d4",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.hosting.abstractions"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.hosting",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.hosting@e0f63acf4cef",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.hosting"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.logging.abstractions",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.logging.abstractions@daf01cbf05d5",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.logging.abstractions"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.logging.configuration",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.logging.configuration@33d3931ef0da",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.logging.configuration"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.logging.console",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.logging.console@9de8c751ad18",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.logging.console"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.logging.debug",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.logging.debug@9f73ed06cda6",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.logging.debug"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.logging.eventlog",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.logging.eventlog@01fb44e5b97c",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.logging.eventlog"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.logging.eventsource",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.logging.eventsource@6e863a197263",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.logging.eventsource"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.logging",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.logging@c95ee2e3b656",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.logging"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.objectpool",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.objectpool@1d6c838e5219",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.objectpool"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.options.configurationextensions",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.options.configurationextensions@2777478771a1",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.options.configurationextensions"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.options",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.options@f565c4ae8670",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.options"
+    },
+    {
+      "name": "org.nuget.microsoft.extensions.primitives",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.microsoft.extensions.primitives@5acfa8ed796f",
+      "target": "build/preparation/cache/org.nuget.microsoft.extensions.primitives"
+    },
+    {
+      "name": "org.nuget.observablecollections.r3",
+      "version": "3.3.4",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.observablecollections.r3@3a18ad61e6f5",
+      "target": "build/preparation/cache/org.nuget.observablecollections.r3"
+    },
+    {
+      "name": "org.nuget.observablecollections",
+      "version": "3.3.4",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.observablecollections@74b5fa3451cc",
+      "target": "build/preparation/cache/org.nuget.observablecollections"
+    },
+    {
+      "name": "org.nuget.r3",
+      "version": "1.3.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.r3@c98887a6d128",
+      "target": "build/preparation/cache/org.nuget.r3"
+    },
+    {
+      "name": "org.nuget.system.buffers",
+      "version": "4.6.1",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.buffers@4462a8bca019",
+      "target": "build/preparation/cache/org.nuget.system.buffers"
+    },
+    {
+      "name": "org.nuget.system.collections.immutable",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.collections.immutable@05301dc65ffa",
+      "target": "build/preparation/cache/org.nuget.system.collections.immutable"
+    },
+    {
+      "name": "org.nuget.system.componentmodel.annotations",
+      "version": "5.0.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.componentmodel.annotations@852d9dc7d0d6",
+      "target": "build/preparation/cache/org.nuget.system.componentmodel.annotations"
+    },
+    {
+      "name": "org.nuget.system.diagnostics.diagnosticsource",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.diagnostics.diagnosticsource@62a170ca77fc",
+      "target": "build/preparation/cache/org.nuget.system.diagnostics.diagnosticsource"
+    },
+    {
+      "name": "org.nuget.system.diagnostics.eventlog",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.diagnostics.eventlog@ccc5190fc16a",
+      "target": "build/preparation/cache/org.nuget.system.diagnostics.eventlog"
+    },
+    {
+      "name": "org.nuget.system.formats.asn1",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.formats.asn1@360eb592d1b9",
+      "target": "build/preparation/cache/org.nuget.system.formats.asn1"
+    },
+    {
+      "name": "org.nuget.system.io.hashing",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.io.hashing@86079913f91b",
+      "target": "build/preparation/cache/org.nuget.system.io.hashing"
+    },
+    {
+      "name": "org.nuget.system.io.pipelines",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.io.pipelines@3dcaa702d1e6",
+      "target": "build/preparation/cache/org.nuget.system.io.pipelines"
+    },
+    {
+      "name": "org.nuget.system.memory",
+      "version": "4.6.3",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.memory@021614a181ed",
+      "target": "build/preparation/cache/org.nuget.system.memory"
+    },
+    {
+      "name": "org.nuget.system.numerics.vectors",
+      "version": "4.6.1",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.numerics.vectors@6cbe0e354ad7",
+      "target": "build/preparation/cache/org.nuget.system.numerics.vectors"
+    },
+    {
+      "name": "org.nuget.system.reactive",
+      "version": "6.0.1",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.reactive@dcf05f66c313",
+      "target": "build/preparation/cache/org.nuget.system.reactive"
+    },
+    {
+      "name": "org.nuget.system.reflection.emit.ilgeneration",
+      "version": "4.7.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.reflection.emit.ilgeneration@1f6ade677865",
+      "target": "build/preparation/cache/org.nuget.system.reflection.emit.ilgeneration"
+    },
+    {
+      "name": "org.nuget.system.reflection.emit",
+      "version": "4.7.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.reflection.emit@7dfed3217855",
+      "target": "build/preparation/cache/org.nuget.system.reflection.emit"
+    },
+    {
+      "name": "org.nuget.system.reflection.metadata",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.reflection.metadata@752590b3a9f7",
+      "target": "build/preparation/cache/org.nuget.system.reflection.metadata"
+    },
+    {
+      "name": "org.nuget.system.runtime.compilerservices.unsafe",
+      "version": "6.1.2",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.runtime.compilerservices.unsafe@eab393a78e5c",
+      "target": "build/preparation/cache/org.nuget.system.runtime.compilerservices.unsafe"
+    },
+    {
+      "name": "org.nuget.system.security.cryptography.cng",
+      "version": "5.0.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.security.cryptography.cng@eef2999725f8",
+      "target": "build/preparation/cache/org.nuget.system.security.cryptography.cng"
+    },
+    {
+      "name": "org.nuget.system.security.cryptography.pkcs",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.security.cryptography.pkcs@5bfffa4ce858",
+      "target": "build/preparation/cache/org.nuget.system.security.cryptography.pkcs"
+    },
+    {
+      "name": "org.nuget.system.security.principal.windows",
+      "version": "5.0.0",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.security.principal.windows@2b7d41cd03cc",
+      "target": "build/preparation/cache/org.nuget.system.security.principal.windows"
+    },
+    {
+      "name": "org.nuget.system.text.encoding.codepages",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.text.encoding.codepages@6b178dcdbc68",
+      "target": "build/preparation/cache/org.nuget.system.text.encoding.codepages"
+    },
+    {
+      "name": "org.nuget.system.text.encodings.web",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.text.encodings.web@89d932c5e257",
+      "target": "build/preparation/cache/org.nuget.system.text.encodings.web"
+    },
+    {
+      "name": "org.nuget.system.text.json",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.text.json@01fd1dd45451",
+      "target": "build/preparation/cache/org.nuget.system.text.json"
+    },
+    {
+      "name": "org.nuget.system.threading.channels",
+      "version": "9.0.7",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.threading.channels@38066e88c197",
+      "target": "build/preparation/cache/org.nuget.system.threading.channels"
+    },
+    {
+      "name": "org.nuget.system.threading.tasks.extensions",
+      "version": "4.6.3",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.system.threading.tasks.extensions@c44cc8a9f45b",
+      "target": "build/preparation/cache/org.nuget.system.threading.tasks.extensions"
+    },
+    {
+      "name": "org.nuget.utf8stringinterpolation",
+      "version": "1.3.2",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.utf8stringinterpolation@aae928e78134",
+      "target": "build/preparation/cache/org.nuget.utf8stringinterpolation"
+    },
+    {
+      "name": "org.nuget.zlogger",
+      "version": "2.5.10",
+      "source": "projects/code-quality/Library/PackageCache/org.nuget.zlogger@b727ac9fa401",
+      "target": "build/preparation/cache/org.nuget.zlogger"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "CliWrap",
+      "version": "3.8.2",
+      "source": "projects/code-quality/Assets/Packages/CliWrap.3.8.2",
+      "target": "build/preparation/cache/CliWrap.3.8.2"
+    },
+    {
+      "name": "CommunityToolkit.Diagnostics",
+      "version": "8.4.0",
+      "source": "projects/code-quality/Assets/Packages/CommunityToolkit.Diagnostics.8.4.0",
+      "target": "build/preparation/cache/CommunityToolkit.Diagnostics.8.4.0"
+    },
+    {
+      "name": "CommunityToolkit.Mvvm",
+      "version": "8.4.0",
+      "source": "projects/code-quality/Assets/Packages/CommunityToolkit.Mvvm.8.4.0",
+      "target": "build/preparation/cache/CommunityToolkit.Mvvm.8.4.0"
+    },
+    {
+      "name": "DynamicData",
+      "version": "9.2.1",
+      "source": "projects/code-quality/Assets/Packages/DynamicData.9.2.1",
+      "target": "build/preparation/cache/DynamicData.9.2.1"
+    },
+    {
+      "name": "Grpc.Net.Client",
+      "version": "2.57.0",
+      "source": "projects/code-quality/Assets/Packages/Grpc.Net.Client.2.57.0",
+      "target": "build/preparation/cache/Grpc.Net.Client.2.57.0"
+    },
+    {
+      "name": "Grpc.Net.Common",
+      "version": "2.57.0",
+      "source": "projects/code-quality/Assets/Packages/Grpc.Net.Common.2.57.0",
+      "target": "build/preparation/cache/Grpc.Net.Common.2.57.0"
+    },
+    {
+      "name": "LiteDB",
+      "version": "5.0.21",
+      "source": "projects/code-quality/Assets/Packages/LiteDB.5.0.21",
+      "target": "build/preparation/cache/LiteDB.5.0.21"
+    },
+    {
+      "name": "MemoryPack",
+      "version": "1.21.4",
+      "source": "projects/code-quality/Assets/Packages/MemoryPack.1.21.4",
+      "target": "build/preparation/cache/MemoryPack.1.21.4"
+    },
+    {
+      "name": "MemoryPack.Core",
+      "version": "1.21.4",
+      "source": "projects/code-quality/Assets/Packages/MemoryPack.Core.1.21.4",
+      "target": "build/preparation/cache/MemoryPack.Core.1.21.4"
+    },
+    {
+      "name": "MemoryPack.Generator",
+      "version": "1.21.4",
+      "source": "projects/code-quality/Assets/Packages/MemoryPack.Generator.1.21.4",
+      "target": "build/preparation/cache/MemoryPack.Generator.1.21.4"
+    },
+    {
+      "name": "MessagePack",
+      "version": "3.1.3",
+      "source": "projects/code-quality/Assets/Packages/MessagePack.3.1.3",
+      "target": "build/preparation/cache/MessagePack.3.1.3"
+    },
+    {
+      "name": "MessagePack.Annotations",
+      "version": "3.1.3",
+      "source": "projects/code-quality/Assets/Packages/MessagePack.Annotations.3.1.3",
+      "target": "build/preparation/cache/MessagePack.Annotations.3.1.3"
+    },
+    {
+      "name": "MessagePackAnalyzer",
+      "version": "3.1.3",
+      "source": "projects/code-quality/Assets/Packages/MessagePackAnalyzer.3.1.3",
+      "target": "build/preparation/cache/MessagePackAnalyzer.3.1.3"
+    },
+    {
+      "name": "Microsoft.NET.StringTools",
+      "version": "17.13.9",
+      "source": "projects/code-quality/Assets/Packages/Microsoft.NET.StringTools.17.13.9",
+      "target": "build/preparation/cache/Microsoft.NET.StringTools.17.13.9"
+    },
+    {
+      "name": "OpenTelemetry",
+      "version": "1.10.0",
+      "source": "projects/code-quality/Assets/Packages/OpenTelemetry.1.10.0",
+      "target": "build/preparation/cache/OpenTelemetry.1.10.0"
+    },
+    {
+      "name": "OpenTelemetry.Api",
+      "version": "1.10.0",
+      "source": "projects/code-quality/Assets/Packages/OpenTelemetry.Api.1.10.0",
+      "target": "build/preparation/cache/OpenTelemetry.Api.1.10.0"
+    },
+    {
+      "name": "OpenTelemetry.Api.ProviderBuilderExtensions",
+      "version": "1.10.0",
+      "source": "projects/code-quality/Assets/Packages/OpenTelemetry.Api.ProviderBuilderExtensions.1.10.0",
+      "target": "build/preparation/cache/OpenTelemetry.Api.ProviderBuilderExtensions.1.10.0"
+    },
+    {
+      "name": "Polly",
+      "version": "8.6.2",
+      "source": "projects/code-quality/Assets/Packages/Polly.8.6.2",
+      "target": "build/preparation/cache/Polly.8.6.2"
+    },
+    {
+      "name": "Polly.Core",
+      "version": "8.6.2",
+      "source": "projects/code-quality/Assets/Packages/Polly.Core.8.6.2",
+      "target": "build/preparation/cache/Polly.Core.8.6.2"
+    },
+    {
+      "name": "Pure.DI",
+      "version": "2.1.63",
+      "source": "projects/code-quality/Assets/Packages/Pure.DI.2.1.63",
+      "target": "build/preparation/cache/Pure.DI.2.1.63"
+    },
+    {
+      "name": "Quartz",
+      "version": "3.14.0",
+      "source": "projects/code-quality/Assets/Packages/Quartz.3.14.0",
+      "target": "build/preparation/cache/Quartz.3.14.0"
+    },
+    {
+      "name": "ReactiveUI",
+      "version": "20.2.45",
+      "source": "projects/code-quality/Assets/Packages/ReactiveUI.20.2.45",
+      "target": "build/preparation/cache/ReactiveUI.20.2.45"
+    },
+    {
+      "name": "Riok.Mapperly",
+      "version": "4.2.0",
+      "source": "projects/code-quality/Assets/Packages/Riok.Mapperly.4.2.0",
+      "target": "build/preparation/cache/Riok.Mapperly.4.2.0"
+    },
+    {
+      "name": "Splat",
+      "version": "15.3.1",
+      "source": "projects/code-quality/Assets/Packages/Splat.15.3.1",
+      "target": "build/preparation/cache/Splat.15.3.1"
+    },
+    {
+      "name": "System.CommandLine.2.0.0-rc",
+      "version": "2.25502.107",
+      "source": "projects/code-quality/Assets/Packages/System.CommandLine.2.0.0-rc.2.25502.107",
+      "target": "build/preparation/cache/System.CommandLine.2.0.0-rc.2.25502.107"
+    },
+    {
+      "name": "ZLinq",
+      "version": "1.4.2",
+      "source": "projects/code-quality/Assets/Packages/ZLinq.1.4.2",
+      "target": "build/preparation/cache/ZLinq.1.4.2"
+    },
+    {
+      "name": "ZLinq.DropInGenerator",
+      "version": "1.4.2",
+      "source": "projects/code-quality/Assets/Packages/ZLinq.DropInGenerator.1.4.2",
+      "target": "build/preparation/cache/ZLinq.DropInGenerator.1.4.2"
+    }
+  ]
+}

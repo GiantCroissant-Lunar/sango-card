@@ -76,8 +76,34 @@ repos:
         exclude: '\.meta$|\.asset$|\.unity$|\.md$|\.gemini/code-review-config\.yaml$|\.pre-commit-config\.yaml$|\.yamllint\.yaml$|\.sops\.yaml$|\.secrets\.baseline$|packages/scoped-6571/com\.contractwork\.sangocard\.build/dotnet~/tool/.*\.(cs|txt|ps1|props)$|scripts/.*\.ps1$|Taskfile\.yml$'
   - repo: local
     hooks:
-      # Prevent committing plaintext Terraform secrets
+      # .NET Code Quality Hooks
+      - id: dotnet-format
+        name: dotnet format
+        entry: bash git-hooks/dotnet/dotnet-format.sh
+        language: system
+        files: '\.cs$'
+        exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$|obj/|bin/'
+        pass_filenames: false
+        description: Formats C# code using dotnet format
+      - id: roslynator
+        name: Roslynator Analysis
+        entry: bash git-hooks/dotnet/roslynator.sh
+        language: system
+        files: '\.cs$'
+        exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$|obj/|bin/'
+        pass_filenames: false
+        description: Analyzes C# code with Roslynator
+      - id: inspectcode
+        name: JetBrains InspectCode
+        entry: bash git-hooks/dotnet/inspectcode.sh
+        language: system
+        files: '\.cs$'
+        exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$|obj/|bin/'
+        pass_filenames: false
+        description: Analyzes C# code with JetBrains InspectCode
       - id: terraform-secrets-check
+        # Prevent committing plaintext Terraform secrets
+
         name: Terraform Secrets Protection
         entry: bash -c 'if git diff --cached --name-only | grep -E "infra/terraform/secrets/.*\.json$" | grep -v "\.example$" | grep -v "\.encrypted$" | grep -v "\.sops\.json$"; then echo "ERROR - Attempting to commit plaintext secrets! Use SOPS encryption first."; exit 1; fi'
         language: system
@@ -153,3 +179,6 @@ ci:
     - check-scattered-docs # Scattered docs check runs in CI (Python hook)
     - gitleaks # Skip gitleaks in CI (runs separately)
     - docs-validate # Docs validation runs in dedicated GitHub Action
+    - dotnet-format # Optional: skip in CI if formatting is enforced separately
+    - roslynator # Optional: skip in CI if analyzers run during build
+    - inspectcode # Optional: skip in CI if code inspection runs separately
