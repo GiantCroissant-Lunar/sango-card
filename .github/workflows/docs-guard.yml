@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'docs/**'
-      - 'scripts/docs_validate.py'
+      - 'git-hooks/python/docs_validate.py'
       - '.github/workflows/docs-guard.yml'
   push:
     branches: [main]
@@ -38,7 +38,7 @@ jobs:
       - name: Run documentation validation
         id: validate
         run: |
-          python scripts/docs_validate.py 2>&1 | tee validation.log
+          python git-hooks/python/docs_validate.py 2>&1 | tee validation.log
           echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
         continue-on-error: true
 
