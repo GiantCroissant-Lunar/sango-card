@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <LangVersion>10.0</LangVersion>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <Authors>ContractWork</Authors>
+        <Company>ContractWork</Company>
+        <PackageId>Reporting.Abstractions</PackageId>
+        <RootNamespace>Reporting.Abstractions</RootNamespace>
+        <AssemblyName>Reporting.Abstractions</AssemblyName>
+        <Description>Reporting marker attributes and minimal contracts for SangoCard. No Unity dependencies.</Description>
+        <RepositoryUrl>https://github.com/contractwork/sango-card</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IsPackable>true</IsPackable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+    <!-- Required for init-only properties in netstandard2.1 -->
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+        <PackageReference Include="IsExternalInit" Version="1.0.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>
