@@ -103,7 +103,7 @@ repos:
         # C# partial class pattern validation (R-CODE-090)
 
         name: Partial Class Interface Separation (R-CODE-090)
-        entry: python scripts/git-hooks/python/check_partial_class_pattern.py
+        entry: python git-hooks/python/check_partial_class_pattern.py
         language: python
         files: '\.cs$'
         exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$'
@@ -111,14 +111,14 @@ repos:
         description: Validates partial class pattern for multi-interface classes
       - id: check-scattered-docs
         name: Scattered Documentation Detection (R-DOC-001)
-        entry: python scripts/git-hooks/python/check_scattered_docs.py
+        entry: python git-hooks/python/check_scattered_docs.py
         language: python
         files: '\.md$'
         pass_filenames: false
         description: Blocks markdown files in non-canonical locations
       - id: docs-validate
         name: Documentation Front-Matter Validation (R-DOC-002)
-        entry: python scripts/docs_validate.py --pre-commit
+        entry: python git-hooks/python/docs_validate.py --pre-commit
         language: python
         files: '^docs/.*\.md$'
         exclude: 'docs/index/registry\.json$'
