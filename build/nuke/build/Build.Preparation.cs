@@ -16,7 +16,7 @@ using static Nuke.Common.Tooling.ProcessTasks;
 partial class Build
 {
     [Parameter("Path to preparation config")]
-    AbsolutePath PreparationConfig => RootDirectory / "build" / "preparation" / "configs" / "default.json";
+    public AbsolutePath PreparationConfig = RootDirectory / "build" / "preparation" / "configs" / "preparation.json";
 
     AbsolutePath PreparationToolProject => RootDirectory / "packages" / "scoped-6571" /
         "com.contractwork.sangocard.build" / "dotnet~" / "tool" / "SangoCard.Build.Tool" /
