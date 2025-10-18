@@ -16,4 +16,18 @@ partial class Build : IUnityBuild
     public AbsolutePath UnityProjectPath => RootDirectory / "projects" / "client";
     // Interface implementation is provided by IUnityBuild default interface members
     // Override default members here if custom implementation is needed
+
+    // Unify Unity build version with EffectiveVersion so client and report share the same version folder
+    public string UnityBuildVersion => EffectiveVersion;
+
+    // Build Unity client and generate report packages into build/_artifacts/<EffectiveVersion>/report
+    Target BuildClient => _ => _
+        .Description("Build Unity client and generate report artifacts (version-synced)")
+        .DependsOn(((IUnityBuild)this).BuildUnity, ((IReportBuild)this).PackReport, ((IReportBuild)this).GenerateReport)
+        .Executes(() =>
+        {
+            Serilog.Log.Information("Client build and report artifacts complete. Version: {Version}", EffectiveVersion);
+            var artifactsRoot = RootDirectory / "build" / "_artifacts" / EffectiveVersion;
+            Serilog.Log.Information("Artifacts root: {Path}", artifactsRoot);
+        });
 }
