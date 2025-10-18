@@ -24,23 +24,35 @@
     "ExecutableTarget": {
       "type": "string",
       "enum": [
+        "BuildClient",
         "BuildDotNet",
+        "BuildReport",
         "BuildUnity",
         "BuildUnityWithPreparation",
         "Clean",
         "CleanDotNet",
+        "CleanReport",
         "CleanUnity",
         "Compile",
         "DryRunPreparation",
         "ExportUnityPackage",
+        "GenerateReport",
+        "GenerateReportDryRun",
         "PackDotNet",
+        "PackReport",
         "PrepareCache",
         "PrepareClient",
         "PublishDotNet",
+        "PublishReport",
+        "PublishReportAbstractions",
+        "PublishReportCore",
+        "ReportFull",
         "Restore",
         "RestoreClient",
         "RestoreDotNet",
+        "RestoreReport",
         "TestDotNet",
+        "TestReport",
         "TestUnity",
         "ValidatePreparation"
       ]
@@ -116,6 +128,10 @@
   "allOf": [
     {
       "properties": {
+        "ArtifactsVersionSuffix": {
+          "type": "string",
+          "description": "Artifacts version suffix for packages and folders (e.g., 1.2.3 or ci-1234)"
+        },
         "BuildToolConfigPath": {
           "type": "string",
           "description": "Build Tool config file path"
@@ -187,6 +203,38 @@
           "type": "string",
           "description": "Path to preparation config"
         },
+        "PrepConfigs": {
+          "type": "string",
+          "description": "Preparation config files to apply (comma-separated, e.g., prep.json,production.json)"
+        },
+        "ReportArtifactsRoot": {
+          "type": "string",
+          "description": "Report artifacts root directory (default: build/_artifacts)"
+        },
+        "ReportConfiguration": {
+          "type": "string",
+          "description": "Report configuration (Debug/Release)",
+          "enum": [
+            "Debug",
+            "Release"
+          ]
+        },
+        "ReportDocumentsOutput": {
+          "type": "string",
+          "description": "Output directory for report documents (default: <ArtifactsRoot>/<VersionFolder>/build/report)"
+        },
+        "ReportFramework": {
+          "type": "string",
+          "description": "Report target framework override (optional)"
+        },
+        "ReportPackagesOutput": {
+          "type": "string",
+          "description": "Output directory for NuGet packages (default: <ArtifactsRoot>/<VersionFolder>/nuget-packages)"
+        },
+        "ReportSolutionPath": {
+          "type": "string",
+          "description": "Report solution path (default: dotnet/report/SangoCard.sln)"
+        },
         "UnityBuildOutput": {
           "type": "string",
           "description": "Unity build output path"
@@ -202,10 +250,6 @@
         "UnityBuildTarget": {
           "type": "string",
           "description": "Unity build target platform (StandaloneWindows64, Android, iOS, etc.)"
-        },
-        "UnityBuildVersion": {
-          "type": "string",
-          "description": "Unity build version"
         },
         "UnityPath": {
           "type": "string",

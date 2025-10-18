@@ -24,13 +24,37 @@
     "ExecutableTarget": {
       "type": "string",
       "enum": [
+        "BuildClient",
+        "BuildDotNet",
+        "BuildReport",
         "BuildUnity",
+        "BuildUnityWithPreparation",
         "Clean",
+        "CleanDotNet",
+        "CleanReport",
         "CleanUnity",
         "Compile",
+        "DryRunPreparation",
         "ExportUnityPackage",
+        "GenerateReport",
+        "GenerateReportDryRun",
+        "PackDotNet",
+        "PackReport",
+        "PrepareCache",
+        "PrepareClient",
+        "PublishDotNet",
+        "PublishReport",
+        "PublishReportAbstractions",
+        "PublishReportCore",
+        "ReportFull",
         "Restore",
-        "TestUnity"
+        "RestoreClient",
+        "RestoreDotNet",
+        "RestoreReport",
+        "TestDotNet",
+        "TestReport",
+        "TestUnity",
+        "ValidatePreparation"
       ]
     },
     "Verbosity": {
@@ -104,6 +128,18 @@
   "allOf": [
     {
       "properties": {
+        "ArtifactsVersionSuffix": {
+          "type": "string",
+          "description": "Artifacts version suffix for packages and folders (e.g., 1.2.3 or ci-1234)"
+        },
+        "BuildToolConfigPath": {
+          "type": "string",
+          "description": "Build Tool config file path"
+        },
+        "BuildToolProjectPath": {
+          "type": "string",
+          "description": "Build Tool project path (csproj)"
+        },
         "Configuration": {
           "type": "string",
           "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
@@ -111,6 +147,89 @@
             "Debug",
             "Release"
           ]
+        },
+        "DotNetArtifactsRoot": {
+          "type": "string",
+          "description": "Artifacts root directory (default: build/_artifacts)"
+        },
+        "DotNetConfiguration": {
+          "type": "string",
+          "description": ".NET configuration (Debug/Release)",
+          "enum": [
+            "Debug",
+            "Release"
+          ]
+        },
+        "DotNetFramework": {
+          "type": "string",
+          "description": ".NET target framework override (optional)"
+        },
+        "DotNetOutput": {
+          "type": "string",
+          "description": "Output directory for dotnet artifacts (default: <ArtifactsRoot>/<VersionFolder>/tools)"
+        },
+        "DotNetProjects": {
+          "type": "array",
+          "description": "Projects to operate on (globs). If empty, the solution is used",
+          "items": {
+            "type": "string"
+          }
+        },
+        "DotNetPublishSingleFileRaw": {
+          "type": "string",
+          "description": "Publish single file (true/false)"
+        },
+        "DotNetRuntime": {
+          "type": "string",
+          "description": "Runtime identifier for publish (e.g., win-x64, linux-x64) (optional)"
+        },
+        "DotNetSelfContainedRaw": {
+          "type": "string",
+          "description": "Self-contained publish (true/false)"
+        },
+        "DotNetSolutionPath": {
+          "type": "string",
+          "description": "Solution file path. If not provided, the first .sln under root is used"
+        },
+        "DotNetVersionSuffix": {
+          "type": "string",
+          "description": "Version suffix (e.g., 1.2.3 or ci-1234) for pack/publish and artifact folder name"
+        },
+        "IsolatedUnityProjectPath": {
+          "type": "string",
+          "description": "Path of isolated Unity project for tests"
+        },
+        "PreparationConfig": {
+          "type": "string",
+          "description": "Path to preparation config"
+        },
+        "ReportArtifactsRoot": {
+          "type": "string",
+          "description": "Report artifacts root directory (default: build/_artifacts)"
+        },
+        "ReportConfiguration": {
+          "type": "string",
+          "description": "Report configuration (Debug/Release)",
+          "enum": [
+            "Debug",
+            "Release"
+          ]
+        },
+        "ReportDocumentsOutput": {
+          "type": "string",
+          "description": "Output directory for report documents (default: <ArtifactsRoot>/<VersionFolder>/build/report)"
+        },
+        "ReportFramework": {
+          "type": "string",
+          "description": "Report target framework override (optional)"
+        },
+        "ReportPackagesOutput": {
+          "type": "string",
+          "description": "Output directory for NuGet packages (default: <ArtifactsRoot>/<VersionFolder>/nuget-packages)"
+        },
+        "ReportSolutionPath": {
+          "type": "string",
+          "description": "Report solution path (default: dotnet/report/SangoCard.sln)"
         },
         "UnityBuildOutput": {
           "type": "string",
@@ -128,17 +247,17 @@
           "type": "string",
           "description": "Unity build target platform (StandaloneWindows64, Android, iOS, etc.)"
         },
-        "UnityBuildVersion": {
-          "type": "string",
-          "description": "Unity build version"
-        },
         "UnityPath": {
           "type": "string",
           "description": "Unity executable path"
         },
-        "UnityProjectPath": {
+        "UseBuildToolForTestsOption": {
           "type": "string",
-          "description": "Unity project path"
+          "description": "Run Build Prep Tool before tests (prepare run)"
+        },
+        "UseIsolatedTestsOption": {
+          "type": "string",
+          "description": "Use isolated Unity project for tests (avoids client repo)"
         }
       }
     },
