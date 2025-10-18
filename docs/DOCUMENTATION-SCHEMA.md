@@ -116,7 +116,7 @@ Examples:
 
 ## Validation
 
-All docs are validated by CI via `scripts/docs_validate.py`:
+All docs are validated by CI via `git-hooks/python/docs_validate.py`:
 
 - ✅ Required front-matter present
 - ✅ Valid status values
@@ -178,5 +178,5 @@ When promoting from inbox to canonical:
 
 - `docs/index/registry.json` - Machine-readable doc registry
 - `.github/workflows/docs-guard.yml` - CI validation
-- `scripts/docs_validate.py` - Validation logic
+- `git-hooks/python/docs_validate.py` - Validation logic
 - `.agent/base/40-documentation.md` - Agent rules

@@ -132,9 +132,11 @@ The `.pre-commit-config.yaml` configures the following hooks:
 ### Project-Specific
 
 - 🔧 **partial-class-interface-separation**: Validate R-CODE-090 pattern
-  - Runs `scripts/git-hooks/pre-commit.ps1`
+  - Runs `git-hooks/python/check_partial_class_pattern.py`
   - Checks C# partial class organization
-  - Skipped in CI (PowerShell dependency)
+- 📚 **check-scattered-docs**: Detect scattered documentation (R-DOC-001)
+  - Runs `git-hooks/python/check_scattered_docs.py`
+  - Blocks markdown files in non-canonical locations
 
 ### Commit Messages
 
@@ -251,14 +253,12 @@ Or skip specific hook:
 SKIP=markdownlint git commit -m "feat: my change"
 ```
 
-### PowerShell Hook Fails on Non-Windows
+### Python Hook Issues
 
-The `partial-class-interface-separation` hook requires PowerShell. On macOS/Linux:
+The project-specific hooks require Python 3.11+. If you encounter issues:
 
-1. Install PowerShell: <https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell>
-2. Or skip the hook: `SKIP=partial-class-interface-separation git commit -m "..."`
-
-The hook is automatically skipped in CI environments.
+1. Ensure Python 3.11+ is installed and in PATH
+2. Or skip the hook temporarily: `SKIP=partial-class-interface-separation git commit -m "..."`
 
 ## CI Integration
 
@@ -314,4 +314,4 @@ pre-commit run --all-files --show-diff-on-failure
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Detect Secrets](https://github.com/Yelp/detect-secrets)
 - **R-CODE-090**: Partial class interface separation pattern
-- **Scripts**: `scripts/git-hooks/`
+- **Scripts**: `git-hooks/`

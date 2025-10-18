@@ -176,7 +176,7 @@ pre-commit install
 4. Shows expected file structure for corrections
 
 **Hook Location**: Managed by `.pre-commit-config.yaml`  
-**Script**: `scripts/git-hooks/pre-commit.ps1`  
+**Script**: `git-hooks/python/check_partial_class_pattern.py`  
 **Documentation**: `docs/PRE-COMMIT.md`
 
 ### Migration Guide

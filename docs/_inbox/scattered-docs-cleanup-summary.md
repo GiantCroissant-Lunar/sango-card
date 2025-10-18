@@ -73,7 +73,7 @@ Where-Object {
 }
 ```
 
-**File: `scripts/git-hooks/check-scattered-docs.ps1`**
+**File: `git-hooks/check-scattered-docs.ps1`**
 
 Added allowed patterns for:
 
@@ -172,7 +172,7 @@ Some files may have duplicate front-matter if the script was run multiple times.
 
 ### Pre-Commit Hook
 
-The pre-commit hook at `scripts/git-hooks/check-scattered-docs.ps1` will:
+The pre-commit hook at `git-hooks/check-scattered-docs.ps1` will:
 
 - Block commits with scattered docs
 - Suggest proper locations
@@ -184,8 +184,8 @@ The pre-commit hook at `scripts/git-hooks/check-scattered-docs.ps1` will:
 |------|---------|-------|
 | `scripts/check-docs.ps1` | Find scattered docs and front-matter issues | `task docs:check` |
 | `scripts/add-frontmatter.ps1` | Auto-add front-matter to docs | `pwsh -File scripts/add-frontmatter.ps1` |
-| `scripts/git-hooks/check-scattered-docs.ps1` | Pre-commit validation | Automatic via pre-commit |
-| `scripts/docs_validate.py` | Full validation and registry generation | `python scripts/docs_validate.py` |
+| `git-hooks/check-scattered-docs.ps1` | Pre-commit validation | Automatic via pre-commit |
+| `git-hooks/python/docs_validate.py` | Full validation and registry generation | `python git-hooks/python/docs_validate.py` |
 
 ## Next Steps
 

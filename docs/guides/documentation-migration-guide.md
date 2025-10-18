@@ -277,7 +277,7 @@ For detailed documentation, see links above.
 
 ```bash
 # Run validation script to generate registry
-python scripts/docs_validate.py
+python git-hooks/python/docs_validate.py
 
 # This creates docs/index/registry.json
 # Agents can now query this to find canonical docs
@@ -376,7 +376,7 @@ git mv packages/scoped-6571/com.contractwork.sangocard.build/TOOL-DESIGN-V3.md d
 ### Step 5: Validate
 
 ```bash
-python scripts/docs_validate.py
+python git-hooks/python/docs_validate.py
 ```
 
 ### Step 6: Commit
@@ -475,7 +475,7 @@ python scripts/migrate_docs.py
 ### 1. Run Validation
 
 ```bash
-python scripts/docs_validate.py
+python git-hooks/python/docs_validate.py
 ```
 
 Expected output:
@@ -544,7 +544,7 @@ ls docs/_inbox/
 #    - Archive old version if superseding
 
 # 3. Regenerate registry
-python scripts/docs_validate.py
+python git-hooks/python/docs_validate.py
 ```
 
 ### Weekly Cleanup
@@ -554,7 +554,7 @@ python scripts/docs_validate.py
 grep -L "^---" docs/**/*.md | grep -v "/_inbox/" | grep -v "/archive/"
 
 # Find near-duplicates
-python scripts/docs_validate.py | grep "Near-duplicate"
+python git-hooks/python/docs_validate.py | grep "Near-duplicate"
 
 # Review archive for docs that can be deleted permanently
 ls docs/archive/
@@ -617,5 +617,5 @@ After migration:
 
 - **Schema**: `docs/DOCUMENTATION-SCHEMA.md`
 - **Agent Rules**: `.agent/base/40-documentation.md`
-- **Validation**: `scripts/docs_validate.py`
+- **Validation**: `git-hooks/python/docs_validate.py`
 - **CI**: `.github/workflows/docs-guard.yml`

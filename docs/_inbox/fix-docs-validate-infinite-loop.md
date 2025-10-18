@@ -67,7 +67,7 @@ $ git commit --no-verify -m "docs: update documentation"
 
 ## Root Cause
 
-**File:** `scripts/docs_validate.py` line 46
+**File:** `git-hooks/python/docs_validate.py` line 46
 
 ```python
 # Generate registry (even if errors exist)
@@ -79,7 +79,7 @@ generate_registry(entries)  # ALWAYS regenerates, even in pre-commit
 ```yaml
 - id: docs-validate
   name: Documentation Front-Matter Validation (R-DOC-002)
-  entry: python scripts/docs_validate.py  # No flag to skip generation
+  entry: python git-hooks/python/docs_validate.py  # No flag to skip generation
   language: python
   files: '^docs/.*\.md$'  # Triggers on any docs/*.md change
   pass_filenames: false
@@ -91,7 +91,7 @@ Three-part fix to prevent infinite loop:
 
 ### 1. Add `--pre-commit` Flag to Script
 
-**File:** `scripts/docs_validate.py`
+**File:** `git-hooks/python/docs_validate.py`
 
 Added argument parser and conditional registry generation:
 
@@ -122,7 +122,7 @@ def main():
 ```yaml
 - id: docs-validate
   name: Documentation Front-Matter Validation (R-DOC-002)
-  entry: python scripts/docs_validate.py --pre-commit  # Added flag
+  entry: python git-hooks/python/docs_validate.py --pre-commit  # Added flag
   language: python
   files: '^docs/.*\.md$'
   exclude: 'docs/index/registry\.json$'  # Exclude registry from triggering
@@ -164,7 +164,7 @@ When you want to regenerate the registry:
 task docs:validate
 
 # Or directly
-python scripts/docs_validate.py
+python git-hooks/python/docs_validate.py
 
 # Output:
 Validating documentation...
@@ -230,7 +230,7 @@ In CI pipelines, you **DO** want to regenerate the registry to catch drift:
 ```yaml
 # .github/workflows/docs-check.yml
 - name: Validate documentation
-  run: python scripts/docs_validate.py  # No --pre-commit flag
+  run: python git-hooks/python/docs_validate.py  # No --pre-commit flag
 
 - name: Check for registry drift
   run: |
@@ -245,7 +245,7 @@ In CI pipelines, you **DO** want to regenerate the registry to catch drift:
 
 ## Related Files
 
-- `scripts/docs_validate.py` - Validation script with --pre-commit flag
+- `git-hooks/python/docs_validate.py` - Validation script with --pre-commit flag
 - `.pre-commit-config.yaml` - Pre-commit hook configuration
 - `.gitattributes` - Mark registry as generated
 - `Taskfile.yml` - Task commands for docs validation

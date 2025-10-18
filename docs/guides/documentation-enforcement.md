@@ -324,7 +324,7 @@ This PR contains markdown files in non-canonical locations:
 ### 🔧 How to Fix:
 1. Move scattered markdown files to `docs/_inbox/`
 2. Add YAML front-matter (see schema)
-3. Run `python scripts/docs_validate.py` locally
+3. Run `python git-hooks/python/docs_validate.py` locally
 4. Push changes
 ```
 
@@ -423,7 +423,7 @@ If a file is blocked but should be allowed:
 
 1. Check if it matches allowed patterns (see above)
 2. If it's a legitimate exception, update patterns in:
-   - `scripts/git-hooks/check-scattered-docs.ps1`
+   - `git-hooks/python/check_scattered_docs.py`
    - `.github/workflows/docs-scattered-check.yml`
    - `scripts/check-docs.ps1`
 
@@ -442,7 +442,7 @@ Manually resolve duplicates by checking `docs/index/registry.json`.
 
 ### Pre-commit Hook
 
-**File:** `scripts/git-hooks/check-scattered-docs.ps1`
+**File:** `git-hooks/python/check_scattered_docs.py`
 
 - Runs on commit
 - PowerShell script
@@ -516,7 +516,7 @@ pre-commit run check-scattered-docs --all-files
 .\scripts\check-docs.ps1
 .\scripts\check-docs.ps1 -Fix
 .\scripts\check-docs.ps1 -Report
-python scripts/docs_validate.py
+python git-hooks/python/docs_validate.py
 ```
 
 ## Summary

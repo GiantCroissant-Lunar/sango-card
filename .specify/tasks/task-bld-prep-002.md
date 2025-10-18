@@ -573,6 +573,62 @@ public class AddSourceCommand : ICommand
    - Day 4: Documentation
    - Day 5: User testing & fixes
 
+## Dry-Run Feature
+
+All CLI commands support `--dry-run` mode for previewing operations before execution:
+
+### Commands with Dry-Run Support
+
+1. **`config add-source --dry-run`**
+   - Shows what would be copied to cache
+   - Displays source → cache mapping
+   - Validates paths without modifying files
+
+2. **`config add-injection --dry-run`**
+   - Shows what would be added to config
+   - Displays cache → client mapping
+   - Validates paths without modifying config
+
+3. **`config add-batch --dry-run`**
+   - Shows all batch operations that would execute
+   - Reports validation errors
+   - No changes made to manifests/configs
+
+4. **`prepare inject --dry-run`**
+   - Shows what would be injected into client
+   - Lists all files that would be copied
+   - Displays code patches that would be applied
+   - No changes made to client project
+
+### Dry-Run Output Format
+
+```
+[DRY RUN] Operation: Add source to preparation manifest
+  Source: projects/code-quality/Library/PackageCache/com.cysharp.unitask@15a4a7657f99
+  Cache As: com.cysharp.unitask
+  Type: package
+  Manifest: build/preparation/manifests/third-party-unity-packages.json
+
+[DRY RUN] Would copy:
+  From: projects/code-quality/Library/PackageCache/com.cysharp.unitask@15a4a7657f99/
+  To: build/preparation/cache/com.cysharp.unitask/
+  Files: 127 files (2.3 MB)
+  Directories: 15
+
+[DRY RUN] Would update manifest:
+  + Add item: com.cysharp.unitask (package)
+
+[DRY RUN] No changes made. Remove --dry-run to execute.
+```
+
+### Testing Requirements
+
+- [ ] Dry-run mode implemented for all CLI commands
+- [ ] Dry-run output is clear and informative
+- [ ] Dry-run never modifies files or configs
+- [ ] Dry-run validates all paths and reports errors
+- [ ] Unit tests verify dry-run behavior
+
 ## Success Metrics
 
 - [ ] All unit tests pass (>80% coverage)
@@ -581,6 +637,7 @@ public class AddSourceCommand : ICommand
 - [ ] TUI workflows are intuitive (user testing)
 - [ ] Documentation is complete and clear
 - [ ] No regressions in existing functionality
+- [ ] Dry-run mode works for all CLI commands
 
 ## Notes
 

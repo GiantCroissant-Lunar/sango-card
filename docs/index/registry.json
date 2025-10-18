@@ -1,15 +1,16 @@
 {
-  "generated_at": "2025-10-17T10:57:56.747886Z",
-  "total_docs": 30,
+  "generated_at": "2025-10-17T23:57:40.873666Z",
+  "total_docs": 34,
   "by_type": {
-    "guide": 26,
+    "guide": 28,
     "finding": 1,
+    "reference": 2,
     "plan": 1,
     "rfc": 1,
     "spec": 1
   },
   "by_status": {
-    "active": 30
+    "active": 34
   },
   "docs": [
     {
@@ -26,7 +27,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "badab05f24c13fb33e31ca80955d0887861037edd94e608bb95a5feeae267f96",
+      "sha256": "d3f212d0ce12d3a9b75ca24d672a8c877c96b0d93a405d0c55a1315b43b2c159",
       "simhash": "9875636127821269636"
     },
     {
@@ -43,7 +44,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "3732e40c8227bf2aa95ea4867364d8adc3c54d0d74cfea1b2f1585b13a6d9eb5",
+      "sha256": "7979dfae9927d75469101c0a89ff2a58072cb1882640b00edfe09081a68940e4",
       "simhash": "9878730169914102293"
     },
     {
@@ -60,7 +61,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "c247b29699fdead3b1d539ae7724e3102f7e6c77a6a1db35bcd505dacf0472ed",
+      "sha256": "5dc9a05467f065584d0162b49c5822acf54aa4a04586f2e2337d9cfc380e9678",
       "simhash": "6002388624706250557"
     },
     {
@@ -77,7 +78,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "83014ea75da4c55ee2c8cfb4c602a12d60bd830e7c2985de9ab4183a33df1110",
+      "sha256": "4f0f5d33bde939c32ae8b1252ec5a2b7682d24229aed346a7ce82eeba10af82e",
       "simhash": "11825446452127027869"
     },
     {
@@ -94,7 +95,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "bded263e192863220bc72c0728ec1b89ed3c9c9ceda106a333e56f3b1363b12c",
+      "sha256": "eaefc088a1035e9c2cb83271f3fb151a10c09ff7bd8924bc082101464b6bfb1e",
       "simhash": "4561195996861098034"
     },
     {
@@ -111,8 +112,28 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "11e9e62fdd4d2b44a175377849b97fb076d07d0190f665f6f45ff319e885a6cb",
-      "simhash": "9392431845025325750"
+      "sha256": "ddfc4b14ad4cdc4ce2e026f8324027dc172e7a8242ffa9eb93f93cbfdd7c10fa",
+      "simhash": "9392431845025325751"
+    },
+    {
+      "path": "docs/guides/build-tool-api-reference.md",
+      "doc_id": "DOC-2025-00201",
+      "title": "Build Preparation Tool API Reference",
+      "doc_type": "reference",
+      "status": "active",
+      "canonical": true,
+      "tags": [
+        "api",
+        "build-tool",
+        "reference",
+        "dotnet"
+      ],
+      "created": "2025-10-17",
+      "summary": "Technical API reference for the Build Preparation Tool's programmatic interfaces and CLI commands",
+      "supersedes": [],
+      "related": [],
+      "sha256": "c8ed6d1c12838b52456718f636997c827e1237658e5cd364dd80da4225949759",
+      "simhash": "145345531954381462"
     },
     {
       "path": "docs/guides/build-tool-migration-guide.md",
@@ -128,8 +149,27 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "5a681bb2dd3729194dca06f278087298098dfc9f130a3864017e082e02c5c8c3",
+      "sha256": "56b838d050f4e8255ba29182243555b192ebbaaef4cc96b71af0b083a6c15b54",
       "simhash": "9303518720554840743"
+    },
+    {
+      "path": "docs/guides/build-tool-quick-reference.md",
+      "doc_id": "DOC-2025-00202",
+      "title": "Build Tool Quick Reference",
+      "doc_type": "reference",
+      "status": "active",
+      "canonical": true,
+      "tags": [
+        "cheatsheet",
+        "quick-reference",
+        "build-tool"
+      ],
+      "created": "2025-10-17",
+      "summary": "One-page quick reference card for the Build Preparation Tool with shortcuts, commands, and common patterns",
+      "supersedes": [],
+      "related": [],
+      "sha256": "de7631ea3254935b4f81763653d16c56021c171ab58f2c4e5d367c472df9d281",
+      "simhash": "10024555097928596157"
     },
     {
       "path": "docs/guides/build-tool-tui-testing-guide.md",
@@ -145,8 +185,29 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "6b5a3883794673dead881fe1a1a3938c0d4c8fddec055b5eef918840596f1a09",
+      "sha256": "ffd57e5aa4b675c1a29f831021bad2a71fdcb5e923f662c5db7c2e9f2bd987ae",
       "simhash": "4779822150496094902"
+    },
+    {
+      "path": "docs/guides/build-tool-user-guide.md",
+      "doc_id": "DOC-2025-00200",
+      "title": "Build Preparation Tool User Guide",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": true,
+      "tags": [
+        "build-tool",
+        "tui",
+        "cli",
+        "unity",
+        "user-guide"
+      ],
+      "created": "2025-10-17",
+      "summary": "Comprehensive user guide for the Sango Card Build Preparation Tool's CLI and TUI interfaces",
+      "supersedes": [],
+      "related": [],
+      "sha256": "7db9f98bf14c64cc2e60debdf33dcb7412d80601d8766b71ee7e0bc6ad2fd633",
+      "simhash": "10024105638291782292"
     },
     {
       "path": "docs/guides/coding-patterns.md",
@@ -162,7 +223,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "f09a99631aba0a1eda3a2ff98be776100622f49c0b48728b4e80274640c2dcb8",
+      "sha256": "4d70038edbcf4c5edb88d1686f21a83d33cc80a96f689799c129548e9bb58286",
       "simhash": "4849370466161863348"
     },
     {
@@ -179,7 +240,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "542a3a00c092dbbe6195e0e9da9187c25c913093a1168830a842614a2c8b0b40",
+      "sha256": "c43f1b35f94d87ba9b984c00fe3f3452f6a12a26920708753720c0688a71993c",
       "simhash": "796078018495582868"
     },
     {
@@ -196,7 +257,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "d92c54ec248df2034f35685309d982b0e31fdfec51b0d6d6a54c1440a5ada408",
+      "sha256": "d08aec78a0a01c2ba5bff58792312b2fe9f7118670ab4b44571e1c32744db1dd",
       "simhash": "1372699309955158548"
     },
     {
@@ -213,7 +274,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "bb1049113b37be6e8a1365f069e16887306385098dd06d3b61bf5b9e08d470aa",
+      "sha256": "c1fc8d8df67b685be0bce530d982d77a51aff86c020bd066aa3be070c7e0d692",
       "simhash": "9249341336324939517"
     },
     {
@@ -230,7 +291,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "9e1630e95054c0e5582b6821605064229d1d5ecffd239816778a0e82ddb59072",
+      "sha256": "ad0732b56c0ac6c54adb993a5be05e68182e2dd9488448455d72980a875c9b39",
       "simhash": "10601021511637621365"
     },
     {
@@ -247,8 +308,27 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "173ad0892d932189d700ade160757629209b2e9d7d3dcea0335b248ad7d933d8",
-      "simhash": "691142722594744061"
+      "sha256": "40ea38a1bdd0ea905e46198e5e062d74430a1515eee0230f950c5a8485044a64",
+      "simhash": "9912262959635833597"
+    },
+    {
+      "path": "docs/guides/project-completion-summary.md",
+      "doc_id": "DOC-2025-00203",
+      "title": "Build Preparation Tool - Project Completion Summary",
+      "doc_type": "guide",
+      "status": "active",
+      "canonical": true,
+      "tags": [
+        "project-completion",
+        "build-tool",
+        "summary"
+      ],
+      "created": "2025-10-17",
+      "summary": "Complete project summary for the Build Preparation Tool - 100% complete, production ready",
+      "supersedes": [],
+      "related": [],
+      "sha256": "58275729de150a316015177e9cf20f9e96ed6426c1d7440c9744d71ac78d8d46",
+      "simhash": "14653674148495045300"
     },
     {
       "path": "docs/guides/spec-kit-quickstart.md",
@@ -264,7 +344,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "3449c78e783d946c689433b875364038e51ba9e441a68bc3cec81886f89658a5",
+      "sha256": "bbaabf00a12fa23923eb62bdd7a609836f3d1896c87e14edc0997ac002419166",
       "simhash": "9443147604257865895"
     },
     {
@@ -281,7 +361,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "a049064cdf3523d3d8186fe52265c384d9c5de47b8744e3f6ecc528944b65dcd",
+      "sha256": "878f63fd14c4229922d38bff4f60177868eecab7a0f14df1e69d6d37993213cc",
       "simhash": "11276283377146730681"
     },
     {
@@ -298,7 +378,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "8cfa5316ede1626e2a52d9e75a2064c81614a649abca3fb795d7be23c2a396fe",
+      "sha256": "512d9973a0c75a6fe30598659b0db837cb2206c696aa23854370a8f92903b1c0",
       "simhash": "1390503693557629581"
     },
     {
@@ -315,7 +395,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "4b2f8b1f17d0c5aeecaab7775bd81d2cfbf89cd236756519379f29b4fec11305",
+      "sha256": "5c121fc4ae73322780bc9935744810f36fd882cf68560b28106723bfd131aeba",
       "simhash": "1084503010521763359"
     },
     {
@@ -332,7 +412,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "64df9e675fd72e0e3bc1385029e50bf2bebdddb3023f060e3e1d4dedca069d78",
+      "sha256": "3bd4aef946750dc02a12c5f7c3f3f1baf97758d1d8bb1ab5c8668929e6954a32",
       "simhash": "634179331491308047"
     },
     {
@@ -349,7 +429,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "3882494f7cb60ac0a227b1ba053768fa97870ace630c1ffa07259119d47df5e0",
+      "sha256": "44e75e27180b3a09cd459616fa35417831951e7388c02e58873c22160f81e3ce",
       "simhash": "9988508700269689502"
     },
     {
@@ -366,7 +446,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "79f849314ca089a47a032f2ac87afe2a3acffe5636b56a2daf58af81fc741958",
+      "sha256": "693bb0baef3fdebfc9e7f94dea800f318fca6b3ae3de6de067e2f95f7304f009",
       "simhash": "764537429586553494"
     },
     {
@@ -383,7 +463,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "ecb73a0fbd17394bc8128d7723c68357a2cdf0a92659ce91b76ab94d814da076",
+      "sha256": "f95b9158383d245b6e5bba6da6b77f90aceaeddcbf87bd6ffa83ef6f378726c4",
       "simhash": "205000360248063687"
     },
     {
@@ -400,7 +480,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "015964f4d68420c7ac34e1965d753258b3e8b8202968fe9cbfe9dea3d1d684b5",
+      "sha256": "4708b0ef810eeb91758de10b161c6783cc5a83eac7b3402266d6d3c1c3da5489",
       "simhash": "10397807406098489871"
     },
     {
@@ -417,7 +497,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "e50a7ee32c3ec4d752cc48d23ebebcd37a58dfeefc8ca3d6daeb982874559d76",
+      "sha256": "51313f55a796f1d9817685238da2957a453d62a0f387b57151ef533cc56aa77e",
       "simhash": "4705495207809608333"
     },
     {
@@ -434,7 +514,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "4804e9c24ed280f869a67398d8dc703464d91f7d7ca5b7999be7da4a004d371d",
+      "sha256": "9dd735129013559953bf8481aa1dfcba750ab758387acad11c68d9a87228154d",
       "simhash": "14357314948994932885"
     },
     {
@@ -451,7 +531,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "767ebc2f23670a084e56ae6e26fabf9fa75c9229dc4b366738bc881a288116d1",
+      "sha256": "8df3ea997255a8c328133dee57aa366bc845704f326bcc5f2c4eba012b6d7b2f",
       "simhash": "2511969278173568660"
     },
     {
@@ -468,7 +548,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "90e3091ff9f7ecde11ed555aad3a3b46b378db3e675ba5bafe9ec6386fd8c04a",
+      "sha256": "b858f43900483ad3e55c6edd40a2812cc26c49a6f42c5dea97bc2384bc950a87",
       "simhash": "3629724209336275659"
     },
     {
@@ -485,7 +565,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "f2749040b8cb676b01bbb8a83cf87d9097d7dbddbf04fd99d4af35aa8c0ebd93",
+      "sha256": "e45c845b35607121826bb22f61c8dc9a1b3395eaf4a833aa5cb57686c152605e",
       "simhash": "14648044614844224157"
     },
     {
@@ -502,7 +582,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "8dfe1397d594158be026399a4fcd524af5338abbca553dbdf35f774921ce65b2",
+      "sha256": "bc6498c84d636dab00b3cf7d99020ccabd92f931dc5608efce8cdc5e721b1dcd",
       "simhash": "14649347500958237335"
     },
     {
@@ -519,7 +599,7 @@
       "summary": "(Add summary here)\n",
       "supersedes": [],
       "related": [],
-      "sha256": "724296f857d79414720da60535173202240bd4f66136da94711651201b909229",
+      "sha256": "19be40058dc0cb1301b6430baf45341b596ca09d211fa38c0f91f2394df43e63",
       "simhash": "14649169371484611231"
     }
   ]

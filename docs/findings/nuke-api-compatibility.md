@@ -76,7 +76,7 @@ Update Components/IUnityBuild.cs to use Nuke 9.x API:
 - ✅ `Build.UnityBuild.cs` - Created (NEW) - Uses interface name without 'I' prefix
 - ✅ Agent adapters - Updated with R-CODE-090 guidance and naming convention
 - ✅ `docs/CODING-PATTERNS.md` - Complete pattern documentation (NEW)
-- ✅ `scripts/git-hooks/pre-commit.ps1` - Pre-commit enforcement with naming logic (NEW)
+- ✅ `git-hooks/python/check_partial_class_pattern.py` - Pre-commit enforcement with naming logic (NEW)
 - ✅ `docs/task/TODO.md` - Roslyn analyzer roadmap (NEW)
 
 ## Note
