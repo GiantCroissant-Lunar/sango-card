@@ -1,0 +1,29 @@
+{
+    "name": "com.contractwork.sangocard.game",
+    "displayName": "CW Sango Card 3208 Game",
+    "description": "Sango Card Game",
+    "version": "0.1.0",
+    "unity": "6000.2",
+    "keywords": [
+        "Unity",
+        "Sango",
+        "Card",
+        "Game"
+    ],
+    "category": "",
+    "dependencies": {
+    },
+    "hideInEditor": false,
+    "testables": [
+        "SangoCard.Build.Editor.Tests"
+    ],
+    "author": {
+        "name": "GiantCroissant",
+        "email": "apprentice@giantcroissant.com",
+        "url": "https://giantcroissant.io/"
+    },
+    "repository": {
+        "url": "git@github.com:GiantCroissant-Lunar/sango-card.git",
+        "type": "git"
+    }
+}
