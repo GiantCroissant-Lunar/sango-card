@@ -22,6 +22,7 @@ paths = [
     '''projects/client/''',  # Unity isolated project (R-BLD-060)
     '''projects/code-quality/Library/''',  # Unity Library cache
     '''projects/code-quality/Temp/''',  # Unity temp files
+    '''build/preparation/cache/''',  # Build preparation cache (third-party packages)
     '''node_modules/''',
     '''\.venv/''',
     '''venv/''',

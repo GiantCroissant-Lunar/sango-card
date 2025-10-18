@@ -56,9 +56,9 @@ interface IReportBuild : INukeBuild
     string PrepConfigs => TryGetValue(() => PrepConfigs) ?? "preparation.json";
 
     // Access PreparationConfig if available (from Build.Preparation.cs)
-    AbsolutePath ActualPreparationConfig => 
-        this is Build build && build.PreparationConfig != null 
-            ? build.PreparationConfig 
+    AbsolutePath ActualPreparationConfig =>
+        this is Build build && build.PreparationConfig != null
+            ? build.PreparationConfig
             : RepoRoot / "build" / "preparation" / "configs" / "preparation.json";
 
     // Project paths
@@ -382,6 +382,7 @@ interface IReportBuild : INukeBuild
 
     Target GenerateReportDryRun => _ => _
         .Description("Generate DRY-RUN report documents (JSON/Markdown) into build/_artifacts/<version>/build/report")
+        .DependsOn(PreviewCodePatches)
         .Executes(() =>
         {
             Directory.CreateDirectory(ReportDocumentsOutput);
@@ -502,7 +503,7 @@ interface IReportBuild : INukeBuild
                             var filePath = RepoRoot / file;
                             // Check if path exists as file or symlink
                             var success = File.Exists(filePath) || Directory.Exists(filePath);
-                            
+
                             // Count patches for this file
                             var patchCount = 0;
                             if (patch.TryGetProperty("patches", out var patchList))
@@ -512,7 +513,7 @@ interface IReportBuild : INukeBuild
                                     patchCount++;
                                 }
                             }
-                            
+
                             operations.Add(($"Code Patch: {System.IO.Path.GetFileName(file)} ({patchCount} patch(es))", filePath.ToString(), "In-place", success));
                         }
                     }
@@ -630,9 +631,9 @@ interface IReportBuild : INukeBuild
         .Description("Generate code patch preview showing before/after content for all patches in injection config")
         .Executes(() =>
         {
-            var configNames = PrepConfigs.Split(new[] { ',', ';' }, System.StringSplitOptions.RemoveEmptyEntries)
-                .Select(c => c.Trim())
-                .ToArray();
+            // Use the actual PreparationConfig parameter
+            var prepConfigPath = ActualPreparationConfig;
+            var configName = System.IO.Path.GetFileName(prepConfigPath.ToString());
 
             var previewOutput = ReportDocumentsOutput / "code-patches-preview.md";
             Directory.CreateDirectory(ReportDocumentsOutput);
@@ -642,170 +643,175 @@ interface IReportBuild : INukeBuild
             md.AppendLine();
             md.AppendLine($"**Generated:** {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
             md.AppendLine();
+            md.AppendLine($"**Config:** {configName}");
+            md.AppendLine();
 
-            foreach (var configName in configNames)
+            if (!File.Exists(prepConfigPath))
             {
-                var prepConfigPath = RepoRoot / "build" / "preparation" / "configs" / configName;
-                if (!File.Exists(prepConfigPath))
+                Serilog.Log.Warning("Config not found: {Config}", configName);
+                md.AppendLine("❌ **Config file not found**");
+                File.WriteAllText(previewOutput, md.ToString());
+                return;
+            }
+
+            try
+            {
+                var prepConfigJson = File.ReadAllText(prepConfigPath);
+                var prepConfig = System.Text.Json.JsonDocument.Parse(prepConfigJson);
+                var root = prepConfig.RootElement;
+
+                if (!root.TryGetProperty("codePatches", out var codePatches))
                 {
-                    Serilog.Log.Warning("Config not found: {Config}", configName);
-                    continue;
+                    md.AppendLine("ℹ️ **No code patches defined in this config**");
+                    File.WriteAllText(previewOutput, md.ToString());
+                    Serilog.Log.Information("No code patches found in {Config}", configName);
+                    return;
                 }
 
-                try
-                {
-                    var prepConfigJson = File.ReadAllText(prepConfigPath);
-                    var prepConfig = System.Text.Json.JsonDocument.Parse(prepConfigJson);
-                    var root = prepConfig.RootElement;
+                md.AppendLine($"## Patches from: {configName}");
+                md.AppendLine();
 
-                    if (!root.TryGetProperty("codePatches", out var codePatches))
+                foreach (var filePatch in codePatches.EnumerateArray())
+                {
+                    var file = filePatch.TryGetProperty("file", out var f) ? f.GetString() : "";
+                    var type = filePatch.TryGetProperty("type", out var t) ? t.GetString() : "Text";
+                    var filePath = RepoRoot / file;
+
+                    md.AppendLine($"### File: `{file}`");
+                    md.AppendLine();
+                    md.AppendLine($"**Type:** {type}");
+                    md.AppendLine();
+
+                    if (!File.Exists(filePath))
                     {
+                        md.AppendLine("❌ **File not found**");
+                        md.AppendLine();
                         continue;
                     }
 
-                    md.AppendLine($"## Config: {configName}");
+                    var originalContent = File.ReadAllText(filePath);
+
+                    if (filePatch.TryGetProperty("patches", out var patches))
+                    {
+                        var patchIndex = 0;
+                        foreach (var patch in patches.EnumerateArray())
+                        {
+                            patchIndex++;
+                                var operation = patch.TryGetProperty("operation", out var op) ? op.GetString() : "";
+                                var mode = patch.TryGetProperty("mode", out var m) ? m.GetString() : "";
+                                var search = patch.TryGetProperty("search", out var s) ? s.GetString() : "";
+                                var replace = patch.TryGetProperty("replace", out var r) ? r.GetString() : "";
+                            var description = patch.TryGetProperty("description", out var d) ? d.GetString() : "";
+
+                            md.AppendLine($"#### Patch #{patchIndex}");
+                            md.AppendLine();
+                            if (!string.IsNullOrEmpty(description))
+                            {
+                                md.AppendLine($"**Description:** {description}");
+                                md.AppendLine();
+                            }
+                                if (!string.IsNullOrEmpty(operation))
+                                {
+                                md.AppendLine($"**Operation:** `{operation}`");
+                            }
+                            if (!string.IsNullOrEmpty(mode))
+                            {
+                                md.AppendLine($"**Mode:** `{mode}`");
+                            }
+                            md.AppendLine($"**Search Pattern:** `{search}`");
+                            if (!string.IsNullOrEmpty(replace))
+                            {
+                                md.AppendLine($"**Replace With:** `{replace}`");
+                            }
+                                md.AppendLine();
+                            }
+                        }
+
+                    md.AppendLine("**Original Content:**");
+                    md.AppendLine();
+                    md.AppendLine("```" + (type == "CSharp" ? "csharp" : type == "Json" ? "json" : ""));
+                    md.AppendLine(originalContent);
+                    md.AppendLine("```");
                     md.AppendLine();
 
-                    foreach (var filePatch in codePatches.EnumerateArray())
+                    // Simulate patched content for preview (simple text replacement)
+                    var patchedContent = originalContent;
+                    var patchApplied = false;
+
+                    if (filePatch.TryGetProperty("patches", out var patchesForSimulation))
                     {
-                        var file = filePatch.TryGetProperty("file", out var f) ? f.GetString() : "";
-                        var type = filePatch.TryGetProperty("type", out var t) ? t.GetString() : "Text";
-                        var filePath = RepoRoot / file;
-
-                        md.AppendLine($"### File: `{file}`");
-                        md.AppendLine();
-                        md.AppendLine($"**Type:** {type}");
-                        md.AppendLine();
-
-                        if (!File.Exists(filePath))
+                        foreach (var patch in patchesForSimulation.EnumerateArray())
                         {
-                            md.AppendLine("❌ **File not found**");
-                            md.AppendLine();
-                            continue;
-                        }
-
-                        var originalContent = File.ReadAllText(filePath);
-
-                        if (filePatch.TryGetProperty("patches", out var patches))
-                        {
-                            var patchIndex = 0;
-                            foreach (var patch in patches.EnumerateArray())
-                            {
-                                patchIndex++;
-                                var operation = patch.TryGetProperty("operation", out var op) ? op.GetString() : "";
-                                var mode = patch.TryGetProperty("mode", out var m) ? m.GetString() : "";
-                                var search = patch.TryGetProperty("search", out var s) ? s.GetString() : "";
-                                var replace = patch.TryGetProperty("replace", out var r) ? r.GetString() : "";
-                                var description = patch.TryGetProperty("description", out var d) ? d.GetString() : "";
-
-                                md.AppendLine($"#### Patch #{patchIndex}");
-                                md.AppendLine();
-                                if (!string.IsNullOrEmpty(description))
-                                {
-                                    md.AppendLine($"**Description:** {description}");
-                                    md.AppendLine();
-                                }
-                                if (!string.IsNullOrEmpty(operation))
-                                {
-                                    md.AppendLine($"**Operation:** `{operation}`");
-                                }
-                                if (!string.IsNullOrEmpty(mode))
-                                {
-                                    md.AppendLine($"**Mode:** `{mode}`");
-                                }
-                                md.AppendLine($"**Search Pattern:** `{search}`");
-                                if (!string.IsNullOrEmpty(replace))
-                                {
-                                    md.AppendLine($"**Replace With:** `{replace}`");
-                                }
-                                md.AppendLine();
-                            }
-                        }
-
-                        md.AppendLine("**Original Content:**");
-                        md.AppendLine();
-                        md.AppendLine("```" + (type == "CSharp" ? "csharp" : type == "Json" ? "json" : ""));
-                        md.AppendLine(originalContent);
-                        md.AppendLine("```");
-                        md.AppendLine();
-
-                        // Simulate patched content for preview (simple text replacement)
-                        var patchedContent = originalContent;
-                        var patchApplied = false;
-
-                        if (filePatch.TryGetProperty("patches", out var patchesForSimulation))
-                        {
-                            foreach (var patch in patchesForSimulation.EnumerateArray())
-                            {
                                 var operation = patch.TryGetProperty("operation", out var op) ? op.GetString() : "";
                                 var mode = patch.TryGetProperty("mode", out var m) ? m.GetString() : "";
                                 var search = patch.TryGetProperty("search", out var s) ? s.GetString() : "";
                                 var replace = patch.TryGetProperty("replace", out var r) ? r.GetString() : "";
 
-                                // For Roslyn operations, show a note that actual result may differ
-                                if (!string.IsNullOrEmpty(operation))
-                                {
-                                    // Can't simulate Roslyn operations accurately, just show a note
-                                    continue;
-                                }
+                            // For Roslyn operations, show a note that actual result may differ
+                            if (!string.IsNullOrEmpty(operation))
+                            {
+                                // Can't simulate Roslyn operations accurately, just show a note
+                                continue;
+                            }
 
-                                // For text-based patches, simulate the result
-                                if (!string.IsNullOrEmpty(search))
+                            // For text-based patches, simulate the result
+                            if (!string.IsNullOrEmpty(search))
+                            {
+                                if (mode == "Delete" || string.IsNullOrEmpty(replace))
                                 {
-                                    if (mode == "Delete" || string.IsNullOrEmpty(replace))
-                                    {
-                                        patchedContent = patchedContent.Replace(search, string.Empty);
-                                        patchApplied = true;
-                                    }
-                                    else
-                                    {
-                                        patchedContent = patchedContent.Replace(search, replace);
-                                        patchApplied = true;
-                                    }
+                                    patchedContent = patchedContent.Replace(search, string.Empty);
+                                    patchApplied = true;
+                                }
+                                else
+                                {
+                                    patchedContent = patchedContent.Replace(search, replace);
+                                    patchApplied = true;
                                 }
                             }
                         }
-
-                        if (patchApplied || type == "CSharp")
-                        {
-                            md.AppendLine("**Modified Content (After Patches):**");
-                            md.AppendLine();
-                            
-                            if (type == "CSharp" && !patchApplied)
-                            {
-                                md.AppendLine("_Note: Roslyn-based patches require actual compilation to show accurate results._");
-                                md.AppendLine("_The build tool will apply these patches using syntax tree manipulation._");
-                                md.AppendLine();
-                                md.AppendLine("**Expected changes:**");
-                                md.AppendLine();
-                                if (filePatch.TryGetProperty("patches", out var roslynPatches))
-                                {
-                                    foreach (var patch in roslynPatches.EnumerateArray())
-                                    {
-                                        var operation = patch.TryGetProperty("operation", out var op) ? op.GetString() : "";
-                                        var search = patch.TryGetProperty("search", out var s) ? s.GetString() : "";
-                                        md.AppendLine($"- **{operation}**: All statements containing `{search}` will be removed");
-                                    }
-                                }
-                                md.AppendLine();
-                            }
-                            else
-                            {
-                                md.AppendLine("```" + (type == "CSharp" ? "csharp" : type == "Json" ? "json" : ""));
-                                md.AppendLine(patchedContent);
-                                md.AppendLine("```");
-                                md.AppendLine();
-                            }
-                        }
-
-                        md.AppendLine("---");
-                        md.AppendLine();
                     }
+
+                    if (patchApplied || type == "CSharp")
+                    {
+                        md.AppendLine("**Modified Content (After Patches):**");
+                        md.AppendLine();
+
+                        if (type == "CSharp" && !patchApplied)
+                        {
+                            md.AppendLine("_Note: Roslyn-based patches require actual compilation to show accurate results._");
+                            md.AppendLine("_The build tool will apply these patches using syntax tree manipulation._");
+                            md.AppendLine();
+                            md.AppendLine("**Expected changes:**");
+                            md.AppendLine();
+                            if (filePatch.TryGetProperty("patches", out var roslynPatches))
+                            {
+                                foreach (var patch in roslynPatches.EnumerateArray())
+                                {
+                                    var operation = patch.TryGetProperty("operation", out var op) ? op.GetString() : "";
+                                    var search = patch.TryGetProperty("search", out var s) ? s.GetString() : "";
+                                    md.AppendLine($"- **{operation}**: All statements containing `{search}` will be removed");
+                                }
+                            }
+                            md.AppendLine();
+                        }
+                        else
+                        {
+                            md.AppendLine("```" + (type == "CSharp" ? "csharp" : type == "Json" ? "json" : ""));
+                            md.AppendLine(patchedContent);
+                            md.AppendLine("```");
+                            md.AppendLine();
+                        }
+                    }
+
+                    md.AppendLine("---");
+                    md.AppendLine();
                 }
-                catch (System.Exception ex)
-                {
-                    Serilog.Log.Error(ex, "Failed to generate preview for {Config}", configName);
-                }
+            }
+            catch (System.Exception ex)
+            {
+                Serilog.Log.Error(ex, "Failed to generate preview for {Config}", configName);
+                md.AppendLine();
+                md.AppendLine($"❌ **Error generating preview:** {ex.Message}");
             }
 
             File.WriteAllText(previewOutput, md.ToString());
