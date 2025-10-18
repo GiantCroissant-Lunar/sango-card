@@ -1,0 +1,3 @@
+# NUKE temporary files and build logs
+temp/
+*.log
