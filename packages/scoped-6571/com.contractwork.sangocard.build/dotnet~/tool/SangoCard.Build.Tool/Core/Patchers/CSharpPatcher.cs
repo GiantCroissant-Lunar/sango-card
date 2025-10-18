@@ -54,6 +54,7 @@ public class CSharpPatcher : PatcherBase
             "replaceexpression" => ReplaceExpression(root, patch.Search, patch.Replace),
             "replaceblock" => ReplaceBlock(root, patch.Search, patch.Replace),
             "removeblock" => RemoveBlock(root, patch.Search),
+            "removestatements" => RemoveStatements(root, patch.Search),
             _ => throw new NotSupportedException($"Roslyn operation '{patch.Operation}' not supported")
         };
 
@@ -141,6 +142,26 @@ public class CSharpPatcher : PatcherBase
         }
 
         var rewriter = new BlockRemovalRewriter(blocks);
+        return rewriter.Visit(root)!;
+    }
+
+    private SyntaxNode RemoveStatements(SyntaxNode root, string searchPattern)
+    {
+        // Find all statements that contain the search pattern
+        var statements = root.DescendantNodes()
+            .OfType<StatementSyntax>()
+            .Where(s => s.ToString().Contains(searchPattern))
+            .ToList();
+
+        if (!statements.Any())
+        {
+            Logger.LogWarning("Statements not found containing: {Pattern}", searchPattern);
+            return root;
+        }
+
+        Logger.LogInformation("Found {Count} statement(s) to remove matching pattern: {Pattern}", statements.Count, searchPattern);
+
+        var rewriter = new StatementRemovalRewriter(statements);
         return rewriter.Visit(root)!;
     }
 
@@ -323,5 +344,84 @@ internal class BlockRemovalRewriter : CSharpSyntaxRewriter
         }
 
         return base.VisitBlock(node);
+    }
+}
+
+/// <summary>
+/// Syntax rewriter for removing individual statements.
+/// </summary>
+internal class StatementRemovalRewriter : CSharpSyntaxRewriter
+{
+    private readonly HashSet<StatementSyntax> _toRemove;
+
+    public StatementRemovalRewriter(IEnumerable<StatementSyntax> toRemove)
+    {
+        _toRemove = toRemove.ToHashSet();
+    }
+
+    public override SyntaxNode? VisitExpressionStatement(ExpressionStatementSyntax node)
+    {
+        if (_toRemove.Contains(node))
+        {
+            // Remove the statement entirely
+            return null;
+        }
+
+        return base.VisitExpressionStatement(node);
+    }
+
+    public override SyntaxNode? VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node)
+    {
+        if (_toRemove.Contains(node))
+        {
+            // Remove the statement entirely
+            return null;
+        }
+
+        return base.VisitLocalDeclarationStatement(node);
+    }
+
+    public override SyntaxNode? VisitIfStatement(IfStatementSyntax node)
+    {
+        if (_toRemove.Contains(node))
+        {
+            // Remove the statement entirely
+            return null;
+        }
+
+        return base.VisitIfStatement(node);
+    }
+
+    public override SyntaxNode? VisitWhileStatement(WhileStatementSyntax node)
+    {
+        if (_toRemove.Contains(node))
+        {
+            // Remove the statement entirely
+            return null;
+        }
+
+        return base.VisitWhileStatement(node);
+    }
+
+    public override SyntaxNode? VisitForStatement(ForStatementSyntax node)
+    {
+        if (_toRemove.Contains(node))
+        {
+            // Remove the statement entirely
+            return null;
+        }
+
+        return base.VisitForStatement(node);
+    }
+
+    public override SyntaxNode? VisitReturnStatement(ReturnStatementSyntax node)
+    {
+        if (_toRemove.Contains(node))
+        {
+            // Remove the statement entirely
+            return null;
+        }
+
+        return base.VisitReturnStatement(node);
     }
 }

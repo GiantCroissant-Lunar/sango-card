@@ -33,16 +33,20 @@ public class CacheCommandHandler
         if (!string.IsNullOrWhiteSpace(configRelativePath))
         {
             config = await _configService.LoadAsync(configRelativePath);
-        }
 
-        var items = await _cacheService.PopulateFromDirectoryAsync(sourceRelativePath, CacheService.DefaultCacheDirectory, config);
+            // If config is provided, populate from all source directories defined in the config
+            var allItems = await _cacheService.PopulateFromConfigAsync(config, CacheService.DefaultCacheDirectory);
 
-        Console.WriteLine($"Populated cache with {items.Count} item(s) from: {_paths.Resolve(sourceRelativePath)}");
+            Console.WriteLine($"Populated cache with {allItems.Count} item(s) from config sources");
 
-        if (config != null && !string.IsNullOrWhiteSpace(configRelativePath))
-        {
             await _configService.SaveAsync(config, configRelativePath);
             Console.WriteLine($"Updated config: {_paths.Resolve(configRelativePath)}");
+        }
+        else
+        {
+            // Legacy behavior: populate from a single source directory
+            var items = await _cacheService.PopulateFromDirectoryAsync(sourceRelativePath, CacheService.DefaultCacheDirectory, null);
+            Console.WriteLine($"Populated cache with {items.Count} item(s) from: {_paths.Resolve(sourceRelativePath)}");
         }
     }
 

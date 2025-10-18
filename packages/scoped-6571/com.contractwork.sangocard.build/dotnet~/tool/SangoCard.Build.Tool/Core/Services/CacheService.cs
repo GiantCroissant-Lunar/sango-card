@@ -47,6 +47,121 @@ public class CacheService
     }
 
     /// <summary>
+    /// Populates the cache from all source paths defined in the config.
+    /// </summary>
+    /// <param name="config">Configuration containing source paths for packages and assemblies.</param>
+    /// <param name="cacheRelativePath">Cache directory path (relative to git root). Defaults to build/preparation/cache.</param>
+    /// <returns>List of cache items that were added.</returns>
+    public async Task<List<CacheItem>> PopulateFromConfigAsync(
+        PreparationConfig config,
+        string? cacheRelativePath = null)
+    {
+        cacheRelativePath ??= DefaultCacheDirectory;
+        var cacheAbsolutePath = _pathResolver.Resolve(cacheRelativePath);
+        _pathResolver.EnsureDirectory(cacheRelativePath);
+
+        var addedItems = new List<CacheItem>();
+
+        _logger.LogInformation("Populating cache from config: {PackageCount} packages, {AssemblyCount} assemblies",
+            config.Packages.Count, config.Assemblies.Count);
+
+        // Copy packages directly from their source paths
+        foreach (var package in config.Packages)
+        {
+            var packageSourcePath = _pathResolver.Resolve(package.Source);
+            if (Directory.Exists(packageSourcePath))
+            {
+                var packageName = Path.GetFileName(packageSourcePath);
+                var targetPath = Path.Combine(cacheAbsolutePath, packageName);
+
+                _logger.LogDebug("Copying package: {Name} from {Source}", package.Name, package.Source);
+                CopyDirectory(packageSourcePath, targetPath, overwrite: true);
+
+                var dirInfo = new DirectoryInfo(targetPath);
+                var totalSize = dirInfo.EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length);
+
+                var cacheItem = new CacheItem
+                {
+                    Type = CacheItemType.UnityPackage,
+                    Name = package.Name,
+                    Version = package.Version,
+                    Path = _pathResolver.MakeRelative(targetPath),
+                    Size = totalSize,
+                    Hash = null,
+                    AddedDate = DateTime.UtcNow,
+                    Source = package.Source
+                };
+
+                addedItems.Add(cacheItem);
+                _cacheItemAddedPublisher.Publish(new CacheItemAddedMessage(cacheItem));
+            }
+            else
+            {
+                _logger.LogWarning("Package source not found: {Source}", packageSourcePath);
+            }
+        }
+
+        // Copy assemblies directly from their source paths
+        foreach (var assembly in config.Assemblies)
+        {
+            var assemblySourcePath = _pathResolver.Resolve(assembly.Source);
+            if (Directory.Exists(assemblySourcePath))
+            {
+                var assemblyName = Path.GetFileName(assemblySourcePath);
+                var targetPath = Path.Combine(cacheAbsolutePath, assemblyName);
+
+                _logger.LogDebug("Copying assembly directory: {Name} from {Source}", assembly.Name, assembly.Source);
+                CopyDirectory(assemblySourcePath, targetPath, overwrite: true);
+
+                var dirInfo = new DirectoryInfo(targetPath);
+                var totalSize = dirInfo.EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length);
+
+                var cacheItem = new CacheItem
+                {
+                    Type = CacheItemType.Assembly,
+                    Name = assembly.Name,
+                    Version = assembly.Version,
+                    Path = _pathResolver.MakeRelative(targetPath),
+                    Size = totalSize,
+                    Hash = null,
+                    AddedDate = DateTime.UtcNow,
+                    Source = assembly.Source
+                };
+
+                addedItems.Add(cacheItem);
+                _cacheItemAddedPublisher.Publish(new CacheItemAddedMessage(cacheItem));
+            }
+            else if (File.Exists(assemblySourcePath) && assemblySourcePath.EndsWith(".dll"))
+            {
+                // Handle standalone DLL files
+                var fileName = Path.GetFileName(assemblySourcePath);
+                var targetPath = Path.Combine(cacheAbsolutePath, fileName);
+
+                _logger.LogDebug("Copying assembly file: {Name} from {Source}", assembly.Name, assembly.Source);
+                File.Copy(assemblySourcePath, targetPath, overwrite: true);
+
+                var cacheItem = await CreateCacheItemAsync(targetPath, CacheItemType.Assembly, assembly.Name, assembly.Version, assembly.Source);
+
+                addedItems.Add(cacheItem);
+                _cacheItemAddedPublisher.Publish(new CacheItemAddedMessage(cacheItem));
+            }
+            else
+            {
+                _logger.LogWarning("Assembly source not found: {Source}", assemblySourcePath);
+            }
+        }
+
+        _logger.LogInformation(
+            "Cache populated from config: {ItemCount} items copied to cache",
+            addedItems.Count
+        );
+
+        _cachePopulatedPublisher.Publish(new CachePopulatedMessage(addedItems.Count, "config"));
+
+        return addedItems;
+    }
+
+    /// <summary>
     /// Populates the cache from a source directory (e.g., code-quality).
     /// </summary>
     /// <param name="sourceRelativePath">Source directory path (relative to git root).</param>
@@ -83,18 +198,59 @@ public class CacheService
             addedItems.Add(item);
         }
 
-        // Find assemblies (.dll files)
-        var assemblyFiles = Directory.GetFiles(sourceAbsolutePath, "*.dll", SearchOption.AllDirectories);
-        foreach (var assemblyFile in assemblyFiles)
+        // Find Unity package directories (from PackageCache)
+        var packageDirs = new List<string>();
+        var packageCachePath = Path.Combine(sourceAbsolutePath, "Library", "PackageCache");
+        if (Directory.Exists(packageCachePath))
         {
-            var item = await AddAssemblyToCacheAsync(assemblyFile, cacheAbsolutePath, sourceRelativePath, config);
-            addedItems.Add(item);
+            packageDirs = Directory.GetDirectories(packageCachePath, "*", SearchOption.TopDirectoryOnly).ToList();
+            foreach (var packageDir in packageDirs)
+            {
+                var item = await AddPackageDirectoryToCacheAsync(packageDir, cacheAbsolutePath, sourceRelativePath, config);
+                if (item != null)
+                {
+                    addedItems.Add(item);
+                }
+            }
         }
 
+        // Find assemblies (from Assets/Packages ONLY - not from Library or other Unity build artifacts)
+        // Assemblies can be either directories or standalone DLL files
+        var assemblyDirs = new List<string>();
+        var assemblyFiles = new List<string>();
+        var assetsPackagesPath = Path.Combine(sourceAbsolutePath, "Assets", "Packages");
+        if (Directory.Exists(assetsPackagesPath))
+        {
+            // Find assembly directories
+            assemblyDirs = Directory.GetDirectories(assetsPackagesPath, "*", SearchOption.TopDirectoryOnly).ToList();
+            foreach (var assemblyDir in assemblyDirs)
+            {
+                var item = await AddAssemblyDirectoryToCacheAsync(assemblyDir, cacheAbsolutePath, sourceRelativePath, config);
+                if (item != null)
+                {
+                    addedItems.Add(item);
+                }
+            }
+
+            // Find standalone assembly DLL files
+            assemblyFiles = Directory.GetFiles(assetsPackagesPath, "*.dll", SearchOption.TopDirectoryOnly).ToList();
+            foreach (var assemblyFile in assemblyFiles)
+            {
+                var item = await AddAssemblyToCacheAsync(assemblyFile, cacheAbsolutePath, sourceRelativePath, config);
+                addedItems.Add(item);
+            }
+        }
+
+        _logger.LogDebug("Skipping Unity build artifacts in Library/ (Bee, ScriptAssemblies, etc.)");
+
         _logger.LogInformation(
-            "Cache populated: {PackageCount} packages, {AssemblyCount} assemblies",
+            "Cache populated: {PackageCount} packages ({TgzCount} .tgz, {PackageDirCount} directories), {AssemblyCount} assemblies ({AssemblyDirCount} directories, {AssemblyFileCount} files)",
+            packageFiles.Length + packageDirs.Count,
             packageFiles.Length,
-            assemblyFiles.Length
+            packageDirs.Count,
+            assemblyDirs.Count + assemblyFiles.Count,
+            assemblyDirs.Count,
+            assemblyFiles.Count
         );
 
         // Publish message
@@ -305,6 +461,140 @@ public class CacheService
         return cacheItem;
     }
 
+    private async Task<CacheItem?> AddPackageDirectoryToCacheAsync(
+        string sourceDirectoryPath,
+        string cacheDirectory,
+        string source,
+        PreparationConfig? config)
+    {
+        var dirName = Path.GetFileName(sourceDirectoryPath);
+
+        // Parse Unity package directory name (e.g., "com.cysharp.messagepipe@fb95a3138269")
+        var (name, hash) = ParseUnityPackageDirectoryName(dirName);
+        if (string.IsNullOrEmpty(name))
+        {
+            _logger.LogWarning("Could not parse package directory name: {DirName}", dirName);
+            return null;
+        }
+
+        // Read package.json to get version
+        var packageJsonPath = Path.Combine(sourceDirectoryPath, "package.json");
+        string? version = null;
+        if (File.Exists(packageJsonPath))
+        {
+            try
+            {
+                var packageJson = await File.ReadAllTextAsync(packageJsonPath);
+                var jsonDoc = System.Text.Json.JsonDocument.Parse(packageJson);
+                if (jsonDoc.RootElement.TryGetProperty("version", out var versionElement))
+                {
+                    version = versionElement.GetString();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to read version from package.json: {Path}", packageJsonPath);
+            }
+        }
+
+        // Target directory in cache
+        var targetPath = Path.Combine(cacheDirectory, name);
+
+        // Copy directory to cache
+        CopyDirectory(sourceDirectoryPath, targetPath, overwrite: true);
+
+        // For directory-based cache items, we'll use the directory size
+        var dirInfo = new DirectoryInfo(targetPath);
+        var totalSize = dirInfo.EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length);
+
+        // Create cache item (using directory path, not a single file)
+        var cacheItem = new CacheItem
+        {
+            Type = CacheItemType.UnityPackage,
+            Name = name,
+            Version = version,
+            Path = _pathResolver.MakeRelative(targetPath),
+            Size = totalSize,
+            Hash = null, // Directory hash would be complex, skip for now
+            AddedDate = DateTime.UtcNow,
+            Source = source
+        };
+
+        // Auto-update config if provided
+        if (config != null)
+        {
+            var packageRef = new UnityPackageReference
+            {
+                Name = name,
+                Version = version ?? "unknown",
+                Source = _pathResolver.MakeRelative(targetPath),
+                Target = $"projects/client/Packages/{name}"
+            };
+            _configService.AddPackage(config, packageRef);
+        }
+
+        _cacheItemAddedPublisher.Publish(new CacheItemAddedMessage(cacheItem));
+
+        return cacheItem;
+    }
+
+    private async Task<CacheItem?> AddAssemblyDirectoryToCacheAsync(
+        string sourceDirectoryPath,
+        string cacheDirectory,
+        string source,
+        PreparationConfig? config)
+    {
+        var dirName = Path.GetFileName(sourceDirectoryPath);
+
+        // Parse assembly directory name (e.g., "CliWrap.3.8.2" -> name: "CliWrap", version: "3.8.2")
+        var (name, version) = ParseAssemblyDirectoryName(dirName);
+        if (string.IsNullOrEmpty(name))
+        {
+            _logger.LogWarning("Could not parse assembly directory name: {DirName}", dirName);
+            return null;
+        }
+
+        // Target directory in cache
+        var targetPath = Path.Combine(cacheDirectory, dirName);
+
+        // Copy directory to cache
+        CopyDirectory(sourceDirectoryPath, targetPath, overwrite: true);
+
+        // For directory-based cache items, we'll use the directory size
+        var dirInfo = new DirectoryInfo(targetPath);
+        var totalSize = dirInfo.EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length);
+
+        // Create cache item
+        var cacheItem = new CacheItem
+        {
+            Type = CacheItemType.Assembly,
+            Name = name,
+            Version = version,
+            Path = _pathResolver.MakeRelative(targetPath),
+            Size = totalSize,
+            Hash = null, // Directory hash would be complex, skip for now
+            AddedDate = DateTime.UtcNow,
+            Source = source
+        };
+
+        // Auto-update config if provided
+        if (config != null)
+        {
+            var assemblyRef = new AssemblyReference
+            {
+                Name = name,
+                Version = version,
+                Source = _pathResolver.MakeRelative(targetPath),
+                Target = $"projects/client/Assets/Plugins/{dirName}"
+            };
+            _configService.AddAssembly(config, assemblyRef);
+        }
+
+        _cacheItemAddedPublisher.Publish(new CacheItemAddedMessage(cacheItem));
+
+        return cacheItem;
+    }
+
     private async Task<CacheItem> AddAssemblyToCacheAsync(
         string sourceFilePath,
         string cacheDirectory,
@@ -384,5 +674,79 @@ public class CacheService
 
         // Fallback if no version found
         return (nameWithoutExtension, "unknown");
+    }
+
+    private (string name, string hash) ParseUnityPackageDirectoryName(string dirName)
+    {
+        // Expected format: com.cysharp.messagepipe@fb95a3138269
+        var atIndex = dirName.IndexOf('@');
+
+        if (atIndex > 0)
+        {
+            var name = dirName.Substring(0, atIndex);
+            var hash = dirName.Substring(atIndex + 1);
+            return (name, hash);
+        }
+
+        // Fallback if no @ found - treat entire name as package name
+        return (dirName, string.Empty);
+    }
+
+    private (string name, string? version) ParseAssemblyDirectoryName(string dirName)
+    {
+        // Expected format: CliWrap.3.8.2 or MessagePack.3.1.3
+        // Find the last dot followed by a number (version separator)
+        var lastDotIndex = dirName.LastIndexOf('.');
+
+        if (lastDotIndex > 0 && lastDotIndex < dirName.Length - 1)
+        {
+            var afterDot = dirName.Substring(lastDotIndex + 1);
+            // Check if what follows the dot starts with a digit (version number)
+            if (char.IsDigit(afterDot[0]))
+            {
+                // Find where the version starts (could be Major.Minor.Patch)
+                var versionStartIndex = lastDotIndex;
+                for (int i = lastDotIndex - 1; i >= 0; i--)
+                {
+                    if (dirName[i] == '.' && i > 0 && char.IsDigit(dirName[i + 1]))
+                    {
+                        versionStartIndex = i;
+                    }
+                    else if (!char.IsDigit(dirName[i]) && dirName[i] != '.')
+                    {
+                        break;
+                    }
+                }
+
+                var name = dirName.Substring(0, versionStartIndex);
+                var version = dirName.Substring(versionStartIndex + 1);
+                return (name, version);
+            }
+        }
+
+        // Fallback if no version found - treat entire name as assembly name
+        return (dirName, null);
+    }
+
+    private void CopyDirectory(string sourceDir, string targetDir, bool overwrite = false)
+    {
+        // Create target directory if it doesn't exist
+        Directory.CreateDirectory(targetDir);
+
+        // Copy all files
+        foreach (var file in Directory.GetFiles(sourceDir))
+        {
+            var fileName = Path.GetFileName(file);
+            var targetFile = Path.Combine(targetDir, fileName);
+            File.Copy(file, targetFile, overwrite);
+        }
+
+        // Recursively copy subdirectories
+        foreach (var subDir in Directory.GetDirectories(sourceDir))
+        {
+            var dirName = Path.GetFileName(subDir);
+            var targetSubDir = Path.Combine(targetDir, dirName);
+            CopyDirectory(subDir, targetSubDir, overwrite);
+        }
     }
 }
