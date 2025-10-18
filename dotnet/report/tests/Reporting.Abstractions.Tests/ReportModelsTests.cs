@@ -1,6 +1,8 @@
+// ReSharper disable RedundantUsingDirective
 using System;
 using Reporting.Abstractions;
 using Xunit;
+// ReSharper restore RedundantUsingDirective
 
 namespace Reporting.Abstractions.Tests
 {

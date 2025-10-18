@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Reporting.Abstractions;
+// ReSharper disable once RedundantUsingDirective
 using Reporting.Core;
 using Xunit;
 
@@ -110,7 +110,7 @@ namespace Reporting.Core.Tests
         {
             var provider = new TestDataProvider();
 
-            var result = await _engine.GenerateAsync(provider, null);
+            var result = await _engine.GenerateAsync(provider);
 
             result.Should().NotBeNull();
             result.Markdown.Should().NotBeNullOrEmpty();
@@ -214,10 +214,12 @@ namespace Reporting.Core.Tests
         }
     }
 
+    // ReSharper disable UnusedAutoPropertyAccessor.Global
     public class TestData
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
         public int Count { get; set; }
     }
+    // ReSharper restore UnusedAutoPropertyAccessor.Global
 }

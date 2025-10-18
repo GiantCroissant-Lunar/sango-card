@@ -17,8 +17,8 @@ namespace Reporting.Core.Renderers
             try
             {
                 var root = new XElement("Report",
-                    new XAttribute("id", model.Metadata.Id ?? ""),
-                    new XAttribute("title", model.Metadata.Title ?? ""),
+                    new XAttribute("id", model.Metadata.Id),
+                    new XAttribute("title", model.Metadata.Title),
                     new XAttribute("generatedAt", model.PreparedAt?.ToString("O") ?? DateTime.UtcNow.ToString("O"))
                 );
 
@@ -49,7 +49,7 @@ namespace Reporting.Core.Renderers
             }
             catch (Exception ex)
             {
-                return $"<error reportId=\"{System.Security.SecurityElement.Escape(model.Metadata.Id ?? "")}\"><message>{System.Security.SecurityElement.Escape($"Failed to render XML: {ex.Message}")}</message></error>";
+                return $"<error reportId=\"{System.Security.SecurityElement.Escape(model.Metadata.Id)}\"><message>{System.Security.SecurityElement.Escape($"Failed to render XML: {ex.Message}")}</message></error>";
             }
         }
 

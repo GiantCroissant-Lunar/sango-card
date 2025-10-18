@@ -1,4 +1,3 @@
-using System;
 using Reporting.Abstractions.Attributes;
 using Xunit;
 

@@ -87,7 +87,8 @@ partial class Build
 
     /// <summary>
     /// Restore Unity client project to clean state (git reset --hard).
-    /// Use this after builds to clean up injected files.
+    /// Use this manually after failed builds or to clean up injected files.
+    /// Note: Successful builds automatically restore the client.
     /// </summary>
     Target RestoreClient => _ => _
         .Description("Restore Unity client project to clean state (git reset)")
@@ -99,6 +100,7 @@ partial class Build
             Git("reset --hard", workingDirectory: ClientProject);
 
             Serilog.Log.Information("✅ Client restored to clean state");
+            Serilog.Log.Information("Note: Run 'task build:prepare:restore' to restore client manually");
         });
 
     /// <summary>
@@ -125,16 +127,23 @@ partial class Build
 
     /// <summary>
     /// Full Unity build workflow with preparation.
-    /// Executes: PrepareCache → PrepareClient → BuildUnity → RestoreClient
+    /// Executes: PrepareCache → PrepareClient → BuildUnity → RestoreClient (on success only)
+    /// Note: Client is NOT restored on build failure to allow debugging of injected state.
     /// </summary>
     Target BuildUnityWithPreparation => _ => _
         .Description("Full Unity build with two-phase preparation")
         .DependsOn(PrepareClient)
         .DependsOn(((IUnityBuild)this).BuildUnity)
-        .Triggers(RestoreClient)
+        .TriggeredBy(((IUnityBuild)this).BuildUnity)
         .Executes(() =>
         {
             Serilog.Log.Information("✅ Unity build with preparation complete");
+
+            // R-BLD-060: Restore client to clean state after successful build
+            // This only runs if BuildUnity succeeds - failures preserve state for debugging
+            Serilog.Log.Information("Restoring client project to clean state...");
+            Git("reset --hard", workingDirectory: ClientProject);
+            Serilog.Log.Information("✅ Client restored to clean state");
         });
 
     /// <summary>

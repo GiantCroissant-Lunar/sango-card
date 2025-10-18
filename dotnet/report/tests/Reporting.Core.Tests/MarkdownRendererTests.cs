@@ -117,9 +117,11 @@ namespace Reporting.Core.Tests
         }
     }
 
+    // ReSharper disable UnusedAutoPropertyAccessor.Global
     public class TestItem
     {
         public string Name { get; set; } = "";
         public int Value { get; set; }
     }
+    // ReSharper restore UnusedAutoPropertyAccessor.Global
 }
