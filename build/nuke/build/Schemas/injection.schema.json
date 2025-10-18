@@ -1,0 +1,204 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://giantcroissant.io/schemas/sango-card/injection-config.json",
+  "title": "Build Injection Config (Phase 2)",
+  "description": "Configuration for Phase 2: Inject cached packages into client project with build operations",
+  "type": "object",
+  "required": ["version", "id", "title", "packages", "assemblies"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "version": {
+      "type": "string",
+      "description": "Config schema version",
+      "pattern": "^\\d+\\.\\d+$",
+      "examples": ["1.0"]
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this config",
+      "examples": ["third-party-packages-injection"]
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable title",
+      "examples": ["Third-Party Packages Injection to Client"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description of what this config does"
+    },
+    "packages": {
+      "type": "array",
+      "description": "Packages to inject from cache into client project",
+      "items": {
+        "type": "object",
+        "required": ["name", "version", "source", "target"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Package name (e.g., com.cysharp.unitask)",
+            "pattern": "^[a-z0-9.-]+$"
+          },
+          "version": {
+            "type": "string",
+            "description": "Package version",
+            "pattern": "^\\d+\\.\\d+\\.\\d+.*$"
+          },
+          "source": {
+            "type": "string",
+            "description": "Source cache path relative to repository root (e.g., build/preparation/cache/...)"
+          },
+          "target": {
+            "type": "string",
+            "description": "Target client path relative to repository root (e.g., projects/client/Packages/...)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "assemblies": {
+      "type": "array",
+      "description": "Assemblies to inject from cache into client project",
+      "items": {
+        "type": "object",
+        "required": ["name", "version", "source", "target"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Assembly name (e.g., MessagePack)"
+          },
+          "version": {
+            "type": "string",
+            "description": "Assembly version",
+            "pattern": "^\\d+\\.\\d+\\.\\d+.*$"
+          },
+          "source": {
+            "type": "string",
+            "description": "Source cache path relative to repository root (e.g., build/preparation/cache/...)"
+          },
+          "target": {
+            "type": "string",
+            "description": "Target client path relative to repository root (e.g., projects/client/Assets/Plugins/...)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "assetManipulations": {
+      "type": "array",
+      "description": "Asset copy/move/delete operations",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["copy", "move", "delete"],
+            "description": "Type of asset operation"
+          },
+          "source": {
+            "type": "string",
+            "description": "Source path (required for copy/move)"
+          },
+          "target": {
+            "type": "string",
+            "description": "Target path (required for copy/move/delete)"
+          }
+        }
+      }
+    },
+    "codePatches": {
+      "type": "array",
+      "description": "In-place code modifications using Roslyn (C#), JSON, or text-based patching",
+      "items": {
+        "type": "object",
+        "required": ["file", "patches"],
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "File path to patch (relative to repository root)"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["CSharp", "Json", "UnityAsset", "Text"],
+            "description": "Patch type: CSharp (Roslyn), Json, UnityAsset (YAML), or Text (regex)"
+          },
+          "patches": {
+            "type": "array",
+            "description": "List of patch operations",
+            "items": {
+              "type": "object",
+              "required": ["search"],
+              "properties": {
+                "search": {
+                  "type": "string",
+                  "description": "Search pattern: text for simple patches, selector for Roslyn operations"
+                },
+                "replace": {
+                  "type": "string",
+                  "description": "Replacement text (not required for Roslyn RemoveBlock/RemoveUsing)"
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": ["RemoveUsing", "ReplaceExpression", "ReplaceBlock", "RemoveBlock", "RemoveStatements"],
+                  "description": "Roslyn operation for C# patches (overrides mode)"
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": ["Replace", "InsertBefore", "InsertAfter", "Delete"],
+                  "description": "Patch mode for non-Roslyn operations"
+                },
+                "optional": {
+                  "type": "boolean",
+                  "description": "If true, won't fail if target not found",
+                  "default": false
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Human-readable description of what this patch does"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "scriptingDefineSymbols": {
+      "type": "object",
+      "description": "Unity scripting define symbols configuration",
+      "properties": {
+        "add": {
+          "type": "array",
+          "description": "Symbols to add",
+          "items": {
+            "type": "string"
+          }
+        },
+        "remove": {
+          "type": "array",
+          "description": "Symbols to remove",
+          "items": {
+            "type": "string"
+          }
+        },
+        "platform": {
+          "type": ["string", "null"],
+          "description": "Target platform (e.g., StandaloneWindows64, Android)",
+          "examples": ["StandaloneWindows64", "Android", "iOS", null]
+        },
+        "clearExisting": {
+          "type": "boolean",
+          "description": "Whether to clear existing symbols before adding new ones",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
