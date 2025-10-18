@@ -13,7 +13,9 @@ using Nuke.Common.Tooling;
 /// </summary>
 partial class Build : IUnityBuild
 {
-    public AbsolutePath UnityProjectPath => RootDirectory / "projects" / "client";
+    // Use RepoRoot from IReportBuild (available via Build.ReportBuild.cs) for consistent path resolution
+    public AbsolutePath UnityProjectPath => ((IReportBuild)this).RepoRoot / "projects" / "client";
+
     // Interface implementation is provided by IUnityBuild default interface members
     // Override default members here if custom implementation is needed
 
@@ -27,7 +29,7 @@ partial class Build : IUnityBuild
         .Executes(() =>
         {
             Serilog.Log.Information("Client build and report artifacts complete. Version: {Version}", EffectiveVersion);
-            var artifactsRoot = RootDirectory / "build" / "_artifacts" / EffectiveVersion;
+            var artifactsRoot = ((IReportBuild)this).RepoRoot / "build" / "_artifacts" / EffectiveVersion;
             Serilog.Log.Information("Artifacts root: {Path}", artifactsRoot);
         });
 }
