@@ -18,10 +18,10 @@ $ansibleInstalled = Get-Command ansible-playbook -ErrorAction SilentlyContinue
 
 if (-not $ansibleInstalled) {
     Write-Host "Ansible not found. Installing..." -ForegroundColor Yellow
-    
+
     # Check if pip is available
     $pipInstalled = Get-Command pip -ErrorAction SilentlyContinue
-    
+
     if ($pipInstalled) {
         pip install ansible pywinrm
     } else {

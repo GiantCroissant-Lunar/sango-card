@@ -10,7 +10,7 @@ echo ""
 # Check if Ansible is installed
 if ! command -v ansible-playbook &> /dev/null; then
     echo "Ansible not found. Installing..."
-    
+
     # Try to install with pip
     if command -v pip3 &> /dev/null; then
         pip3 install ansible

@@ -1,6 +1,4 @@
----
 # Unity installation (limited automation - mostly manual)
-
 - name: Display Unity installation message
   debug:
     msg:
@@ -11,30 +9,25 @@
       - "   - Android Build Support (for Android mobile)"
       - "   - iOS Build Support (macOS only, for iOS mobile)"
       - "   - WebGL Build Support (optional)"
-
 - name: Check if Unity Hub is installed (macOS)
   stat:
     path: /Applications/Unity Hub.app
   register: unity_hub_mac
   when: ansible_os_family == "Darwin"
-
 - name: Check if Unity Hub is installed (Windows)
   win_stat:
     path: 'C:\Program Files\Unity Hub\Unity Hub.exe'
   register: unity_hub_win
   when: ansible_os_family == "Windows"
-
 - name: Download Unity Hub (macOS)
   get_url:
     url: https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.dmg
     dest: /tmp/UnityHubSetup.dmg
   when: ansible_os_family == "Darwin" and not unity_hub_mac.stat.exists and install_unity
-
 - name: Display Unity Hub download message (Windows)
   debug:
     msg: "Please download and install Unity Hub manually from https://unity.com/download"
   when: ansible_os_family == "Windows" and not unity_hub_win.stat.exists
-
 - name: Install Android SDK (if needed)
   when: install_android_sdk
   block:
@@ -43,13 +36,11 @@
         name: android-sdk
         state: present
       when: ansible_os_family == "Windows"
-
     - name: Install Android SDK (macOS)
       homebrew_cask:
         name: android-sdk
         state: present
       when: ansible_os_family == "Darwin"
-
 - name: Display completion message
   debug:
     msg:

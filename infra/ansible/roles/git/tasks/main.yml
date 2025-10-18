@@ -1,50 +1,41 @@
----
 # Git configuration
-
 - name: Ensure Git is installed
   debug:
     msg: "Git should be installed via common role"
-
 - name: Configure Git user name
   git_config:
     name: user.name
     scope: global
     value: "{{ git_user_name }}"
   when: git_user_name != ""
-
 - name: Configure Git user email
   git_config:
     name: user.email
     scope: global
     value: "{{ git_user_email }}"
   when: git_user_email != ""
-
 - name: Configure Git default branch
   git_config:
     name: init.defaultBranch
     scope: global
     value: "{{ git_default_branch }}"
-
 - name: Configure Git to use main as default branch
   git_config:
     name: pull.rebase
     scope: global
     value: "false"
-
 - name: Enable Git credential helper (Windows)
   git_config:
     name: credential.helper
     scope: global
     value: manager-core
   when: ansible_os_family == "Windows"
-
 - name: Enable Git credential helper (macOS)
   git_config:
     name: credential.helper
     scope: global
     value: osxkeychain
   when: ansible_os_family == "Darwin"
-
 - name: Configure Git LFS
   block:
     - name: Install Git LFS (Windows)
@@ -52,29 +43,24 @@
         name: git-lfs
         state: present
       when: ansible_os_family == "Windows"
-
     - name: Install Git LFS (macOS)
       homebrew:
         name: git-lfs
         state: present
       when: ansible_os_family == "Darwin"
-
     - name: Install Git LFS (Linux)
       apt:
         name: git-lfs
         state: present
       when: ansible_os_family == "Debian"
       become: yes
-
     - name: Initialize Git LFS
       command: git lfs install
       changed_when: false
-
 - name: Verify Git installation
   command: git --version
   register: git_version_check
   changed_when: false
-
 - name: Display Git version
   debug:
     msg: "Git {{ git_version_check.stdout }} installed"

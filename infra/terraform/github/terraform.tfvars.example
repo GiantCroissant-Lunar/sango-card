@@ -12,39 +12,39 @@ required_approving_review_count  = 1
 
 # GitHub Actions Secrets (use terraform.tfvars, not checked into git)
 repository_secrets = {
-  # Example secrets - DO NOT commit actual values
-  # UNITY_LICENSE          = "your-unity-license-content"
-  # UNITY_EMAIL            = "your-unity-email"
-  # UNITY_PASSWORD         = "your-unity-password"
-  # UNITY_SERIAL           = "your-unity-serial"
-  # ANDROID_KEYSTORE_BASE64 = "your-android-keystore-base64"
-  # ANDROID_KEYSTORE_PASS  = "your-keystore-password"
-  # ANDROID_KEY_ALIAS      = "your-key-alias"
-  # ANDROID_KEY_PASS       = "your-key-password"
-  # IOS_CERTIFICATE_BASE64 = "your-ios-certificate-base64"
-  # IOS_PROVISION_BASE64   = "your-ios-provisioning-profile-base64"
-  # IOS_CERTIFICATE_PASSWORD = "your-certificate-password"
+    # Example secrets - DO NOT commit actual values
+    # UNITY_LICENSE          = "your-unity-license-content"  # pragma: allowlist secret
+    # UNITY_EMAIL            = "your-unity-email"
+    # UNITY_PASSWORD         = "your-unity-password"  # pragma: allowlist secret
+    # UNITY_SERIAL           = "your-unity-serial"
+    # ANDROID_KEYSTORE_BASE64 = "your-android-keystore-base64"
+    # ANDROID_KEYSTORE_PASS  = "your-keystore-password"  # pragma: allowlist secret
+    # ANDROID_KEY_ALIAS      = "your-key-alias"
+    # ANDROID_KEY_PASS       = "your-key-password"  # pragma: allowlist secret
+    # IOS_CERTIFICATE_BASE64 = "your-ios-certificate-base64"
+    # IOS_PROVISION_BASE64   = "your-ios-provisioning-profile-base64"
+    # IOS_CERTIFICATE_PASSWORD = "your-certificate-password"  # pragma: allowlist secret
 }
 
 # GitHub Actions Variables (non-sensitive)
 repository_variables = {
-  # Unity Configuration
-  UNITY_VERSION           = "2022.3.x"
-  DOTNET_VERSION          = "8.0.x"
-  NODEJS_VERSION          = "20.x"
-  
-  # Build Configuration
-  BUILD_CONFIGURATION     = "Release"
-  ENABLE_CODE_COVERAGE    = "true"
-  ENABLE_UNITY_CACHE      = "true"
-  
-  # Platform Settings
-  BUILD_ANDROID           = "true"
-  BUILD_IOS               = "true"
-  BUILD_WEBGL             = "false"
-  
-  # Spec-Kit Configuration
-  SPEC_KIT_ENABLED        = "true"
+    # Unity Configuration
+    UNITY_VERSION           = "2022.3.x"
+    DOTNET_VERSION          = "8.0.x"
+    NODEJS_VERSION          = "20.x"
+
+    # Build Configuration
+    BUILD_CONFIGURATION     = "Release"
+    ENABLE_CODE_COVERAGE    = "true"
+    ENABLE_UNITY_CACHE      = "true"
+
+    # Platform Settings
+    BUILD_ANDROID           = "true"
+    BUILD_IOS               = "true"
+    BUILD_WEBGL             = "false"
+
+    # Spec-Kit Configuration
+    SPEC_KIT_ENABLED        = "true"
 }
 
 # CODEOWNERS Configuration

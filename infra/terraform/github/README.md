@@ -56,11 +56,11 @@ repository_secrets = {
   UNITY_LICENSE = "your-license-content"
   UNITY_EMAIL = "your-email"
   UNITY_PASSWORD = "your-password"
-  
+
   # Android
   ANDROID_KEYSTORE_BASE64 = "base64-encoded-keystore"
   ANDROID_KEYSTORE_PASS = "keystore-password"
-  
+
   # iOS (if building for iOS)
   IOS_CERTIFICATE_BASE64 = "base64-certificate"
   IOS_PROVISION_BASE64 = "base64-provisioning-profile"
@@ -84,6 +84,7 @@ repository_variables = {
 1. Create account at [app.terraform.io](https://app.terraform.io)
 2. Create organization
 3. Edit `backend.tf`:
+
    ```hcl
    terraform {
      cloud {
@@ -94,6 +95,7 @@ repository_variables = {
      }
    }
    ```
+
 4. Login: `terraform login`
 5. Initialize: `terraform init`
 

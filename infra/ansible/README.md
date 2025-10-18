@@ -41,6 +41,7 @@ cd infra/ansible
 - Ansible >= 2.12
 
 Install Ansible:
+
 ```bash
 pip install ansible        # macOS/Linux
 pip install ansible pywinrm # Windows
@@ -49,13 +50,16 @@ pip install ansible pywinrm # Windows
 ### Platform-Specific
 
 **Windows:**
+
 - PowerShell 5.1+
 - WinRM enabled: `Enable-PSRemoting -Force`
 
 **macOS:**
+
 - Xcode Command Line Tools: `xcode-select --install`
 
 **Linux:**
+
 - sudo privileges
 
 ## Configuration
@@ -161,7 +165,7 @@ task build
 
 Unity must be installed manually:
 
-1. Download Unity Hub: https://unity.com/download
+1. Download Unity Hub: <https://unity.com/download>
 2. Install Unity 2022.3.x (LTS)
 3. Add modules:
    - Android Build Support
@@ -199,39 +203,49 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ## Roles
 
 ### common
+
 Installs base packages (git, curl, wget, etc.)
 
 ### dotnet
+
 Installs .NET SDK 8.0 and disables telemetry
 
 ### nodejs
+
 Installs Node.js 20 and configures npm
 
 ### python
+
 Installs Python 3.11, uv, pre-commit
 
 ### git
+
 Configures Git, installs LFS
 
 ### build_tools
+
 Installs Task, Nuke, GitVersion, jq
 
 ### unity
+
 Provides Unity installation instructions
 
 ## Platform-Specific Notes
 
 ### Windows
+
 - Uses Chocolatey package manager
 - Requires Administrator privileges
 - May need terminal restart
 
 ### macOS
+
 - Uses Homebrew package manager
 - Requires Xcode CLI tools
 - May prompt for password
 
 ### Linux
+
 - Uses apt/yum package manager
 - Requires sudo privileges
 - Installs to `~/.local/bin`
@@ -271,6 +285,7 @@ github_pat: "{{ lookup('env', 'GH_TOKEN') }}"
 ```
 
 Run:
+
 ```bash
 export GH_TOKEN="your_github_token"
 ansible-playbook playbook.yml --tags runner

@@ -22,7 +22,9 @@ cd infra/ansible
 
 This installs: .NET SDK 8.0, Node.js 20, Python 3.11, Git+LFS, Task, Nuke, pre-commit, and other tools.
 
-**Time: ~10-15 minutes**
+#### Time
+
+~10-15 minutes
 
 ### For Repository Administrators (Configure GitHub)
 
@@ -42,7 +44,9 @@ terraform plan
 terraform apply
 ```
 
-**Time: ~5 minutes**
+#### Time
+
+~5 minutes
 
 ## What Gets Installed (Ansible)
 
@@ -69,7 +73,7 @@ terraform apply
 
 ## Directory Structure
 
-```
+```text
 infra/
 ├── README.md                   # This file
 ├── terraform/
@@ -137,7 +141,7 @@ repository_variables = {
 
 Unity Hub and Editor must be installed manually:
 
-1. Download Unity Hub: https://unity.com/download
+1. Download Unity Hub: <https://unity.com/download>
 2. Install Unity 2022.3.x (LTS)
 3. Add modules:
    - Android Build Support
@@ -192,12 +196,14 @@ task build
 
 **Problem:** Package installation fails
 **Solution:** Skip problematic packages
+
 ```bash
 ansible-playbook playbook.yml --skip-tags unity
 ```
 
 **Problem:** WinRM connection failed (Windows)
 **Solution:** Enable WinRM as Administrator
+
 ```powershell
 Enable-PSRemoting -Force
 ```
@@ -206,12 +212,14 @@ Enable-PSRemoting -Force
 
 **Problem:** State lock error
 **Solution:** Force unlock (use with caution)
+
 ```bash
 terraform force-unlock <lock-id>
 ```
 
 **Problem:** Authentication error
 **Solution:** Verify token
+
 ```bash
 echo $TF_VAR_github_token
 ```

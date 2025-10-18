@@ -1,19 +1,15 @@
----
 # Python and development tools installation
-
 - name: Install Python (Windows)
   when: ansible_os_family == "Windows"
   win_chocolatey:
     name: python
     version: "{{ python_version }}"
     state: present
-
 - name: Install Python (macOS)
   when: ansible_os_family == "Darwin"
   homebrew:
     name: "python@{{ python_version }}"
     state: present
-
 - name: Install Python (Linux)
   when: ansible_os_family in ["Debian", "RedHat"]
   block:
@@ -26,35 +22,29 @@
         state: present
       when: ansible_os_family == "Debian"
       become: yes
-
 - name: Verify Python installation
   command: python3 --version
   register: python_version_check
   changed_when: false
-
 - name: Display Python version
   debug:
     msg: "Python {{ python_version_check.stdout }} installed"
-
 - name: Install uv (modern Python package manager)
   shell: curl -LsSf https://astral.sh/uv/install.sh | sh
   args:
     creates: "{{ ansible_env.HOME }}/.cargo/bin/uv"
   when: ansible_os_family != "Windows"
-
 - name: Install uv (Windows)
   win_shell: |
     powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
   when: ansible_os_family == "Windows"
   ignore_errors: yes
-
 - name: Install pre-commit
   pip:
     name: pre-commit
     state: present
     executable: pip3
   ignore_errors: yes
-
 - name: Install Python development tools
   pip:
     name:
