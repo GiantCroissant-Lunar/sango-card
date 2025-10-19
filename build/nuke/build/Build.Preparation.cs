@@ -104,6 +104,33 @@ partial class Build
         });
 
     /// <summary>
+    /// Cleanup target that restores client after successful build.
+    /// Uses AssuredAfterFailure to guarantee execution regardless of build outcome.
+    /// Only performs cleanup if build was successful - preserves injected state on failure for debugging.
+    /// </summary>
+    Target CleanupAfterBuild => _ => _
+        .Description("Cleanup client project after build (success only)")
+        .AssuredAfterFailure()
+        .After(((IUnityBuild)this).BuildUnity)
+        .OnlyWhenDynamic(() => IsServerBuild || SucceededTargets.Contains(((IUnityBuild)this).BuildUnity))
+        .Executes(() =>
+        {
+            if (SucceededTargets.Contains(((IUnityBuild)this).BuildUnity))
+            {
+                Serilog.Log.Information("=== Cleanup After Successful Build ===");
+                Serilog.Log.Information("Build succeeded - restoring client to clean state...");
+                Git("reset --hard", workingDirectory: ClientProject);
+                Serilog.Log.Information("✅ Client restored to clean state");
+            }
+            else
+            {
+                Serilog.Log.Warning("=== Build Failed - Preserving Injected State ===");
+                Serilog.Log.Warning("Client project NOT restored to allow debugging");
+                Serilog.Log.Warning("Run 'task build:prepare:restore' to manually clean when done");
+            }
+        });
+
+    /// <summary>
     /// Validate preparation configuration without executing.
     /// </summary>
     Target ValidatePreparation => _ => _
@@ -127,23 +154,19 @@ partial class Build
 
     /// <summary>
     /// Full Unity build workflow with preparation.
-    /// Executes: PrepareCache → PrepareClient → BuildUnity → RestoreClient (on success only)
-    /// Note: Client is NOT restored on build failure to allow debugging of injected state.
+    /// Executes: PrepareCache → PrepareClient → BuildUnity → CleanupAfterBuild
+    /// CleanupAfterBuild uses AssuredAfterFailure to guarantee cleanup logic runs.
+    /// On success: Client is restored to clean state (git reset --hard)
+    /// On failure: Client state preserved for debugging (manual cleanup needed)
     /// </summary>
     Target BuildUnityWithPreparation => _ => _
-        .Description("Full Unity build with two-phase preparation")
+        .Description("Full Unity build with two-phase preparation and automatic cleanup")
         .DependsOn(PrepareClient)
         .DependsOn(((IUnityBuild)this).BuildUnity)
-        .TriggeredBy(((IUnityBuild)this).BuildUnity)
+        .DependsOn(CleanupAfterBuild)
         .Executes(() =>
         {
-            Serilog.Log.Information("✅ Unity build with preparation complete");
-
-            // R-BLD-060: Restore client to clean state after successful build
-            // This only runs if BuildUnity succeeds - failures preserve state for debugging
-            Serilog.Log.Information("Restoring client project to clean state...");
-            Git("reset --hard", workingDirectory: ClientProject);
-            Serilog.Log.Information("✅ Client restored to clean state");
+            Serilog.Log.Information("✅ Unity build with preparation workflow complete");
         });
 
     /// <summary>
