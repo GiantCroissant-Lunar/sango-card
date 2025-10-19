@@ -75,46 +75,16 @@
       "target": "build/preparation/cache/com.unity.addressables"
     },
     {
-      "name": "com.unity.ai.navigation",
-      "version": "2.0.9",
-      "source": "projects/code-quality/Library/PackageCache/com.unity.ai.navigation@5218e4bf7edc",
-      "target": "build/preparation/cache/com.unity.ai.navigation"
-    },
-    {
       "name": "com.unity.burst",
       "version": "1.8.25",
       "source": "projects/code-quality/Library/PackageCache/com.unity.burst@1df634d836b8",
       "target": "build/preparation/cache/com.unity.burst"
     },
     {
-      "name": "com.unity.collab-proxy",
-      "version": "2.9.3",
-      "source": "projects/code-quality/Library/PackageCache/com.unity.collab-proxy@ab839cc7d2ad",
-      "target": "build/preparation/cache/com.unity.collab-proxy"
-    },
-    {
       "name": "com.unity.collections",
       "version": "2.5.7",
       "source": "projects/code-quality/Library/PackageCache/com.unity.collections@d49facba0036",
       "target": "build/preparation/cache/com.unity.collections"
-    },
-    {
-      "name": "com.unity.ext.nunit",
-      "version": "2.0.5",
-      "source": "projects/code-quality/Library/PackageCache/com.unity.ext.nunit@031a54704bff",
-      "target": "build/preparation/cache/com.unity.ext.nunit"
-    },
-    {
-      "name": "com.unity.ide.rider",
-      "version": "3.0.38",
-      "source": "projects/code-quality/Library/PackageCache/com.unity.ide.rider@1f60b3138684",
-      "target": "build/preparation/cache/com.unity.ide.rider"
-    },
-    {
-      "name": "com.unity.ide.visualstudio",
-      "version": "2.0.25",
-      "source": "projects/code-quality/Library/PackageCache/com.unity.ide.visualstudio@74aa435fc4bb",
-      "target": "build/preparation/cache/com.unity.ide.visualstudio"
     },
     {
       "name": "com.unity.inputsystem",
@@ -127,12 +97,6 @@
       "version": "1.3.2",
       "source": "projects/code-quality/Library/PackageCache/com.unity.mathematics@8017b507cc74",
       "target": "build/preparation/cache/com.unity.mathematics"
-    },
-    {
-      "name": "com.unity.multiplayer.center",
-      "version": "1.0.0",
-      "source": "projects/code-quality/Library/PackageCache/com.unity.multiplayer.center@f3fb577b3546",
-      "target": "build/preparation/cache/com.unity.multiplayer.center"
     },
     {
       "name": "com.unity.nuget.mono-cecil",
@@ -175,12 +139,6 @@
       "version": "2.4.3",
       "source": "projects/code-quality/Library/PackageCache/com.unity.scriptablebuildpipeline@ca3e2d96aa2f",
       "target": "build/preparation/cache/com.unity.scriptablebuildpipeline"
-    },
-    {
-      "name": "com.unity.searcher",
-      "version": "4.9.3",
-      "source": "projects/code-quality/Library/PackageCache/com.unity.searcher@1e17ce91558d",
-      "target": "build/preparation/cache/com.unity.searcher"
     },
     {
       "name": "com.unity.shadergraph",
@@ -766,5 +724,8 @@
       "source": "projects/code-quality/Assets/Packages/ZLinq.DropInGenerator.1.4.2",
       "target": "build/preparation/cache/ZLinq.DropInGenerator.1.4.2"
     }
-  ]
+  ],
+  "assetManipulations": [],
+  "codePatches": [],
+  "scriptingDefineSymbols": null
 }

@@ -24,12 +24,6 @@
       "target": "projects/client/Packages/com.contractwork.sangocard.build"
     },
     {
-      "name": "com.cysharp.messagepipe",
-      "version": "1.8.1",
-      "source": "build/preparation/cache/com.cysharp.messagepipe",
-      "target": "projects/client/Packages/com.cysharp.messagepipe"
-    },
-    {
       "name": "com.cysharp.messagepipe.vcontainer",
       "version": "1.8.1",
       "source": "build/preparation/cache/com.cysharp.messagepipe.vcontainer",
@@ -70,12 +64,6 @@
       "version": "2.3.14",
       "source": "build/preparation/cache/com.tuyoogame.yooasset",
       "target": "projects/client/Packages/com.tuyoogame.yooasset"
-    },
-    {
-      "name": "jp.hadashikick.vcontainer",
-      "version": "1.17.0",
-      "source": "build/preparation/cache/jp.hadashikick.vcontainer",
-      "target": "projects/client/Packages/jp.hadashikick.vcontainer"
     },
     {
       "name": "org.nuget.grpc.core",
@@ -620,85 +608,43 @@
       "target": "projects/client/Assets/Plugins/ZLinq.DropInGenerator.1.4.2"
     }
   ],
-  "assetManipulations": [
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/MessagePack.3.1.1"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/MessagePack.3.1.1.meta"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/MessagePack.Annotations.3.1.1"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/MessagePack.Annotations.3.1.1.meta"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/MessagePackAnalyzer.3.1.1"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/MessagePackAnalyzer.3.1.1.meta"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/Microsoft.NET.StringTools.17.11.4"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/Microsoft.NET.StringTools.17.11.4.meta"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/System.Collections.Immutable.8.0.0"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/System.Collections.Immutable.8.0.0.meta"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/System.Runtime.CompilerServices.Unsafe.6.0.0"
-    },
-    {
-      "type": "delete",
-      "target": "projects/client/Assets/Packages/System.Runtime.CompilerServices.Unsafe.6.0.0.meta"
-    }
-  ],
+  "assetManipulations": [],
   "codePatches": [
     {
       "file": "projects/client/Packages/manifest.json",
-      "patches": [
-        {
-          "search": "    \"com.cysharp.unitask\": \"https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask\",\n",
-          "replace": ""
-        },
-        {
-          "search": "    \"com.github-glitchenzo.nugetforunity\": \"https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity\",\n",
-          "replace": ""
-        }
-      ]
+      "type": "Json",
+      "operation": "RemoveProperty",
+      "search": "dependencies['com.cysharp.unitask']",
+      "replace": "",
+      "optional": true,
+      "description": "Remove com.cysharp.unitask git dependency from manifest"
+    },
+    {
+      "file": "projects/client/Packages/manifest.json",
+      "type": "Json",
+      "operation": "RemoveProperty",
+      "search": "dependencies['com.github-glitchenzo.nugetforunity']",
+      "replace": "",
+      "optional": true,
+      "description": "Remove com.github-glitchenzo.nugetforunity git dependency from manifest"
     },
     {
       "file": "projects/client/Assets/Scripts/Startup.cs",
       "type": "CSharp",
-      "patches": [
-        {
-          "operation": "RemoveStatements",
-          "search": "StaticCompositeResolver.Instance",
-          "description": "Remove MessagePack StaticCompositeResolver statements"
-        },
-        {
-          "operation": "RemoveStatements",
-          "search": "MessagePackSerializer.DefaultOptions",
-          "description": "Remove MessagePack DefaultOptions assignment"
-        }
-      ]
+      "operation": "RemoveStatements",
+      "search": "StaticCompositeResolver.Instance",
+      "replace": "",
+      "optional": true,
+      "description": "Remove MessagePack StaticCompositeResolver statements"
+    },
+    {
+      "file": "projects/client/Assets/Scripts/Startup.cs",
+      "type": "CSharp",
+      "operation": "RemoveStatements",
+      "search": "MessagePackSerializer.DefaultOptions",
+      "replace": "",
+      "optional": true,
+      "description": "Remove MessagePack DefaultOptions assignment"
     }
   ],
   "scriptingDefineSymbols": {
