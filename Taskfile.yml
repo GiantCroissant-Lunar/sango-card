@@ -255,6 +255,14 @@ tasks:
       - task: test
   # Utility tasks
 
+  client:reset:
+    desc: Reset client git repo to clean state (git reset --hard)
+    dir: '{{.UNITY_PROJECT}}'
+    cmds:
+      - echo "Resetting client repository at {{.UNITY_PROJECT}}..."
+      - git reset --hard
+      - git clean -fd
+      - echo "✓ Client repository reset to clean state"
   restore:
     desc: Restore all dependencies
     cmds:
