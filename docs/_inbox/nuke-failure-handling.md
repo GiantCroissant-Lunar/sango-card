@@ -81,61 +81,88 @@ Target BuildUnityWithPreparation => _ => _
 3. `BuildUnity` - Build Unity project
 4. `CleanupAfterBuild` - Conditional cleanup (always runs)
 
-### 2. Test Build with Failure Tolerance
+### 2. Test Build with Pre/Post-Build Phases
 
-#### ITestBuild Interface
+#### Pre-Build Tests (Validation) - Fast Feedback
+
+**Purpose:** Validate code before expensive build operation
 
 ```csharp
-interface ITestBuild : INukeBuild
-{
-    Target TestAll => _ => _
-        .DependsOn(TestEditMode)
-        .DependsOn(TestPlayMode)
-        .ProceedAfterFailure()  // Continue even if tests fail
-        .Executes(() =>
-        {
-            if (FailedTargets.Count > 0)
-            {
-                Serilog.Log.Warning("Some tests failed");
-            }
-        });
-}
+Target TestPreBuild => _ => _
+    .DependsOn(TestEditMode)       // Unit tests (no build required)
+    .DependsOn(TestCodeQuality)    // Static analysis, linting
+    .ProceedAfterFailure()         // Continue even if some fail
+    .Executes(() => { /* Report validation results */ });
 ```
 
-**Behavior:**
-- EditMode tests run
-- PlayMode tests run (even if EditMode failed)
-- Build continues regardless of test results
+**Pre-Build Test Types:**
+- **TestEditMode** - Unity Edit Mode tests (unit tests)
+- **TestCodeQuality** - Static analysis, code quality checks
+- **Benefit** - Catch issues early, before wasting time on build
 
-#### BuildWithTests Workflow
+#### Post-Build Tests (Runtime) - Artifact Validation
+
+**Purpose:** Validate the actual built artifact
+
+```csharp
+Target TestPostBuild => _ => _
+    .DependsOn(TestPlayMode)       // Runtime tests
+    .DependsOn(TestIntegration)    // Integration tests
+    .ProceedAfterFailure()         // Continue even if some fail
+    .Executes(() => { /* Report runtime test results */ });
+```
+
+**Post-Build Test Types:**
+- **TestPlayMode** - Unity Play Mode tests (runtime behavior)
+- **TestIntegration** - Integration tests on built executable
+- **Benefit** - Comprehensive validation of deployable artifact
+
+#### BuildWithTests Workflow - Full Pipeline
 
 ```csharp
 Target BuildWithTests => _ => _
     .DependsOn(PrepareClient)
-    .DependsOn(((IUnityBuild)this).BuildUnity)
-    .DependsOn(((ITestBuild)this).TestAll)
-    .DependsOn(CleanupAfterBuild)
+    .DependsOn(((ITestBuild)this).TestPreBuild)      // Validate first
+    .DependsOn(((IUnityBuild)this).BuildUnity)       // Then build
+    .DependsOn(((ITestBuild)this).TestPostBuild)     // Then test artifact
+    .DependsOn(CleanupAfterBuild)                    // Always cleanup
     .Executes(() =>
     {
-        var buildSucceeded = SucceededTargets.Contains(((IUnityBuild)this).BuildUnity);
-        var testsSucceeded = SucceededTargets.Contains(((ITestBuild)this).TestAll);
+        var preBuildOK = SucceededTargets.Contains(TestPreBuild);
+        var buildOK = SucceededTargets.Contains(BuildUnity);
+        var postBuildOK = SucceededTargets.Contains(TestPostBuild);
 
-        if (buildSucceeded && !testsSucceeded)
+        if (preBuildOK && buildOK && postBuildOK)
         {
-            Serilog.Log.Warning("Build OK but tests failed");
+            Serilog.Log.Information("✅ All stages passed");
         }
     });
 ```
 
 **Flow:**
 1. `PrepareClient` - Inject dependencies
-2. `BuildUnity` - Build project
-3. `TestAll` - Run all tests (continues on failure)
-4. `CleanupAfterBuild` - Clean if build succeeded (always runs)
+2. `TestPreBuild` - Validate code (fast, catch issues early)
+3. `BuildUnity` - Build project (only if validation passes)
+4. `TestPostBuild` - Test built artifact (comprehensive)
+5. `CleanupAfterBuild` - Clean if build succeeded (always runs)
+
+#### ValidateOnly Workflow - Fast Development Loop
+
+```csharp
+Target ValidateOnly => _ => _
+    .DependsOn(PrepareClient)
+    .DependsOn(((ITestBuild)this).TestPreBuild)
+    .DependsOn(CleanupAfterBuild)
+    .Executes(() => { /* Quick validation feedback */ });
+```
+
+**Purpose:** Rapid iteration during development  
+**Flow:** Inject → Validate → Cleanup (no expensive build)  
+**Use Case:** Edit code → Run validation → Fix issues → Repeat
 
 ## Usage
 
-### Build Without Tests
+### Build Without Tests (Fast)
 
 ```bash
 # Standard build with automatic cleanup
@@ -145,11 +172,36 @@ task build:prepare:client
 nuke BuildUnityWithPreparation
 ```
 
-### Build With Tests
+### Build With Full Test Suite
 
 ```bash
-# Build + tests (continues if tests fail)
+# Pre-build validation → Build → Post-build testing
 nuke BuildWithTests
+```
+
+### Validation Only (No Build)
+
+```bash
+# Fast feedback during development
+nuke ValidateOnly
+```
+
+**Use Cases:**
+- Quick code validation before committing
+- Rapid iteration: edit → validate → fix → repeat
+- Pre-commit hooks (fast validation)
+
+### Manual Test Execution
+
+```bash
+# Pre-build tests only (validation)
+nuke TestPreBuild
+
+# Post-build tests only (runtime, requires built artifact)
+nuke TestPostBuild
+
+# All tests (pre + post)
+nuke TestAll
 ```
 
 ### Manual Cleanup
