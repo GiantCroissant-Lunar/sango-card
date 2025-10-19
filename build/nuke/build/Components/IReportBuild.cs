@@ -391,7 +391,12 @@ interface IReportBuild : INukeBuild
                 ? ReportVersionSuffix
                 : (GitVersion?.NuGetVersionV2 ?? GitVersion?.SemVer ?? GitVersion?.InformationalVersion ?? GetReportVersionFolder());
 
-            var baseName = $"build-info-dryrun";
+            // Use the actual PreparationConfig parameter if available
+            var prepConfigPath = ActualPreparationConfig;
+            var configName = System.IO.Path.GetFileName(prepConfigPath.ToString());
+            var configNameWithoutExt = System.IO.Path.GetFileNameWithoutExtension(configName);
+
+            var baseName = $"build-info-dryrun-{configNameWithoutExt}";
             var jsonPath = (ReportDocumentsOutput / (baseName + ".json")).ToString();
             var mdPath = (ReportDocumentsOutput / (baseName + ".md")).ToString();
 
@@ -420,10 +425,6 @@ interface IReportBuild : INukeBuild
                 ("NuGet Packages", ReportDirectory.ToString(), ReportPackagesOutput.ToString(), Directory.Exists(ReportPackagesOutput)),
                 ("Solution Build", ReportSolutionPath.ToString(), "N/A", File.Exists(ReportSolutionPath))
             };
-
-            // Use the actual PreparationConfig parameter if available
-            var prepConfigPath = ActualPreparationConfig;
-            var configName = System.IO.Path.GetFileName(prepConfigPath.ToString());
 
             if (true) // Single config mode
             {

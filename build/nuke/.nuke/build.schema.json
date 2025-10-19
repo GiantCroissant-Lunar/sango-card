@@ -38,10 +38,12 @@
         "ExportUnityPackage",
         "GenerateReport",
         "GenerateReportDryRun",
+        "ListConfigs",
         "PackDotNet",
         "PackReport",
         "PrepareCache",
         "PrepareClient",
+        "PreviewCodePatches",
         "PublishDotNet",
         "PublishReport",
         "PublishReportAbstractions",
@@ -54,6 +56,7 @@
         "TestDotNet",
         "TestReport",
         "TestUnity",
+        "ValidateConfigs",
         "ValidatePreparation"
       ]
     },
@@ -140,6 +143,10 @@
           "type": "string",
           "description": "Build Tool project path (csproj)"
         },
+        "ConfigsDirectory": {
+          "type": "string",
+          "description": "Path to preparation configs directory"
+        },
         "Configuration": {
           "type": "string",
           "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
@@ -203,6 +210,10 @@
           "type": "string",
           "description": "Path to preparation config"
         },
+        "PrepConfigs": {
+          "type": "string",
+          "description": "Preparation config files to apply (comma-separated, e.g., prep.json,production.json)"
+        },
         "ReportArtifactsRoot": {
           "type": "string",
           "description": "Report artifacts root directory (default: build/_artifacts)"
@@ -230,6 +241,10 @@
         "ReportSolutionPath": {
           "type": "string",
           "description": "Report solution path (default: dotnet/report/SangoCard.sln)"
+        },
+        "SchemasDirectory": {
+          "type": "string",
+          "description": "Path to schemas directory"
         },
         "UnityBuildOutput": {
           "type": "string",

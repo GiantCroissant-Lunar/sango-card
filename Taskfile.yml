@@ -170,12 +170,54 @@ tasks:
     desc: Preview preparation changes without applying
     summary: |
       Generate dry-run report showing what would be changed
-      Usage: task build:prepare:dry-run [CONFIG=injection]
-      Example: task build:prepare:dry-run CONFIG=injection
+      Usage: task build:prepare:dry-run [CONFIG=preparation]
+      Example: task build:prepare:dry-run CONFIG=preparation
     vars:
-      CONFIG: '{{.CONFIG | default "injection"}}'
+      CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} GenerateReportDryRun --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+  build:prepare:verify:
+    desc: Verify preparation cache contents
+    summary: |
+      Verify that all items from preparation config are present in the cache
+      Usage: task build:prepare:verify [CONFIG=preparation]
+      Example: task build:prepare:verify CONFIG=preparation
+    vars:
+      CONFIG: '{{.CONFIG | default "preparation"}}'
+    cmds:
+      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/verify-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json'
+  build:prepare:cleanup:
+    desc: Clean orphaned items from preparation cache
+    summary: |
+      Remove folders not listed in the current preparation config
+      Usage: task build:prepare:cleanup [CONFIG=preparation]
+      Note: Prompts for confirmation before deleting
+      Example: task build:prepare:cleanup CONFIG=preparation
+    vars:
+      CONFIG: '{{.CONFIG | default "preparation"}}'
+    cmds:
+      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json'
+  build:prepare:cleanup-preview:
+    desc: Preview what would be cleaned from cache (dry-run)
+    summary: |
+      Show what would be deleted without actually deleting
+      Usage: task build:prepare:cleanup-preview [CONFIG=preparation]
+      Example: task build:prepare:cleanup-preview CONFIG=preparation
+    vars:
+      CONFIG: '{{.CONFIG | default "preparation"}}'
+    cmds:
+      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json -DryRun'
+  build:prepare:cleanup-force:
+    desc: Clean orphaned items from cache without confirmation
+    summary: |
+      Remove folders not listed in the current preparation config (no prompt)
+      Usage: task build:prepare:cleanup-force [CONFIG=preparation]
+      Warning: Deletes immediately without confirmation!
+      Example: task build:prepare:cleanup-force CONFIG=preparation
+    vars:
+      CONFIG: '{{.CONFIG | default "preparation"}}'
+    cmds:
+      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json -Force'
   build:unity:prepared:
     desc: Build Unity with full preparation workflow
     cmds:
