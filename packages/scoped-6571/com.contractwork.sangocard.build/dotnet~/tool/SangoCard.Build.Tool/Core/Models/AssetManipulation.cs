@@ -10,7 +10,7 @@ public class AssetManipulation
     /// <summary>
     /// Gets or sets the operation type.
     /// </summary>
-    [JsonPropertyName("operation")]
+    [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public AssetOperation Operation { get; set; }
 

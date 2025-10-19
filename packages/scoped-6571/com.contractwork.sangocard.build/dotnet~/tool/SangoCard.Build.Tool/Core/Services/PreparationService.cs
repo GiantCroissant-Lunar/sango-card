@@ -57,6 +57,51 @@ public class PreparationService
     /// <param name="dryRun">If true, simulates changes without modifying files.</param>
     /// <param name="validate">If true, validates config before execution.</param>
     /// <returns>Preparation result summary.</returns>
+    /// <summary>
+    /// Execute injection for a specific stage from a multi-stage config (v2.0).
+    /// </summary>
+    public async Task<PreparationCompletedMessage> ExecuteStageAsync(
+        InjectionStage stage,
+        string? platform = null,
+        string? configRelativePath = null,
+        bool dryRun = false)
+    {
+        _logger.LogInformation("Stage '{StageName}' injection started{DryRun}", stage.Name, dryRun ? " (DRY-RUN)" : "");
+        _prepStarted.Publish(new PreparationStartedMessage(configRelativePath, "client", dryRun));
+
+        try
+        {
+            // Step 1: Create backup (unless dry-run)
+            if (!dryRun)
+            {
+                await CreateBackupForStageAsync(stage);
+            }
+
+            // Step 2: Execute stage injection
+            var result = await RunStageAsync(stage, platform, dryRun);
+
+            // Step 3: Clean up backup on success (unless dry-run)
+            if (!dryRun && _backupPath != null)
+            {
+                CleanupBackup();
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Stage '{StageName}' injection failed: {Message}", stage.Name, ex.Message);
+
+            // Rollback changes if not dry-run
+            if (!dryRun && _backupPath != null)
+            {
+                await RollbackAsync();
+            }
+
+            throw;
+        }
+    }
+
     public async Task<PreparationCompletedMessage> ExecuteAsync(
         PreparationConfig config,
         string? configRelativePath = null,
@@ -622,5 +667,280 @@ public class PreparationService
 
         // No match found, return exact path (will fail later with clear error)
         return exactPath;
+    }
+
+    /// <summary>
+    /// Run stage injection (v2.0 multi-stage workflow).
+    /// </summary>
+    private async Task<PreparationCompletedMessage> RunStageAsync(
+        InjectionStage stage,
+        string? platform = null,
+        bool dryRun = false)
+    {
+        _modifiedFiles.Clear();
+
+        var copied = 0;
+        var moved = 0;
+        var deleted = 0;
+        var patched = 0;
+
+        // 1) Copy Unity packages (if defined in stage)
+        if (stage.Packages != null)
+        {
+            foreach (var pkg in stage.Packages)
+            {
+                var src = ResolveCacheSource(pkg.Source);
+                var dst = _paths.Resolve(pkg.Target);
+
+                if (!dryRun)
+                {
+                    if (Directory.Exists(src))
+                    {
+                        CopyDirectory(src, dst, overwrite: true);
+                        _modifiedFiles.Add(pkg.Target);
+                    }
+                    else if (File.Exists(src))
+                    {
+                        EnsureDirectoryOf(dst);
+                        File.Copy(src, dst, overwrite: true);
+                        _modifiedFiles.Add(pkg.Target);
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException($"Package source not found: {src}");
+                    }
+                }
+
+                copied++;
+                var sourceType = Directory.Exists(src) ? "folder" : "file";
+                _logger.LogInformation("{Action}Copied package ({Type}): {Name} -> {Target}",
+                    dryRun ? "[DRY-RUN] " : "", sourceType, pkg.Name, pkg.Target);
+                _fileCopied.Publish(new FileCopiedMessage(pkg.Source, pkg.Target));
+            }
+        }
+
+        // 2) Copy assemblies (if defined in stage)
+        if (stage.Assemblies != null)
+        {
+            foreach (var asm in stage.Assemblies)
+            {
+                var src = ResolveCacheSource(asm.Source);
+                var dst = _paths.Resolve(asm.Target);
+
+                if (!dryRun)
+                {
+                    if (Directory.Exists(src))
+                    {
+                        CopyDirectory(src, dst, overwrite: true);
+                        _modifiedFiles.Add(asm.Target);
+                    }
+                    else if (File.Exists(src))
+                    {
+                        EnsureDirectoryOf(dst);
+                        File.Copy(src, dst, overwrite: true);
+                        _modifiedFiles.Add(asm.Target);
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException($"Assembly source not found: {src}");
+                    }
+                }
+
+                copied++;
+                _logger.LogInformation("{Action}Copied assembly: {Name} -> {Target}",
+                    dryRun ? "[DRY-RUN] " : "", asm.Name, asm.Target);
+                _fileCopied.Publish(new FileCopiedMessage(asm.Source, asm.Target));
+            }
+        }
+
+        // 3) Perform asset manipulations (if defined in stage)
+        if (stage.AssetManipulations != null)
+        {
+            foreach (var op in stage.AssetManipulations)
+            {
+                switch (op.Operation)
+                {
+                    case AssetOperation.Copy:
+                        if (string.IsNullOrWhiteSpace(op.Source))
+                            throw new ArgumentException("Copy operation requires Source", nameof(op.Source));
+                        if (!dryRun)
+                        {
+                            CopyPath(op.Source!, op.Target, op.Overwrite);
+                        }
+                        copied++;
+                        _logger.LogInformation("{Action}Copied: {Source} -> {Target}",
+                            dryRun ? "[DRY-RUN] " : "", op.Source, op.Target);
+                        break;
+
+                    case AssetOperation.Move:
+                        if (string.IsNullOrWhiteSpace(op.Source))
+                            throw new ArgumentException("Move operation requires Source", nameof(op.Source));
+                        if (!dryRun)
+                        {
+                            MovePath(op.Source!, op.Target, op.Overwrite);
+                        }
+                        moved++;
+                        _logger.LogInformation("{Action}Moved: {Source} -> {Target}",
+                            dryRun ? "[DRY-RUN] " : "", op.Source, op.Target);
+                        break;
+
+                    case AssetOperation.Delete:
+                        if (!dryRun)
+                        {
+                            DeletePath(op.Target);
+                        }
+                        deleted++;
+                        _logger.LogInformation("{Action}Deleted: {Target}",
+                            dryRun ? "[DRY-RUN] " : "", op.Target);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException($"Unknown asset operation: {op.Operation}");
+                }
+            }
+        }
+
+        // 4) Apply code patches (if defined in stage)
+        if (stage.CodePatches != null)
+        {
+            foreach (var patch in stage.CodePatches)
+            {
+                var patcher = _patchers.FirstOrDefault(p => p.PatchType == patch.Type);
+                if (patcher == null)
+                {
+                    _logger.LogWarning("No patcher found for type {PatchType} (file: {File})", patch.Type, patch.File);
+                    continue;
+                }
+
+                var filePath = _paths.Resolve(patch.File);
+                if (!File.Exists(filePath))
+                {
+                    _logger.LogWarning("Patch target file not found: {File}", patch.File);
+                    continue;
+                }
+
+                if (!dryRun)
+                {
+                    var patchResult = await patcher.ApplyPatchAsync(filePath, patch, dryRun: false);
+                    if (!patchResult.Success)
+                    {
+                        _logger.LogWarning("Patch failed for {File}: {Message}", patch.File, patchResult.Message);
+                        if (!patch.Optional)
+                        {
+                            throw new InvalidOperationException($"Required patch failed for {patch.File}: {patchResult.Message}");
+                        }
+                    }
+                    else
+                    {
+                        _modifiedFiles.Add(patch.File);
+                    }
+                }
+
+                patched++;
+                _logger.LogInformation("{Action}Patched: {File}",
+                    dryRun ? "[DRY-RUN] " : "", patch.File);
+            }
+        }
+
+        _logger.LogInformation("Stage '{StageName}' injection complete: {Copied} copied, {Moved} moved, {Deleted} deleted, {Patched} patched",
+            stage.Name, copied, moved, deleted, patched);
+
+        var result = new PreparationCompletedMessage(copied, moved, deleted, patched, TimeSpan.Zero, null);
+        _prepCompleted.Publish(result);
+        return await Task.FromResult(result);
+    }
+
+    /// <summary>
+    /// Create backup for stage-specific files.
+    /// </summary>
+    private async Task CreateBackupForStageAsync(InjectionStage stage)
+    {
+        _backupPath = Path.Combine(_paths.GitRoot, "build", ".backup", DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"));
+        Directory.CreateDirectory(_backupPath);
+
+        _logger.LogInformation("Creating backup: {BackupPath}", _backupPath);
+
+        var filesToBackup = new List<string>();
+
+        // Collect files that will be modified
+        if (stage.Packages != null)
+        {
+            foreach (var pkg in stage.Packages)
+            {
+                var dst = _paths.Resolve(pkg.Target);
+                if (Directory.Exists(dst) || File.Exists(dst))
+                {
+                    filesToBackup.Add(pkg.Target);
+                }
+            }
+        }
+
+        if (stage.Assemblies != null)
+        {
+            foreach (var asm in stage.Assemblies)
+            {
+                var dst = _paths.Resolve(asm.Target);
+                if (Directory.Exists(dst) || File.Exists(dst))
+                {
+                    filesToBackup.Add(asm.Target);
+                }
+            }
+        }
+
+        if (stage.AssetManipulations != null)
+        {
+            foreach (var op in stage.AssetManipulations)
+            {
+                // For delete/move, backup the target
+                var dst = _paths.Resolve(op.Target);
+                if (Directory.Exists(dst) || File.Exists(dst))
+                {
+                    filesToBackup.Add(op.Target);
+                }
+            }
+        }
+
+        if (stage.CodePatches != null)
+        {
+            foreach (var patch in stage.CodePatches)
+            {
+                var filePath = _paths.Resolve(patch.File);
+                if (File.Exists(filePath))
+                {
+                    filesToBackup.Add(patch.File);
+                }
+            }
+        }
+
+        // Create backup archive
+        if (filesToBackup.Count > 0)
+        {
+            var archivePath = Path.Combine(_backupPath, "backup.zip");
+            using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+            {
+                foreach (var fileRelative in filesToBackup.Distinct())
+                {
+                    var fullPath = _paths.Resolve(fileRelative);
+                    if (File.Exists(fullPath))
+                    {
+                        archive.CreateEntryFromFile(fullPath, fileRelative.Replace('\\', '/'));
+                        _logger.LogDebug("Backed up: {File}", fileRelative);
+                    }
+                    else if (Directory.Exists(fullPath))
+                    {
+                        // Backup directory contents
+                        foreach (var file in Directory.GetFiles(fullPath, "*", SearchOption.AllDirectories))
+                        {
+                            var relativePath = Path.GetRelativePath(_paths.GitRoot, file);
+                            archive.CreateEntryFromFile(file, relativePath.Replace('\\', '/'));
+                        }
+                    }
+                }
+            }
+
+            _logger.LogInformation("Backup created: {Count} files", filesToBackup.Count);
+        }
+
+        await Task.CompletedTask;
     }
 }

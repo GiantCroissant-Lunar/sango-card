@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using SangoCard.Build.Tool.Core.Models;
 using SangoCard.Build.Tool.Core.Services;
 using SangoCard.Build.Tool.Core.Utilities;
+using SangoCard.Build.Tool.Messages;
 
 namespace SangoCard.Build.Tool.Cli.Commands;
 
@@ -63,12 +64,14 @@ public class PrepareCommandHandler
 
         try
         {
-            // Load config with auto-detection of v1.0 vs v2.0
-            PreparationConfig config;
+            PreparationConfig? config = null;
+            InjectionStage? injectionStage = null;
+            MultiStageConfig? multiStageConfig = null;
+
             if (!string.IsNullOrEmpty(stage))
             {
                 // Multi-stage mode: Load v2.0 config and extract specific stage
-                var multiStageConfig = await _configService.LoadMultiStageAsync(configRelativePath);
+                multiStageConfig = await _configService.LoadMultiStageAsync(configRelativePath);
 
                 if (verbose)
                 {
@@ -81,7 +84,7 @@ public class PrepareCommandHandler
                 }
 
                 // Find the requested stage
-                var injectionStage = multiStageConfig.InjectionStages.FirstOrDefault(s =>
+                injectionStage = multiStageConfig.InjectionStages.FirstOrDefault(s =>
                     s.Name.Equals(stage, StringComparison.OrdinalIgnoreCase));
 
                 if (injectionStage == null)
@@ -99,12 +102,9 @@ public class PrepareCommandHandler
                     return;
                 }
 
-                // Convert stage to v1.0 config for execution (platform handling is in ConvertStageToV1)
-                config = _configService.ConvertStageToV1(multiStageConfig, stage);
-
                 if (verbose)
                 {
-                    Console.WriteLine($"Loaded {config.Packages.Count} packages, {config.Assemblies.Count} assemblies, {config.AssetManipulations.Count} manipulations");
+                    Console.WriteLine($"Loaded {injectionStage.Packages?.Count ?? 0} packages, {injectionStage.Assemblies?.Count ?? 0} assemblies, {injectionStage.AssetManipulations?.Count ?? 0} manipulations");
                 }
             }
             else
@@ -113,78 +113,81 @@ public class PrepareCommandHandler
                 config = await _configService.LoadAsync(configRelativePath);
             }
 
-            // Validate cache exists (Phase 1 must be complete)
-            var missingCache = new List<string>();
-            foreach (var pkg in config.Packages)
+            // Validate cache exists (Phase 1 must be complete) - only for v1.0 configs
+            if (config != null)
             {
-                if (!CacheSourceExists(pkg.Source))
+                var missingCache = new List<string>();
+                foreach (var pkg in config.Packages)
                 {
-                    missingCache.Add(pkg.Source);
-                }
-            }
-            foreach (var asm in config.Assemblies)
-            {
-                if (!CacheSourceExists(asm.Source))
-                {
-                    missingCache.Add(asm.Source);
-                }
-            }
-
-            if (missingCache.Count > 0)
-            {
-                Console.Error.WriteLine("Error: Cache files not found. Run 'cache populate' first (Phase 1).");
-                Console.Error.WriteLine("\nMissing files:");
-                foreach (var file in missingCache.Take(5))
-                {
-                    Console.Error.WriteLine($"  - {file}");
-                }
-                if (missingCache.Count > 5)
-                {
-                    Console.Error.WriteLine($"  ... and {missingCache.Count - 5} more");
-                }
-                Environment.ExitCode = 1;
-                return;
-            }
-
-            // Validate config
-            var level = ParseLevel(validationLevel);
-            var validation = _validationService.Validate(config, level);
-
-            if (verbose)
-            {
-                Console.WriteLine("=== Validation Results ===");
-            }
-            Console.WriteLine(validation.Summary);
-
-            if (!validation.IsValid)
-            {
-                if (verbose || validation.Errors.Count > 0)
-                {
-                    Console.Error.WriteLine("\nValidation Errors:");
-                    foreach (var e in validation.Errors)
+                    if (!CacheSourceExists(pkg.Source))
                     {
-                        Console.Error.WriteLine($"  [{e.Code}] {e.Message}{(string.IsNullOrEmpty(e.File) ? string.Empty : $" ({e.File})")}");
+                        missingCache.Add(pkg.Source);
+                    }
+                }
+                foreach (var asm in config.Assemblies)
+                {
+                    if (!CacheSourceExists(asm.Source))
+                    {
+                        missingCache.Add(asm.Source);
                     }
                 }
 
-                if (!force)
+                if (missingCache.Count > 0)
                 {
-                    Console.Error.WriteLine("\nInjection aborted due to validation errors. Use --force to proceed anyway.");
-                    Environment.ExitCode = 2;
+                    Console.Error.WriteLine("Error: Cache files not found. Run 'cache populate' first (Phase 1).");
+                    Console.Error.WriteLine("\nMissing files:");
+                    foreach (var file in missingCache.Take(5))
+                    {
+                        Console.Error.WriteLine($"  - {file}");
+                    }
+                    if (missingCache.Count > 5)
+                    {
+                        Console.Error.WriteLine($"  ... and {missingCache.Count - 5} more");
+                    }
+                    Environment.ExitCode = 1;
                     return;
                 }
-                else
-                {
-                    Console.WriteLine("\nWarning: Proceeding despite validation errors (--force specified)");
-                }
-            }
 
-            if (validation.Warnings.Count > 0 && verbose)
-            {
-                Console.WriteLine("\nValidation Warnings:");
-                foreach (var w in validation.Warnings)
+                // Validate v1.0 config
+                var level = ParseLevel(validationLevel);
+                var validation = _validationService.Validate(config, level);
+
+                if (verbose)
                 {
-                    Console.WriteLine($"  [{w.Code}] {w.Message}{(string.IsNullOrEmpty(w.File) ? string.Empty : $" ({w.File})")}");
+                    Console.WriteLine("=== Validation Results ===");
+                }
+                Console.WriteLine(validation.Summary);
+
+                if (!validation.IsValid)
+                {
+                    if (verbose || validation.Errors.Count > 0)
+                    {
+                        Console.Error.WriteLine("\nValidation Errors:");
+                        foreach (var e in validation.Errors)
+                        {
+                            Console.Error.WriteLine($"  [{e.Code}] {e.Message}{(string.IsNullOrEmpty(e.File) ? string.Empty : $" ({e.File})")}");
+                        }
+                    }
+
+                    if (!force)
+                    {
+                        Console.Error.WriteLine("\nInjection aborted due to validation errors. Use --force to proceed anyway.");
+                        Environment.ExitCode = 2;
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nWarning: Proceeding despite validation errors (--force specified)");
+                    }
+                }
+
+                if (validation.Warnings.Count > 0 && verbose)
+                {
+                    Console.WriteLine("\nValidation Warnings:");
+                    foreach (var w in validation.Warnings)
+                    {
+                        Console.WriteLine($"  [{w.Code}] {w.Message}{(string.IsNullOrEmpty(w.File) ? string.Empty : $" ({w.File})")}");
+                    }
                 }
             }
 
@@ -197,7 +200,25 @@ public class PrepareCommandHandler
             }
 
             var startTime = DateTime.UtcNow;
-            var result = await _preparationService.ExecuteAsync(config, configRelativePath, dryRun: false, validate: false);
+            PreparationCompletedMessage result;
+
+            if (injectionStage != null)
+            {
+                // Execute v2.0 stage injection
+                result = await _preparationService.ExecuteStageAsync(injectionStage, platform, configRelativePath, dryRun: false);
+            }
+            else if (config != null)
+            {
+                // Execute v1.0 config injection
+                result = await _preparationService.ExecuteAsync(config, configRelativePath, dryRun: false, validate: false);
+            }
+            else
+            {
+                Console.Error.WriteLine("Error: No config or stage to execute");
+                Environment.ExitCode = 1;
+                return;
+            }
+
             var duration = DateTime.UtcNow - startTime;
 
             // Display results
