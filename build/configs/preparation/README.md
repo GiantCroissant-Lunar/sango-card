@@ -1,26 +1,69 @@
 # Build Preparation Configs
 
-This directory contains configuration files for the two-phase build preparation system.
+This directory contains configuration files for the multi-stage build preparation system.
 
-## Overview
+## ⚠️ Configuration Version Status
 
-The build preparation system uses two distinct config types:
+| Version | Status | Recommended For |
+|---------|--------|----------------|
+| **V2.0 Multi-Stage** | ✅ **CURRENT** | All new development |
+| V1.0 Single-File | ⚠️ **DEPRECATED** | Legacy compatibility only |
 
-### Phase 1: Preparation (code-quality → cache)
+**For V1.0 deprecation details, see:** [docs/_inbox/v1-config-deprecation.md](../../../docs/_inbox/v1-config-deprecation.md)
 
-- **Config:** `preparation.json`
-- **Input:** `projects/code-quality/Packages/`
-- **Output:** `build/preparation/cache/`
-- **Purpose:** Extract and cache third-party packages from code-quality project
+## Quick Start
 
-### Phase 2: Injection (cache → client)
+### V2.0 Multi-Stage (Recommended)
 
-- **Config:** `injection.json`
-- **Input:** `build/preparation/cache/`
-- **Output:** `projects/client/Packages/`
-- **Purpose:** Inject cached packages into client project for builds
+```bash
+# Use multi-stage build workflow
+task build:unity:multi-stage
 
-## File Structure
+# Or via Nuke directly
+nuke BuildWithMultiStage --MultiStageConfig build/configs/preparation/multi-stage-preparation.json
+```
+
+**Config:** `multi-stage-preparation.json`
+
+**Features:**
+
+- Sequential injection stages (preTest, preBuild, postBuild, etc.)
+- Platform-specific configurations (iOS/Android)
+- Conditional stage execution
+- Better organization and extensibility
+
+## Configuration Formats
+
+### V2.0 Multi-Stage Format (CURRENT)
+
+```json
+{
+  "version": "2.0",
+  "description": "Multi-stage injection configuration",
+  "cacheSource": "build/configs/preparation/preparation.json",
+  "injectionStages": [
+    {
+      "name": "preBuild",
+      "enabled": true,
+      "description": "Core build dependencies",
+      "packages": [...],
+      "assemblies": [...],
+      "assetManipulations": [...],
+      "codePatches": [...]
+    },
+    {
+      "name": "postBuild",
+      "enabled": false,
+      "description": "Runtime test dependencies",
+      "packages": [...]
+    }
+  ]
+}
+```
+
+**Schema:** `multi-stage-schema.json`
+
+### V1.0 Single-File Format (DEPRECATED)
 
 ```json
 {

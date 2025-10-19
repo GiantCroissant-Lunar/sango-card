@@ -197,15 +197,26 @@ partial class Build
 
     /// <summary>
     /// Phase 2: Inject preparation into Unity client project (build-time only).
+    /// ⚠️ DEPRECATED: Use BuildWithMultiStage instead.
     /// LEGACY: Maintained for backward compatibility. Direct injection without multi-stage.
     /// IMPORTANT: This performs git reset --hard before injection per R-BLD-060.
+    ///
+    /// DEPRECATION NOTICE:
+    /// This target uses V1.0 configuration format which is deprecated.
+    /// Please migrate to V2.0 multi-stage format and use BuildWithMultiStage target.
+    /// See: build/configs/preparation/DEPRECATION.md
     /// </summary>
     Target PrepareClient => _ => _
-        .Description("Phase 2: Inject preparation into client (LEGACY - single-stage injection)")
+        .Description("⚠️ DEPRECATED: Use BuildWithMultiStage - Phase 2: Inject preparation into client (V1.0 legacy)")
         .DependsOn(PrepareCache)
         .Executes(() =>
         {
-            Serilog.Log.Information("=== Phase 2: Injecting to Client (Legacy Mode) ===");
+            Serilog.Log.Warning("⚠️  DEPRECATION WARNING: PrepareClient target uses V1.0 configuration format");
+            Serilog.Log.Warning("   Please migrate to V2.0 multi-stage format and use BuildWithMultiStage target");
+            Serilog.Log.Warning("   See: docs/_inbox/v1-config-deprecation.md");
+            Serilog.Log.Warning("");
+
+            Serilog.Log.Information("=== Phase 2: Injecting to Client (Legacy V1.0 Mode) ===");
 
             // R-BLD-060: Reset client before injection
             Serilog.Log.Information("Resetting client project (git reset --hard)...");
@@ -299,18 +310,30 @@ partial class Build
 
     /// <summary>
     /// Full Unity build workflow with preparation.
+    /// ⚠️ DEPRECATED: Use BuildWithMultiStage instead.
+    ///
     /// Executes: PrepareCache → PrepareClient → BuildUnity → CleanupAfterBuild
     /// CleanupAfterBuild uses AssuredAfterFailure to guarantee cleanup logic runs.
     /// On success: Client is restored to clean state (git reset --hard)
     /// On failure: Client state preserved for debugging (manual cleanup needed)
+    ///
+    /// DEPRECATION NOTICE:
+    /// This target uses V1.0 configuration format which is deprecated.
+    /// Please migrate to V2.0 multi-stage format and use BuildWithMultiStage target.
+    /// See: build/configs/preparation/DEPRECATION.md
     /// </summary>
     Target BuildUnityWithPreparation => _ => _
-        .Description("Full Unity build with two-phase preparation and automatic cleanup")
+        .Description("⚠️ DEPRECATED: Use BuildWithMultiStage - Full Unity build with V1.0 preparation")
         .DependsOn(PrepareClient)
         .Triggers(((IUnityBuild)this).BuildUnity)
         .Triggers(CleanupAfterBuild)
         .Executes(() =>
         {
+            Serilog.Log.Warning("⚠️  DEPRECATION WARNING: BuildUnityWithPreparation uses V1.0 configuration");
+            Serilog.Log.Warning("   Please use BuildWithMultiStage target with V2.0 multi-stage format");
+            Serilog.Log.Warning("   See: docs/_inbox/v1-config-deprecation.md");
+            Serilog.Log.Warning("");
+
             Serilog.Log.Information("✅ Unity build with preparation workflow complete");
         });
 

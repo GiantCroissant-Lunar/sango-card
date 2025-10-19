@@ -109,7 +109,12 @@ public class PrepareCommandHandler
             }
             else
             {
-                // Legacy v1.0 mode
+                // Legacy v1.0 mode (DEPRECATED)
+                Console.WriteLine("⚠️  WARNING: V1.0 configuration format is DEPRECATED");
+                Console.WriteLine("   Please migrate to V2.0 multi-stage format");
+                Console.WriteLine("   See: docs/_inbox/v1-config-deprecation.md");
+                Console.WriteLine();
+
                 config = await _configService.LoadAsync(configRelativePath);
             }
 
