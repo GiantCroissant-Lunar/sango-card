@@ -1,4 +1,5 @@
 {
+  "$schema": "../../nuke/build/Schemas/multi-stage-preparation.schema.json",
   "version": "2.0",
   "description": "Multi-stage injection configuration for Unity client build - populates cache from preparation.json, then injects build package and removes duplicate formatters",
   "cacheSource": "build/configs/preparation/preparation.json",
