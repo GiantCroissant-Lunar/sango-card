@@ -194,16 +194,37 @@ partial class Build
 
     /// <summary>
     /// Phase 2: Inject preparation into Unity client project (build-time only).
-    /// LEGACY: Maintained for backward compatibility. Use InjectPreBuild for new workflows.
+    /// LEGACY: Maintained for backward compatibility. Direct injection without multi-stage.
     /// IMPORTANT: This performs git reset --hard before injection per R-BLD-060.
     /// </summary>
     Target PrepareClient => _ => _
-        .Description("Phase 2: Inject preparation into client (LEGACY - use InjectPreBuild)")
-        .DependsOn(InjectPreBuild)
+        .Description("Phase 2: Inject preparation into client (LEGACY - single-stage injection)")
+        .DependsOn(PrepareCache)
         .Executes(() =>
         {
+            Serilog.Log.Information("=== Phase 2: Injecting to Client (Legacy Mode) ===");
+
+            // R-BLD-060: Reset client before injection
+            Serilog.Log.Information("Resetting client project (git reset --hard)...");
+            Git("reset --hard", workingDirectory: ClientProject);
+            Serilog.Log.Information("✅ Client reset complete");
+
+            // Inject from cache (legacy mode - no --stage parameter)
+            Serilog.Log.Information("Injecting preparation...");
+            Serilog.Log.Information("Config: {Config}", PreparationConfig);
+            Serilog.Log.Information("Target: projects/client/");
+
+            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+            var relativeClient = RootDirectory.GetRelativePathTo(ClientProject);
+
+            var process = StartProcess(
+                "dotnet",
+                $"run --project \"{PreparationToolProject}\" -- prepare inject --config {relativeConfig} --target {relativeClient} --verbose",
+                workingDirectory: RootDirectory
+            );
+            process.AssertZeroExitCode();
+
             Serilog.Log.Information("✅ Client preparation complete (legacy mode)");
-            Serilog.Log.Information("Note: Consider using InjectPreBuild for multi-stage workflows");
         });
 
     /// <summary>
@@ -283,8 +304,8 @@ partial class Build
     Target BuildUnityWithPreparation => _ => _
         .Description("Full Unity build with two-phase preparation and automatic cleanup")
         .DependsOn(PrepareClient)
-        .DependsOn(((IUnityBuild)this).BuildUnity)
-        .DependsOn(CleanupAfterBuild)
+        .Triggers(((IUnityBuild)this).BuildUnity)
+        .Triggers(CleanupAfterBuild)
         .Executes(() =>
         {
             Serilog.Log.Information("✅ Unity build with preparation workflow complete");
