@@ -33,7 +33,7 @@ public class PrepareCommandHandler
     /// <summary>
     /// Injects preparation into target project (Phase 2 of two-phase workflow).
     /// </summary>
-    public async Task InjectAsync(string configRelativePath, string targetPath, string validationLevel = "full", bool verbose = false, bool force = false)
+    public async Task InjectAsync(string configRelativePath, string targetPath, string? stage = null, string? platform = null, string validationLevel = "full", bool verbose = false, bool force = false)
     {
         if (string.IsNullOrWhiteSpace(configRelativePath))
         {
@@ -63,7 +63,55 @@ public class PrepareCommandHandler
 
         try
         {
-            var config = await _configService.LoadAsync(configRelativePath);
+            // Load config with auto-detection of v1.0 vs v2.0
+            PreparationConfig config;
+            if (!string.IsNullOrEmpty(stage))
+            {
+                // Multi-stage mode: Load v2.0 config and extract specific stage
+                var multiStageConfig = await _configService.LoadMultiStageAsync(configRelativePath);
+
+                if (verbose)
+                {
+                    Console.WriteLine($"=== Multi-Stage Mode (v{multiStageConfig.Version}) ===");
+                    Console.WriteLine($"Stage: {stage}");
+                    if (!string.IsNullOrEmpty(platform))
+                    {
+                        Console.WriteLine($"Platform: {platform}");
+                    }
+                }
+
+                // Find the requested stage
+                var injectionStage = multiStageConfig.InjectionStages.FirstOrDefault(s =>
+                    s.Name.Equals(stage, StringComparison.OrdinalIgnoreCase));
+
+                if (injectionStage == null)
+                {
+                    Console.Error.WriteLine($"Error: Stage '{stage}' not found in configuration");
+                    Console.Error.WriteLine($"Available stages: {string.Join(", ", multiStageConfig.InjectionStages.Select(s => s.Name))}");
+                    Environment.ExitCode = 1;
+                    return;
+                }
+
+                if (!injectionStage.Enabled)
+                {
+                    Console.WriteLine($"Stage '{stage}' is disabled - skipping injection");
+                    Environment.ExitCode = 0;
+                    return;
+                }
+
+                // Convert stage to v1.0 config for execution (platform handling is in ConvertStageToV1)
+                config = _configService.ConvertStageToV1(multiStageConfig, stage);
+
+                if (verbose)
+                {
+                    Console.WriteLine($"Loaded {config.Packages.Count} packages, {config.Assemblies.Count} assemblies, {config.AssetManipulations.Count} manipulations");
+                }
+            }
+            else
+            {
+                // Legacy v1.0 mode
+                config = await _configService.LoadAsync(configRelativePath);
+            }
 
             // Validate cache exists (Phase 1 must be complete)
             var missingCache = new List<string>();
@@ -189,7 +237,7 @@ public class PrepareCommandHandler
     public async Task RunAsync(string configRelativePath, string validationLevel = "full", bool verbose = false, bool force = false)
     {
         // Redirect to InjectAsync with default target
-        await InjectAsync(configRelativePath, "projects/client/", validationLevel, verbose, force);
+        await InjectAsync(configRelativePath, "projects/client/", null, null, validationLevel, verbose, force);
     }
 
     public async Task DryRunAsync(string configRelativePath, string validationLevel = "full", bool verbose = false)

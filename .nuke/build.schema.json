@@ -238,6 +238,10 @@
           "type": "string",
           "description": "Path of isolated Unity project for tests"
         },
+        "MultiStageConfig": {
+          "type": "string",
+          "description": "Path to multi-stage preparation config (v2.0)"
+        },
         "PreparationConfig": {
           "type": "string",
           "description": "Path to preparation config (supports both v1 and v2 multi-stage)"

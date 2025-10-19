@@ -290,6 +290,14 @@ public class CliHost
             aliases: new[] { "--target", "-t" },
             description: "Target project path (must be 'projects/client/' per R-BLD-060)"
         ) { IsRequired = true };
+        var stageOption = new Option<string?>(
+            aliases: new[] { "--stage", "-s" },
+            description: "Injection stage (for v2.0 multi-stage configs: preTest, preBuild, postBuild, preNativeBuild, postNativeBuild)"
+        );
+        var platformOption = new Option<string?>(
+            aliases: new[] { "--platform", "-p" },
+            description: "Platform for stage execution (e.g., ios, android)"
+        );
         var levelOption = new Option<string>(
             aliases: new[] { "--level", "-l" },
             getDefaultValue: () => "Full",
@@ -308,14 +316,16 @@ public class CliHost
 
         inject.AddOption(configOption);
         inject.AddOption(targetOption);
+        inject.AddOption(stageOption);
+        inject.AddOption(platformOption);
         inject.AddOption(levelOption);
         inject.AddOption(verboseOption);
         inject.AddOption(forceOption);
-        inject.SetHandler(async (string config, string target, string level, bool verbose, bool force) =>
+        inject.SetHandler(async (string config, string target, string? stage, string? platform, string level, bool verbose, bool force) =>
         {
             var handler = _host.Services.GetRequiredService<PrepareCommandHandler>();
-            await handler.InjectAsync(config, target, level, verbose, force);
-        }, configOption, targetOption, levelOption, verboseOption, forceOption);
+            await handler.InjectAsync(config, target, stage, platform, level, verbose, force);
+        }, configOption, targetOption, stageOption, platformOption, levelOption, verboseOption, forceOption);
 
         // DEPRECATED: run command (backward compatibility)
         var run = new Command("run", "[DEPRECATED] Use 'inject --target projects/client/' instead");

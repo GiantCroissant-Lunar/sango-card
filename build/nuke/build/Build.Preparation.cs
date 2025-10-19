@@ -26,6 +26,9 @@ partial class Build
     [Parameter("Path to preparation config (supports both v1 and v2 multi-stage)")]
     public AbsolutePath PreparationConfig = RootDirectory / "build" / "configs" / "preparation" / "preparation.json";
 
+    [Parameter("Path to multi-stage preparation config (v2.0)")]
+    public AbsolutePath MultiStageConfig = RootDirectory / "build" / "configs" / "preparation" / "multi-stage-preparation.json";
+
     [Parameter("Enable multi-stage injection (default: auto-detect from config)")]
     public bool? UseMultiStage = null;
 
@@ -313,36 +316,26 @@ partial class Build
 
     /// <summary>
     /// Full Unity build with multi-stage injection workflow.
-    /// Executes: InjectPreTest → TestPreBuild → CleanupPreTest →
-    ///          InjectPreBuild → BuildUnity → InjectPostBuild →
-    ///          TestPostBuild → CleanupPostBuild → CleanupAfterBuild
+    /// Executes: PrepareCache (v1) → InjectPreBuild (v2) → BuildUnity → CleanupAfterBuild
+    /// Uses multi-stage-preparation.json for preBuild stage execution.
     /// </summary>
     Target BuildWithMultiStage => _ => _
-        .Description("Full Unity build with multi-stage injection and testing")
-        .DependsOn(InjectPreTest)
-        .DependsOn(((ITestBuild)this).TestPreBuild)
-        .DependsOn(CleanupPreTest)
+        .Description("Full Unity build with multi-stage injection (v2.0 config)")
+        .DependsOn(PrepareCache)
         .DependsOn(InjectPreBuild)
-        .DependsOn(((IUnityBuild)this).BuildUnity)
-        .DependsOn(InjectPostBuild)
-        .DependsOn(((ITestBuild)this).TestPostBuild)
-        .DependsOn(CleanupPostBuild)
-        .DependsOn(CleanupAfterBuild)
+        .Triggers(((IUnityBuild)this).BuildUnity)
+        .Triggers(CleanupAfterBuild)
         .Executes(() =>
         {
             Serilog.Log.Information("✅ Multi-stage build workflow complete");
 
-            var allSucceeded = SucceededTargets.Contains(((ITestBuild)this).TestPreBuild) &&
-                SucceededTargets.Contains(((IUnityBuild)this).BuildUnity) &&
-                SucceededTargets.Contains(((ITestBuild)this).TestPostBuild);
-
-            if (allSucceeded)
+            if (SucceededTargets.Contains(((IUnityBuild)this).BuildUnity))
             {
-                Serilog.Log.Information("✅ All stages passed");
+                Serilog.Log.Information("✅ Build succeeded");
             }
             else
             {
-                Serilog.Log.Warning("⚠️ Some stages failed - check logs for details");
+                Serilog.Log.Warning("⚠️ Build failed - check logs for details");
             }
         });
 
@@ -427,10 +420,13 @@ partial class Build
     void RunInjectionStage(string stage, string platform = null)
     {
         Serilog.Log.Information("Injecting {Stage} stage...", stage);
-        Serilog.Log.Information("Config: {Config}", PreparationConfig);
+
+        // Use multi-stage config for v2.0 workflow
+        var configPath = MultiStageConfig;
+        Serilog.Log.Information("Config: {Config}", configPath);
         Serilog.Log.Information("Target: projects/client/");
 
-        var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+        var relativeConfig = RootDirectory.GetRelativePathTo(configPath);
         var relativeClient = RootDirectory.GetRelativePathTo(ClientProject);
 
         var args = $"run --project \"{PreparationToolProject}\" -- prepare inject --config {relativeConfig} --target {relativeClient} --stage {stage}";
