@@ -45,8 +45,8 @@ This document tracks the implementation status of the multi-stage injection syst
 - ✅ User guide documentation
 
 **Files Created**:
-- `build/preparation/configs/multi-stage-preparation.json` - Multi-stage configuration template
-- `build/preparation/configs/multi-stage-schema.json` - JSON schema for validation
+- `build/configs/preparation/multi-stage-preparation.json` - Multi-stage configuration template
+- `build/configs/preparation/multi-stage-schema.json` - JSON schema for validation
 - `docs/guides/build-multi-stage-injection.md` - User guide
 - `docs/_inbox/multi-stage-injection-implementation.md` - This status document
 
@@ -174,8 +174,8 @@ dotnet run --project build --help
 
 ### Configuration Schema ✅ CREATED
 
-- JSON schema created at `build/preparation/configs/multi-stage-schema.json`
-- Template configuration created at `build/preparation/configs/multi-stage-preparation.json`
+- JSON schema created at `build/configs/preparation/multi-stage-schema.json`
+- Template configuration created at `build/configs/preparation/multi-stage-preparation.json`
 
 ### Integration Testing 🔲 PENDING
 

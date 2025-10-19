@@ -140,7 +140,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} PrepareCache --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} PrepareCache --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:client:
     desc: Inject preparation into client (build-time only, includes git reset)
     summary: |
@@ -151,7 +151,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "injection"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} PrepareClient --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} PrepareClient --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:restore:
     desc: Restore client to clean state (git reset)
     cmds:
@@ -165,7 +165,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} ValidatePreparation --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} ValidatePreparation --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:dry-run:
     desc: Preview preparation changes without applying
     summary: |
@@ -175,7 +175,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} GenerateReportDryRun --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} GenerateReportDryRun --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:verify:
     desc: Verify preparation cache contents
     summary: |
@@ -185,7 +185,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/verify-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json'
+      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/verify-preparation-cache.ps1 -ConfigPath build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:cleanup:
     desc: Clean orphaned items from preparation cache
     summary: |
@@ -196,7 +196,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json'
+      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:cleanup-preview:
     desc: Preview what would be cleaned from cache (dry-run)
     summary: |
@@ -206,7 +206,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json -DryRun'
+      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/configs/preparation/{{.CONFIG}}.json -DryRun'
   build:prepare:cleanup-force:
     desc: Clean orphaned items from cache without confirmation
     summary: |
@@ -217,7 +217,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
-      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json -Force'
+      - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/configs/preparation/{{.CONFIG}}.json -Force'
   # Multi-stage injection tasks
 
   build:prepare:inject-pre-test:
@@ -229,7 +229,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} InjectPreTest --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPreTest --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:inject-pre-build:
     desc: Inject core build dependencies (Stage 2)
     summary: |
@@ -240,7 +240,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} InjectPreBuild --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPreBuild --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:inject-post-build:
     desc: Inject post-build test dependencies (Stage 3)
     summary: |
@@ -250,7 +250,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} InjectPostBuild --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPostBuild --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:inject-pre-native-build:
     desc: Inject platform-specific native dependencies (Stage 4)
     summary: |
@@ -261,7 +261,7 @@ tasks:
       CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
       TARGET: '{{.TARGET | default "StandaloneWindows64"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} InjectPreNativeBuild --PreparationConfig build/preparation/configs/{{.CONFIG}}.json --UnityBuildTarget {{.TARGET}}'
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPreNativeBuild --PreparationConfig build/configs/preparation/{{.CONFIG}}.json --UnityBuildTarget {{.TARGET}}'
   build:prepare:inject-post-native-build:
     desc: Inject packaging dependencies (Stage 5)
     summary: |
@@ -271,7 +271,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} InjectPostNativeBuild --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPostNativeBuild --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:unity:multi-stage:
     desc: Build Unity with multi-stage injection workflow
     summary: |
@@ -282,7 +282,7 @@ tasks:
     vars:
       CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
-      - '{{.NUKE_BUILD_SCRIPT}} BuildWithMultiStage --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+      - '{{.NUKE_BUILD_SCRIPT}} BuildWithMultiStage --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:unity:prepared:
     desc: Build Unity with full preparation workflow (LEGACY)
     summary: |

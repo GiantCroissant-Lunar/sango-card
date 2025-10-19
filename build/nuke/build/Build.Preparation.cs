@@ -24,7 +24,7 @@ using static Nuke.Common.Tooling.ProcessTasks;
 partial class Build
 {
     [Parameter("Path to preparation config (supports both v1 and v2 multi-stage)")]
-    public AbsolutePath PreparationConfig = RootDirectory / "build" / "preparation" / "configs" / "preparation.json";
+    public AbsolutePath PreparationConfig = RootDirectory / "build" / "configs" / "preparation" / "preparation.json";
 
     [Parameter("Enable multi-stage injection (default: auto-detect from config)")]
     public bool? UseMultiStage = null;

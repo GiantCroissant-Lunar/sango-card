@@ -24,20 +24,40 @@
     "ExecutableTarget": {
       "type": "string",
       "enum": [
+        "BuildAllDesktop",
+        "BuildAllMobile",
+        "BuildAllPlatforms",
+        "BuildAndroid",
         "BuildClient",
         "BuildDotNet",
+        "BuildiOS",
+        "BuildLinux",
+        "BuildMacOS",
         "BuildReport",
         "BuildUnity",
         "BuildUnityWithPreparation",
+        "BuildWebGL",
+        "BuildWindows",
+        "BuildWithMultiStage",
+        "BuildWithTests",
         "Clean",
         "CleanDotNet",
         "CleanReport",
         "CleanUnity",
+        "CleanupAfterBuild",
+        "CleanupPostBuild",
+        "CleanupPreNativeBuild",
+        "CleanupPreTest",
         "Compile",
         "DryRunPreparation",
         "ExportUnityPackage",
         "GenerateReport",
         "GenerateReportDryRun",
+        "InjectPostBuild",
+        "InjectPostNativeBuild",
+        "InjectPreBuild",
+        "InjectPreNativeBuild",
+        "InjectPreTest",
         "ListConfigs",
         "PackDotNet",
         "PackReport",
@@ -53,10 +73,18 @@
         "RestoreClient",
         "RestoreDotNet",
         "RestoreReport",
+        "TestAll",
+        "TestCodeQuality",
         "TestDotNet",
+        "TestEditMode",
+        "TestIntegration",
+        "TestPlayMode",
+        "TestPostBuild",
+        "TestPreBuild",
         "TestReport",
         "TestUnity",
         "ValidateConfigs",
+        "ValidateOnly",
         "ValidatePreparation"
       ]
     },
@@ -202,13 +230,17 @@
           "type": "string",
           "description": "Version suffix (e.g., 1.2.3 or ci-1234) for pack/publish and artifact folder name"
         },
+        "InjectionStage": {
+          "type": "string",
+          "description": "Injection stage to execute (preTest, preBuild, postBuild, preNativeBuild, postNativeBuild)"
+        },
         "IsolatedUnityProjectPath": {
           "type": "string",
           "description": "Path of isolated Unity project for tests"
         },
         "PreparationConfig": {
           "type": "string",
-          "description": "Path to preparation config"
+          "description": "Path to preparation config (supports both v1 and v2 multi-stage)"
         },
         "PrepConfigs": {
           "type": "string",
@@ -273,6 +305,13 @@
         "UseIsolatedTestsOption": {
           "type": "string",
           "description": "Use isolated Unity project for tests (avoids client repo)"
+        },
+        "UseMultiStage": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Enable multi-stage injection (default: auto-detect from config)"
         }
       }
     },
