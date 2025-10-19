@@ -439,6 +439,60 @@ tasks:
     desc: Validate documentation front-matter and registry
     cmds:
       - python scripts/docs_validate.py
+  # Unity log analysis tasks
+
+  logs:parse:
+    desc: Parse Unity build log and extract errors/warnings
+    summary: |
+      Parse Unity log files to extract and deduplicate errors, warnings, and exceptions.
+      Usage: task logs:parse [LOG=path] [FORMAT=summary|json|markdown|csv] [ERRORS_ONLY=true]
+      Examples:
+        task logs:parse LOG=output/unity-build.log
+        task logs:parse LOG=output/unity-build.log FORMAT=markdown
+        task logs:parse LOG=output/unity-build.log ERRORS_ONLY=true
+    vars:
+      LOG: '{{.LOG | default "output/unity-build.log"}}'
+      FORMAT: '{{.FORMAT | default "summary"}}'
+      ERRORS_ONLY: '{{.ERRORS_ONLY | default "false"}}'
+    cmds:
+      - 'python build/nuke/scripts/parse_unity_log.py {{.LOG}} --format {{.FORMAT}}{{if eq .ERRORS_ONLY "true"}} --errors-only{{end}}'
+  logs:parse:build:
+    desc: Parse latest Unity build log
+    cmds:
+      - task: logs:parse
+        vars:
+          LOG: output/unity-build.log
+  logs:parse:test:
+    desc: Parse latest Unity test log
+    cmds:
+      - task: logs:parse
+        vars:
+          LOG: output/unity-test.log
+  logs:report:
+    desc: Generate markdown report of Unity build errors
+    summary: |
+      Generate a markdown report of Unity build errors and save to output/
+      Usage: task logs:report [LOG=path] [OUTPUT=path]
+      Example: task logs:report LOG=output/unity-build.log OUTPUT=output/build-errors.md
+    vars:
+      LOG: '{{.LOG | default "output/unity-build.log"}}'
+      OUTPUT: '{{.OUTPUT | default "output/build-errors.md"}}'
+    cmds:
+      - 'python build/nuke/scripts/parse_unity_log.py {{.LOG}} --format markdown --output {{.OUTPUT}} && echo "✓ Report saved to {{.OUTPUT}}"'
+  logs:report:json:
+    desc: Generate JSON report of Unity build errors
+    vars:
+      LOG: '{{.LOG | default "output/unity-build.log"}}'
+      OUTPUT: '{{.OUTPUT | default "output/build-errors.json"}}'
+    cmds:
+      - 'python build/nuke/scripts/parse_unity_log.py {{.LOG}} --format json --output {{.OUTPUT}} && echo "✓ Report saved to {{.OUTPUT}}"'
+  logs:report:csv:
+    desc: Generate CSV report of Unity build errors
+    vars:
+      LOG: '{{.LOG | default "output/unity-build.log"}}'
+      OUTPUT: '{{.OUTPUT | default "output/build-errors.csv"}}'
+    cmds:
+      - 'python build/nuke/scripts/parse_unity_log.py {{.LOG}} --format csv --output {{.OUTPUT}} && echo "✓ Report saved to {{.OUTPUT}}"'
   # Linting and formatting tasks
 
   lint:
