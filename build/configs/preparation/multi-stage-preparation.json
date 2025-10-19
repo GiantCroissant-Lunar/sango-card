@@ -1,88 +1,40 @@
 {
-  "$schema": "./multi-stage-schema.json",
   "version": "2.0",
-  "description": "Multi-stage injection configuration for Unity client build",
+  "description": "Multi-stage injection configuration for Unity client build - populates cache from preparation.json, then injects build package and removes duplicate formatters",
+  "cacheSource": "build/configs/preparation/preparation.json",
   "injectionStages": {
-    "preTest": {
-      "enabled": false,
-      "description": "Test-specific dependencies injected before pre-build tests",
-      "packages": [],
-      "assemblies": [],
-      "patches": [],
-      "cleanupAfter": true
-    },
     "preBuild": {
       "enabled": true,
-      "description": "Core Unity build dependencies (current behavior)",
+      "description": "Inject build tools and fix duplicate MessagePack formatters before Unity build",
+      "cleanupAfter": false,
       "packages": [
-        {
-          "name": "com.contractwork.sangocard.cross",
-          "version": "0.1.0",
-          "source": "build/preparation/cache/com.contractwork.sangocard.cross",
-          "target": "projects/client/Packages/com.contractwork.sangocard.cross"
-        },
-        {
-          "name": "com.contractwork.sangocard.game",
-          "version": "0.1.0",
-          "source": "build/preparation/cache/com.contractwork.sangocard.game",
-          "target": "projects/client/Packages/com.contractwork.sangocard.game"
-        },
         {
           "name": "com.contractwork.sangocard.build",
           "version": "0.1.0",
           "source": "build/preparation/cache/com.contractwork.sangocard.build",
           "target": "projects/client/Packages/com.contractwork.sangocard.build"
-        },
-        {
-          "name": "com.cysharp.unitask",
-          "version": "2.5.10",
-          "source": "build/preparation/cache/com.cysharp.unitask",
-          "target": "projects/client/Packages/com.cysharp.unitask"
-        },
-        {
-          "name": "com.cysharp.messagepipe",
-          "version": "1.8.1",
-          "source": "build/preparation/cache/com.cysharp.messagepipe",
-          "target": "projects/client/Packages/com.cysharp.messagepipe"
         }
       ],
-      "assemblies": [],
-      "patches": [],
-      "cleanupAfter": false
-    },
-    "postBuild": {
-      "enabled": false,
-      "description": "Runtime testing dependencies injected after Unity build",
-      "packages": [],
-      "assemblies": [],
-      "patches": [],
-      "cleanupAfter": true
-    },
-    "preNativeBuild": {
-      "enabled": false,
-      "description": "Platform-specific native dependencies (iOS/Android)",
-      "platforms": {
-        "ios": {
-          "enabled": false,
-          "files": [],
-          "patches": [],
-          "commands": []
+      "assetManipulations": [
+        {
+          "type": "delete",
+          "target": "projects/client/Assets/Scripts/MessagePackGenerated/MessagePack_Formatters_Quest_Component_QuestComponentFormatter.cs",
+          "description": "Remove duplicate formatter for QuestDataComponent (conflicts with QuestDataComponentFormatter)"
         },
-        "android": {
-          "enabled": false,
-          "files": [],
-          "patches": [],
-          "commands": []
+        {
+          "type": "delete",
+          "target": "projects/client/Assets/Scripts/MessagePackGenerated/MessagePack_Formatters_Quest_Component_QuestComponentFormatter.cs.meta"
+        },
+        {
+          "type": "delete",
+          "target": "projects/client/Assets/Scripts/MessagePackGenerated/MessagePack_Formatters_Shop_Component_ShopItemDataComponentFormatter.cs",
+          "description": "Remove duplicate formatter for ProductDataComponent (conflicts with ProductDataComponentFormatter)"
+        },
+        {
+          "type": "delete",
+          "target": "projects/client/Assets/Scripts/MessagePackGenerated/MessagePack_Formatters_Shop_Component_ShopItemDataComponentFormatter.cs.meta"
         }
-      },
-      "cleanupAfter": false
-    },
-    "postNativeBuild": {
-      "enabled": false,
-      "description": "Final packaging modifications",
-      "files": [],
-      "patches": [],
-      "cleanupAfter": true
+      ]
     }
   }
 }
