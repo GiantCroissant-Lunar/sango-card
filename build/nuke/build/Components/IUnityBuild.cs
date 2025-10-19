@@ -82,7 +82,7 @@ interface IUnityBuild : INukeBuild
     /// Build Unity project
     /// </summary>
     Target BuildUnity => _ => _
-        .Description("Build Unity project")
+        .Description("Build Unity project (use platform-specific targets like BuildWindows, BuildAndroid, etc.)")
         .Executes(() =>
         {
             Directory.CreateDirectory(UnityBuildOutput);
@@ -118,6 +118,338 @@ interface IUnityBuild : INukeBuild
             process.AssertZeroExitCode();
 
             Serilog.Log.Information("Unity build completed successfully");
+        });
+
+    // ========================================
+    // Platform-Specific Build Targets
+    // ========================================
+
+    /// <summary>
+    /// Build Unity project for Windows (Standalone 64-bit)
+    /// </summary>
+    Target BuildWindows => _ => _
+        .Description("Build Unity project for Windows (Standalone 64-bit)")
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Building for Windows (StandaloneWindows64) ===");
+
+            var originalTarget = UnityBuildTarget;
+            var originalProfile = UnityBuildProfileName;
+
+            try
+            {
+                // Set platform-specific values via environment
+                Environment.SetEnvironmentVariable("UnityBuildTarget", "StandaloneWindows64");
+                Environment.SetEnvironmentVariable("UnityBuildProfileName", "Windows");
+
+                // Execute build with platform settings
+                Directory.CreateDirectory(UnityBuildOutput);
+
+                var arguments = new[]
+                {
+                    "-quit",
+                    "-batchmode",
+                    "-nographics",
+                    $"-projectPath \"{UnityProjectPath}\"",
+                    "-buildTarget StandaloneWindows64",
+                    "-executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild",
+                    $"--buildPurpose {UnityBuildPurpose}",
+                    $"--buildVersion {UnityBuildVersion}",
+                    "--buildProfileName Windows",
+                    $"--outputPath \"{UnityBuildOutput}\"",
+                    $"-logFile \"{UnityBuildOutput / "unity-build-windows.log"}\"",
+                };
+
+                var process = ProcessTasks.StartProcess(
+                    UnityPath,
+                    string.Join(" ", arguments),
+                    workingDirectory: UnityProjectPath,
+                    timeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+
+                process.AssertZeroExitCode();
+                Serilog.Log.Information("✅ Windows build completed successfully");
+            }
+            finally
+            {
+                // Restore original values
+                Environment.SetEnvironmentVariable("UnityBuildTarget", originalTarget);
+                Environment.SetEnvironmentVariable("UnityBuildProfileName", originalProfile);
+            }
+        });
+
+    /// <summary>
+    /// Build Unity project for macOS (Standalone 64-bit)
+    /// </summary>
+    Target BuildMacOS => _ => _
+        .Description("Build Unity project for macOS (Standalone 64-bit)")
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Building for macOS (StandaloneOSX) ===");
+
+            Directory.CreateDirectory(UnityBuildOutput);
+
+            var arguments = new[]
+            {
+                "-quit",
+                "-batchmode",
+                "-nographics",
+                $"-projectPath \"{UnityProjectPath}\"",
+                "-buildTarget StandaloneOSX",
+                "-executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild",
+                $"--buildPurpose {UnityBuildPurpose}",
+                $"--buildVersion {UnityBuildVersion}",
+                "--buildProfileName macOS",
+                $"--outputPath \"{UnityBuildOutput}\"",
+                $"-logFile \"{UnityBuildOutput / "unity-build-macos.log"}\"",
+            };
+
+            var process = ProcessTasks.StartProcess(
+                UnityPath,
+                string.Join(" ", arguments),
+                workingDirectory: UnityProjectPath,
+                timeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+
+            process.AssertZeroExitCode();
+            Serilog.Log.Information("✅ macOS build completed successfully");
+        });
+
+    /// <summary>
+    /// Build Unity project for Linux (Standalone 64-bit)
+    /// </summary>
+    Target BuildLinux => _ => _
+        .Description("Build Unity project for Linux (Standalone 64-bit)")
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Building for Linux (StandaloneLinux64) ===");
+
+            Directory.CreateDirectory(UnityBuildOutput);
+
+            var arguments = new[]
+            {
+                "-quit",
+                "-batchmode",
+                "-nographics",
+                $"-projectPath \"{UnityProjectPath}\"",
+                "-buildTarget StandaloneLinux64",
+                "-executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild",
+                $"--buildPurpose {UnityBuildPurpose}",
+                $"--buildVersion {UnityBuildVersion}",
+                "--buildProfileName Linux",
+                $"--outputPath \"{UnityBuildOutput}\"",
+                $"-logFile \"{UnityBuildOutput / "unity-build-linux.log"}\"",
+            };
+
+            var process = ProcessTasks.StartProcess(
+                UnityPath,
+                string.Join(" ", arguments),
+                workingDirectory: UnityProjectPath,
+                timeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+
+            process.AssertZeroExitCode();
+            Serilog.Log.Information("✅ Linux build completed successfully");
+        });
+
+    /// <summary>
+    /// Build Unity project for Android (APK/AAB)
+    /// </summary>
+    Target BuildAndroid => _ => _
+        .Description("Build Unity project for Android")
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Building for Android ===");
+
+            Directory.CreateDirectory(UnityBuildOutput);
+
+            var arguments = new[]
+            {
+                "-quit",
+                "-batchmode",
+                "-nographics",
+                $"-projectPath \"{UnityProjectPath}\"",
+                "-buildTarget Android",
+                "-executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild",
+                $"--buildPurpose {UnityBuildPurpose}",
+                $"--buildVersion {UnityBuildVersion}",
+                "--buildProfileName Android",
+                $"--outputPath \"{UnityBuildOutput}\"",
+                $"-logFile \"{UnityBuildOutput / "unity-build-android.log"}\"",
+            };
+
+            var process = ProcessTasks.StartProcess(
+                UnityPath,
+                string.Join(" ", arguments),
+                workingDirectory: UnityProjectPath,
+                timeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+
+            process.AssertZeroExitCode();
+            Serilog.Log.Information("✅ Android build completed successfully");
+        });
+
+    /// <summary>
+    /// Build Unity project for iOS
+    /// </summary>
+    Target BuildiOS => _ => _
+        .Description("Build Unity project for iOS")
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Building for iOS ===");
+
+            Directory.CreateDirectory(UnityBuildOutput);
+
+            var arguments = new[]
+            {
+                "-quit",
+                "-batchmode",
+                "-nographics",
+                $"-projectPath \"{UnityProjectPath}\"",
+                "-buildTarget iOS",
+                "-executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild",
+                $"--buildPurpose {UnityBuildPurpose}",
+                $"--buildVersion {UnityBuildVersion}",
+                "--buildProfileName iOS",
+                $"--outputPath \"{UnityBuildOutput}\"",
+                $"-logFile \"{UnityBuildOutput / "unity-build-ios.log"}\"",
+            };
+
+            var process = ProcessTasks.StartProcess(
+                UnityPath,
+                string.Join(" ", arguments),
+                workingDirectory: UnityProjectPath,
+                timeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+
+            process.AssertZeroExitCode();
+            Serilog.Log.Information("✅ iOS build completed successfully");
+        });
+
+    /// <summary>
+    /// Build Unity project for WebGL
+    /// </summary>
+    Target BuildWebGL => _ => _
+        .Description("Build Unity project for WebGL")
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Building for WebGL ===");
+
+            Directory.CreateDirectory(UnityBuildOutput);
+
+            var arguments = new[]
+            {
+                "-quit",
+                "-batchmode",
+                "-nographics",
+                $"-projectPath \"{UnityProjectPath}\"",
+                "-buildTarget WebGL",
+                "-executeMethod SangoCard.Build.Editor.BuildEntry.PerformBuild",
+                $"--buildPurpose {UnityBuildPurpose}",
+                $"--buildVersion {UnityBuildVersion}",
+                "--buildProfileName WebGL",
+                $"--outputPath \"{UnityBuildOutput}\"",
+                $"-logFile \"{UnityBuildOutput / "unity-build-webgl.log"}\"",
+            };
+
+            var process = ProcessTasks.StartProcess(
+                UnityPath,
+                string.Join(" ", arguments),
+                workingDirectory: UnityProjectPath,
+                timeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+
+            process.AssertZeroExitCode();
+            Serilog.Log.Information("✅ WebGL build completed successfully");
+        });
+
+    /// <summary>
+    /// Build Unity project for all desktop platforms (Windows, macOS, Linux)
+    /// Uses ProceedAfterFailure to continue building other platforms even if one fails.
+    /// </summary>
+    Target BuildAllDesktop => _ => _
+        .Description("Build for all desktop platforms (Windows, macOS, Linux)")
+        .DependsOn(BuildWindows)
+        .DependsOn(BuildMacOS)
+        .DependsOn(BuildLinux)
+        .ProceedAfterFailure()
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== All Desktop Platform Builds Complete ===");
+
+            var failedPlatforms = new List<string>();
+            if (FailedTargets.Contains(BuildWindows)) failedPlatforms.Add("Windows");
+            if (FailedTargets.Contains(BuildMacOS)) failedPlatforms.Add("macOS");
+            if (FailedTargets.Contains(BuildLinux)) failedPlatforms.Add("Linux");
+
+            if (failedPlatforms.Count > 0)
+            {
+                Serilog.Log.Warning($"⚠️ {3 - failedPlatforms.Count}/3 desktop platforms built successfully");
+                Serilog.Log.Warning("Failed platforms:");
+                foreach (var platform in failedPlatforms)
+                {
+                    Serilog.Log.Warning($"  - {platform}");
+                }
+            }
+            else
+            {
+                Serilog.Log.Information("✅ All 3 desktop platforms built successfully");
+            }
+        });
+
+    /// <summary>
+    /// Build Unity project for all mobile platforms (Android, iOS)
+    /// Uses ProceedAfterFailure to continue building other platforms even if one fails.
+    /// </summary>
+    Target BuildAllMobile => _ => _
+        .Description("Build for all mobile platforms (Android, iOS)")
+        .DependsOn(BuildAndroid)
+        .DependsOn(BuildiOS)
+        .ProceedAfterFailure()
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== All Mobile Platform Builds Complete ===");
+
+            var failedPlatforms = new List<string>();
+            if (FailedTargets.Contains(BuildAndroid)) failedPlatforms.Add("Android");
+            if (FailedTargets.Contains(BuildiOS)) failedPlatforms.Add("iOS");
+
+            if (failedPlatforms.Count > 0)
+            {
+                Serilog.Log.Warning($"⚠️ {2 - failedPlatforms.Count}/2 mobile platforms built successfully");
+                Serilog.Log.Warning("Failed platforms:");
+                foreach (var platform in failedPlatforms)
+                {
+                    Serilog.Log.Warning($"  - {platform}");
+                }
+            }
+            else
+            {
+                Serilog.Log.Information("✅ All 2 mobile platforms built successfully");
+            }
+        });
+
+    /// <summary>
+    /// Build Unity project for all platforms (Desktop + Mobile + WebGL)
+    /// Uses ProceedAfterFailure to continue building other platforms even if one fails.
+    /// </summary>
+    Target BuildAllPlatforms => _ => _
+        .Description("Build for all platforms (Desktop, Mobile, WebGL)")
+        .DependsOn(BuildAllDesktop)
+        .DependsOn(BuildAllMobile)
+        .DependsOn(BuildWebGL)
+        .ProceedAfterFailure()
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== All Platform Builds Complete ===");
+
+            var totalPlatforms = 6; // Windows, macOS, Linux, Android, iOS, WebGL
+            var failedCount = FailedTargets.Count;
+            var successCount = totalPlatforms - failedCount;
+
+            if (failedCount > 0)
+            {
+                Serilog.Log.Warning($"⚠️ {successCount}/{totalPlatforms} platforms built successfully");
+                Serilog.Log.Warning("Check individual platform logs for details");
+            }
+            else
+            {
+                Serilog.Log.Information($"✅ All {totalPlatforms} platforms built successfully");
+            }
         });
 
     /// <summary>
