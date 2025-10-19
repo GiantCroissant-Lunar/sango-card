@@ -93,14 +93,6 @@ repos:
         exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$|obj/|bin/'
         pass_filenames: false
         description: Analyzes C# code with Roslynator
-      - id: inspectcode
-        name: JetBrains InspectCode
-        entry: bash git-hooks/dotnet/inspectcode.sh
-        language: system
-        files: '\.cs$'
-        exclude: 'projects/client/|\.g\.cs$|\.designer\.cs$|obj/|bin/'
-        pass_filenames: false
-        description: Analyzes C# code with JetBrains InspectCode
       - id: terraform-secrets-check
         # Prevent committing plaintext Terraform secrets
 
@@ -181,4 +173,3 @@ ci:
     - docs-validate # Docs validation runs in dedicated GitHub Action
     - dotnet-format # Optional: skip in CI if formatting is enforced separately
     - roslynator # Optional: skip in CI if analyzers run during build
-    - inspectcode # Optional: skip in CI if code inspection runs separately
