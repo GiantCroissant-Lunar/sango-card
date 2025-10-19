@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://contractwork.com/schemas/sango-card/multi-stage-preparation.schema.json",
   "title": "Multi-Stage Preparation Configuration",
-  "description": "Configuration for multi-stage dependency injection system supporting different injection points throughout the build lifecycle",
+  "description": "Configuration for multi-stage dependency injection system supporting sequential injection phases throughout the build lifecycle",
   "type": "object",
   "required": ["version", "injectionStages"],
   "properties": {
@@ -15,38 +15,30 @@
       "type": "string",
       "description": "Human-readable description of this configuration"
     },
+    "cacheSource": {
+      "type": "string",
+      "description": "Path to v1.0 preparation.json to use for cache population",
+      "default": "build/configs/preparation/preparation.json"
+    },
     "injectionStages": {
-      "type": "object",
-      "description": "Configuration for each injection stage",
-      "properties": {
-        "preTest": {
-          "$ref": "#/definitions/testStage",
-          "description": "Test-specific dependencies injected before pre-build tests"
-        },
-        "preBuild": {
-          "$ref": "#/definitions/buildStage",
-          "description": "Core Unity build dependencies"
-        },
-        "postBuild": {
-          "$ref": "#/definitions/testStage",
-          "description": "Runtime testing dependencies injected after Unity build"
-        },
-        "preNativeBuild": {
-          "$ref": "#/definitions/nativeStage",
-          "description": "Platform-specific native dependencies (iOS/Android)"
-        },
-        "postNativeBuild": {
-          "$ref": "#/definitions/packagingStage",
-          "description": "Final packaging modifications"
-        }
-      }
+      "type": "array",
+      "description": "Sequential array of injection stages to execute",
+      "items": {
+        "$ref": "#/definitions/injectionStage"
+      },
+      "minItems": 1
     }
   },
   "definitions": {
-    "baseStage": {
+    "injectionStage": {
       "type": "object",
-      "required": ["enabled"],
+      "required": ["name", "enabled"],
       "properties": {
+        "name": {
+          "type": "string",
+          "description": "Stage name (e.g., preTest, preBuild, postBuild, preNativeBuild, postNativeBuild)",
+          "enum": ["preTest", "preBuild", "postBuild", "preNativeBuild", "postNativeBuild", "custom"]
+        },
         "enabled": {
           "type": "boolean",
           "description": "Whether this stage is active"
@@ -59,114 +51,52 @@
           "type": "boolean",
           "description": "Whether to automatically cleanup after this stage completes",
           "default": false
+        },
+        "packages": {
+          "type": "array",
+          "description": "Unity packages to inject",
+          "items": {
+            "$ref": "#/definitions/package"
+          }
+        },
+        "assemblies": {
+          "type": "array",
+          "description": "Assembly DLLs to inject",
+          "items": {
+            "$ref": "#/definitions/assembly"
+          }
+        },
+        "assetManipulations": {
+          "type": "array",
+          "description": "File operations to perform",
+          "items": {
+            "$ref": "#/definitions/assetManipulation"
+          }
+        },
+        "codePatches": {
+          "type": "array",
+          "description": "Code patches to apply",
+          "items": {
+            "$ref": "#/definitions/codePatch"
+          }
+        },
+        "scriptingDefineSymbols": {
+          "$ref": "#/definitions/scriptingDefineSymbols",
+          "description": "Scripting define symbols to set"
+        },
+        "platforms": {
+          "type": "object",
+          "description": "Platform-specific configurations (for preNativeBuild stage)",
+          "properties": {
+            "ios": {
+              "$ref": "#/definitions/platformConfig"
+            },
+            "android": {
+              "$ref": "#/definitions/platformConfig"
+            }
+          }
         }
       }
-    },
-    "testStage": {
-      "allOf": [
-        { "$ref": "#/definitions/baseStage" },
-        {
-          "properties": {
-            "packages": {
-              "type": "array",
-              "description": "Unity packages to inject",
-              "items": {
-                "$ref": "#/definitions/package"
-              }
-            },
-            "assemblies": {
-              "type": "array",
-              "description": "Assembly DLLs to inject",
-              "items": {
-                "type": "string"
-              }
-            },
-            "patches": {
-              "type": "array",
-              "description": "File patches to apply",
-              "items": {
-                "$ref": "#/definitions/patch"
-              }
-            }
-          }
-        }
-      ]
-    },
-    "buildStage": {
-      "allOf": [
-        { "$ref": "#/definitions/baseStage" },
-        {
-          "properties": {
-            "packages": {
-              "type": "array",
-              "description": "Unity packages to inject",
-              "items": {
-                "$ref": "#/definitions/package"
-              }
-            },
-            "assemblies": {
-              "type": "array",
-              "description": "Assembly DLLs to inject",
-              "items": {
-                "type": "string"
-              }
-            },
-            "patches": {
-              "type": "array",
-              "description": "File patches to apply",
-              "items": {
-                "$ref": "#/definitions/patch"
-              }
-            }
-          }
-        }
-      ]
-    },
-    "nativeStage": {
-      "allOf": [
-        { "$ref": "#/definitions/baseStage" },
-        {
-          "properties": {
-            "platforms": {
-              "type": "object",
-              "description": "Platform-specific configurations",
-              "properties": {
-                "ios": {
-                  "$ref": "#/definitions/platformConfig",
-                  "description": "iOS-specific native dependencies"
-                },
-                "android": {
-                  "$ref": "#/definitions/platformConfig",
-                  "description": "Android-specific native dependencies"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "packagingStage": {
-      "allOf": [
-        { "$ref": "#/definitions/baseStage" },
-        {
-          "properties": {
-            "files": {
-              "type": "array",
-              "description": "Files to copy",
-              "items": {
-                "$ref": "#/definitions/fileOperation"
-              }
-            },
-            "patches": {
-              "type": "array",
-              "description": "File patches to apply",
-              "items": {
-                "$ref": "#/definitions/patch"
-              }
-            }
-          }
-        }
-      ]
     },
     "platformConfig": {
       "type": "object",
@@ -183,16 +113,16 @@
             "$ref": "#/definitions/fileOperation"
           }
         },
-        "patches": {
+        "codePatches": {
           "type": "array",
-          "description": "File patches to apply for this platform",
+          "description": "Code patches to apply for this platform",
           "items": {
-            "$ref": "#/definitions/patch"
+            "$ref": "#/definitions/codePatch"
           }
         },
         "commands": {
           "type": "array",
-          "description": "Commands to execute for this platform (e.g., pod install, gradle)",
+          "description": "Commands to execute (e.g., pod install, gradle)",
           "items": {
             "type": "string"
           }
@@ -205,7 +135,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Package identifier"
+          "description": "Package identifier (e.g., com.unity.addressables)"
         },
         "version": {
           "type": "string",
@@ -221,6 +151,107 @@
         }
       }
     },
+    "assembly": {
+      "type": "object",
+      "required": ["name", "source", "target"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Assembly name"
+        },
+        "version": {
+          "type": "string",
+          "description": "Assembly version"
+        },
+        "source": {
+          "type": "string",
+          "description": "Source path (relative to repository root)"
+        },
+        "target": {
+          "type": "string",
+          "description": "Target path (relative to repository root)"
+        }
+      }
+    },
+    "assetManipulation": {
+      "type": "object",
+      "required": ["type", "target"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["copy", "move", "delete"],
+          "description": "Type of manipulation"
+        },
+        "source": {
+          "type": "string",
+          "description": "Source path (required for copy/move)"
+        },
+        "target": {
+          "type": "string",
+          "description": "Target path"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description"
+        }
+      }
+    },
+    "codePatch": {
+      "type": "object",
+      "required": ["file", "patches"],
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "File path to patch (relative to repository root)"
+        },
+        "patches": {
+          "type": "array",
+          "description": "Array of search/replace operations",
+          "items": {
+            "type": "object",
+            "required": ["search", "replace"],
+            "properties": {
+              "search": {
+                "type": "string",
+                "description": "Text to search for"
+              },
+              "replace": {
+                "type": "string",
+                "description": "Replacement text"
+              }
+            }
+          }
+        }
+      }
+    },
+    "scriptingDefineSymbols": {
+      "type": "object",
+      "properties": {
+        "add": {
+          "type": "array",
+          "description": "Symbols to add",
+          "items": {
+            "type": "string"
+          }
+        },
+        "remove": {
+          "type": "array",
+          "description": "Symbols to remove",
+          "items": {
+            "type": "string"
+          }
+        },
+        "platform": {
+          "type": "string",
+          "description": "Target platform (e.g., StandaloneWindows64)"
+        },
+        "clearExisting": {
+          "type": "boolean",
+          "description": "Whether to clear existing symbols before adding",
+          "default": false
+        }
+      }
+    },
     "fileOperation": {
       "type": "object",
       "required": ["source", "target"],
@@ -232,43 +263,6 @@
         "target": {
           "type": "string",
           "description": "Target file path (relative to repository root)"
-        }
-      }
-    },
-    "patch": {
-      "type": "object",
-      "required": ["type", "file"],
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["json", "text", "xml", "gradle", "plist"],
-          "description": "Type of file to patch"
-        },
-        "file": {
-          "type": "string",
-          "description": "File path to patch (relative to repository root)"
-        },
-        "operations": {
-          "type": "array",
-          "description": "Patch operations to apply",
-          "items": {
-            "type": "object",
-            "required": ["action"],
-            "properties": {
-              "action": {
-                "type": "string",
-                "enum": ["add", "replace", "remove"],
-                "description": "Patch action"
-              },
-              "path": {
-                "type": "string",
-                "description": "JSON path or XPath to target element"
-              },
-              "value": {
-                "description": "Value to set (for add/replace actions)"
-              }
-            }
-          }
         }
       }
     }

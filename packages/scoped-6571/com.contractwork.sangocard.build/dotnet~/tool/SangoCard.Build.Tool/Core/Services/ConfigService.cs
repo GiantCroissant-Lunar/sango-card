@@ -293,4 +293,126 @@ public class ConfigService
         _logger.LogWarning("Assembly {Name} not found", name);
         return false;
     }
+
+    /// <summary>
+    /// Loads a multi-stage configuration (v2.0) from a file.
+    /// </summary>
+    /// <param name="relativePath">Relative path to config file (from git root).</param>
+    /// <returns>The loaded multi-stage configuration.</returns>
+    public async Task<MultiStageConfig> LoadMultiStageAsync(string relativePath)
+    {
+        var absolutePath = _pathResolver.Resolve(relativePath);
+
+        _logger.LogInformation("Loading multi-stage configuration from: {Path}", absolutePath);
+
+        if (!File.Exists(absolutePath))
+        {
+            throw new FileNotFoundException($"Configuration file not found: {absolutePath}", absolutePath);
+        }
+
+        var json = await File.ReadAllTextAsync(absolutePath);
+        var config = JsonSerializer.Deserialize<MultiStageConfig>(json, _jsonOptions);
+
+        if (config == null)
+        {
+            throw new InvalidOperationException($"Failed to deserialize multi-stage configuration from: {absolutePath}");
+        }
+
+        // Count total items across all stages
+        var totalPackages = config.InjectionStages.Sum(s => s.Packages.Count);
+        var totalAssemblies = config.InjectionStages.Sum(s => s.Assemblies.Count);
+        var totalManipulations = config.InjectionStages.Sum(s => s.AssetManipulations.Count);
+        var totalPatches = config.InjectionStages.Sum(s => s.CodePatches.Count);
+
+        _logger.LogInformation(
+            "Multi-stage configuration loaded: {StageCount} stages, {PackageCount} packages, {AssemblyCount} assemblies, {ManipulationCount} manipulations, {PatchCount} patches",
+            config.InjectionStages.Count,
+            totalPackages,
+            totalAssemblies,
+            totalManipulations,
+            totalPatches
+        );
+
+        return config;
+    }
+
+    /// <summary>
+    /// Loads a configuration and automatically detects version (v1.0 or v2.0).
+    /// </summary>
+    /// <param name="relativePath">Relative path to config file (from git root).</param>
+    /// <returns>A tuple containing the version and configuration object.</returns>
+    public async Task<(string version, object config)> LoadAutoDetectAsync(string relativePath)
+    {
+        var absolutePath = _pathResolver.Resolve(relativePath);
+
+        _logger.LogInformation("Auto-detecting configuration version: {Path}", absolutePath);
+
+        if (!File.Exists(absolutePath))
+        {
+            throw new FileNotFoundException($"Configuration file not found: {absolutePath}", absolutePath);
+        }
+
+        var json = await File.ReadAllTextAsync(absolutePath);
+
+        // Parse to detect version
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        if (!root.TryGetProperty("version", out var versionElement))
+        {
+            throw new InvalidOperationException("Configuration file missing 'version' property");
+        }
+
+        var version = versionElement.GetString() ?? "1.0";
+
+        if (version.StartsWith("2."))
+        {
+            _logger.LogInformation("Detected v2.0 multi-stage configuration");
+            var config = await LoadMultiStageAsync(relativePath);
+            return (version, config);
+        }
+        else
+        {
+            _logger.LogInformation("Detected v1.0 preparation configuration");
+            var config = await LoadAsync(relativePath);
+            return (version, config);
+        }
+    }
+
+    /// <summary>
+    /// Converts a multi-stage config (v2.0) to a flat v1.0 config for a specific stage.
+    /// </summary>
+    /// <param name="multiStageConfig">The multi-stage configuration.</param>
+    /// <param name="stageName">The stage name to extract (e.g., "preBuild").</param>
+    /// <returns>A v1.0 PreparationConfig containing only the specified stage's items.</returns>
+    public PreparationConfig ConvertStageToV1(MultiStageConfig multiStageConfig, string stageName)
+    {
+        var stage = multiStageConfig.InjectionStages.FirstOrDefault(s => s.Name == stageName);
+
+        if (stage == null)
+        {
+            _logger.LogWarning("Stage {StageName} not found in multi-stage config", stageName);
+            return new PreparationConfig
+            {
+                Version = "1.0",
+                Description = $"Converted from multi-stage config (stage '{stageName}' not found)"
+            };
+        }
+
+        if (!stage.Enabled)
+        {
+            _logger.LogInformation("Stage {StageName} is disabled", stageName);
+        }
+
+        return new PreparationConfig
+        {
+            Version = "1.0",
+            Description = stage.Description ?? $"Converted from multi-stage config stage: {stageName}",
+            Packages = stage.Packages,
+            Assemblies = stage.Assemblies,
+            AssetManipulations = stage.AssetManipulations,
+            CodePatches = stage.CodePatches,
+            ScriptingDefineSymbols = stage.ScriptingDefineSymbols
+        };
+    }
 }

@@ -29,18 +29,49 @@ public class CacheCommandHandler
 
     public async Task PopulateAsync(string sourceRelativePath, string? configRelativePath)
     {
-        PreparationConfig? config = null;
         if (!string.IsNullOrWhiteSpace(configRelativePath))
         {
-            config = await _configService.LoadAsync(configRelativePath);
+            // Auto-detect version and load appropriate config
+            var (version, configObj) = await _configService.LoadAutoDetectAsync(configRelativePath);
 
-            // If config is provided, populate from all source directories defined in the config
-            var allItems = await _cacheService.PopulateFromConfigAsync(config, CacheService.DefaultCacheDirectory);
+            if (version.StartsWith("2."))
+            {
+                // Multi-stage config (v2.0)
+                var multiStageConfig = (MultiStageConfig)configObj;
 
-            Console.WriteLine($"Populated cache with {allItems.Count} item(s) from config sources");
+                // Check if there's a cacheSource reference
+                if (!string.IsNullOrWhiteSpace(multiStageConfig.CacheSource))
+                {
+                    _logger.LogInformation("Loading cache sources from: {CacheSource}", multiStageConfig.CacheSource);
+                    var v1Config = await _configService.LoadAsync(multiStageConfig.CacheSource);
 
-            await _configService.SaveAsync(config, configRelativePath);
-            Console.WriteLine($"Updated config: {_paths.Resolve(configRelativePath)}");
+                    var allItems = await _cacheService.PopulateFromConfigAsync(v1Config, CacheService.DefaultCacheDirectory);
+                    Console.WriteLine($"Populated cache with {allItems.Count} item(s) from config sources");
+                }
+                else
+                {
+                    // Populate from all stages
+                    var totalItems = 0;
+                    foreach (var stage in multiStageConfig.InjectionStages.Where(s => s.Enabled))
+                    {
+                        var stageConfig = _configService.ConvertStageToV1(multiStageConfig, stage.Name);
+                        var items = await _cacheService.PopulateFromConfigAsync(stageConfig, CacheService.DefaultCacheDirectory);
+                        totalItems += items.Count;
+                    }
+                    Console.WriteLine($"Populated cache with {totalItems} item(s) from {multiStageConfig.InjectionStages.Count} stage(s)");
+                }
+            }
+            else
+            {
+                // v1.0 config
+                var config = (PreparationConfig)configObj;
+                var allItems = await _cacheService.PopulateFromConfigAsync(config, CacheService.DefaultCacheDirectory);
+
+                Console.WriteLine($"Populated cache with {allItems.Count} item(s) from config sources");
+
+                await _configService.SaveAsync(config, configRelativePath);
+                Console.WriteLine($"Updated config: {_paths.Resolve(configRelativePath)}");
+            }
         }
         else
         {
