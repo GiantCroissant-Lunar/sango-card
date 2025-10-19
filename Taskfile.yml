@@ -218,8 +218,76 @@ tasks:
       CONFIG: '{{.CONFIG | default "preparation"}}'
     cmds:
       - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/preparation/configs/{{.CONFIG}}.json -Force'
+  # Multi-stage injection tasks
+
+  build:prepare:inject-pre-test:
+    desc: Inject test-specific dependencies (Stage 1)
+    summary: |
+      Stage 1: Inject test-specific dependencies before pre-build tests
+      Usage: task build:prepare:inject-pre-test [CONFIG=multi-stage-preparation]
+      Example: task build:prepare:inject-pre-test
+    vars:
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPreTest --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+  build:prepare:inject-pre-build:
+    desc: Inject core build dependencies (Stage 2)
+    summary: |
+      Stage 2: Inject core Unity build dependencies (equivalent to legacy PrepareClient)
+      Usage: task build:prepare:inject-pre-build [CONFIG=multi-stage-preparation]
+      Example: task build:prepare:inject-pre-build
+      Note: Performs git reset --hard on projects/client
+    vars:
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPreBuild --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+  build:prepare:inject-post-build:
+    desc: Inject post-build test dependencies (Stage 3)
+    summary: |
+      Stage 3: Inject runtime testing dependencies after Unity build
+      Usage: task build:prepare:inject-post-build [CONFIG=multi-stage-preparation]
+      Example: task build:prepare:inject-post-build
+    vars:
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPostBuild --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+  build:prepare:inject-pre-native-build:
+    desc: Inject platform-specific native dependencies (Stage 4)
+    summary: |
+      Stage 4: Inject platform-specific native dependencies (iOS/Android)
+      Usage: task build:prepare:inject-pre-native-build [CONFIG=multi-stage-preparation] [TARGET=iOS]
+      Example: task build:prepare:inject-pre-native-build TARGET=iOS
+    vars:
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
+      TARGET: '{{.TARGET | default "StandaloneWindows64"}}'
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPreNativeBuild --PreparationConfig build/preparation/configs/{{.CONFIG}}.json --UnityBuildTarget {{.TARGET}}'
+  build:prepare:inject-post-native-build:
+    desc: Inject packaging dependencies (Stage 5)
+    summary: |
+      Stage 5: Inject final packaging modifications
+      Usage: task build:prepare:inject-post-native-build [CONFIG=multi-stage-preparation]
+      Example: task build:prepare:inject-post-native-build
+    vars:
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} InjectPostNativeBuild --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
+  build:unity:multi-stage:
+    desc: Build Unity with multi-stage injection workflow
+    summary: |
+      Full Unity build with multi-stage injection and comprehensive testing
+      Stages: PreTest → TestPreBuild → PreBuild → BuildUnity → PostBuild → TestPostBuild
+      Usage: task build:unity:multi-stage [CONFIG=multi-stage-preparation]
+      Example: task build:unity:multi-stage
+    vars:
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} BuildWithMultiStage --PreparationConfig build/preparation/configs/{{.CONFIG}}.json'
   build:unity:prepared:
-    desc: Build Unity with full preparation workflow
+    desc: Build Unity with full preparation workflow (LEGACY)
+    summary: |
+      Legacy single-stage build workflow (maintained for backward compatibility)
+      Consider using build:unity:multi-stage for new workflows
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} BuildUnityWithPreparation'
   # Test tasks

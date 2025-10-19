@@ -1,3 +1,4 @@
+using System;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
@@ -9,14 +10,27 @@ using static Nuke.Common.Tools.Git.GitTasks;
 using static Nuke.Common.Tooling.ProcessTasks;
 
 /// <summary>
-/// Build preparation component implementing two-phase workflow.
+/// Build preparation component implementing multi-stage injection workflow.
 /// Phase 1: Populate cache (safe anytime)
-/// Phase 2: Inject to client (build-time only with git reset)
+/// Phase 2: Multi-stage injection (build-time with stage-specific cleanup)
+///
+/// Stages:
+/// - PreTest: Test-specific dependencies (before validation)
+/// - PreBuild: Core Unity dependencies (current behavior)
+/// - PostBuild: Runtime test dependencies (after Unity build)
+/// - PreNativeBuild: Native platform dependencies (iOS/Android)
+/// - PostNativeBuild: Final packaging modifications
 /// </summary>
 partial class Build
 {
-    [Parameter("Path to preparation config")]
+    [Parameter("Path to preparation config (supports both v1 and v2 multi-stage)")]
     public AbsolutePath PreparationConfig = RootDirectory / "build" / "preparation" / "configs" / "preparation.json";
+
+    [Parameter("Enable multi-stage injection (default: auto-detect from config)")]
+    public bool? UseMultiStage = null;
+
+    [Parameter("Injection stage to execute (preTest, preBuild, postBuild, preNativeBuild, postNativeBuild)")]
+    public string InjectionStage = null;
 
     AbsolutePath PreparationToolProject => RootDirectory / "packages" / "scoped-6571" /
         "com.contractwork.sangocard.build" / "dotnet~" / "tool" / "SangoCard.Build.Tool" /
@@ -51,38 +65,145 @@ partial class Build
             Serilog.Log.Information("✅ Cache population complete");
         });
 
+    // ========================================
+    // Multi-Stage Injection Targets
+    // ========================================
+
     /// <summary>
-    /// Phase 2: Inject preparation into Unity client project (build-time only).
-    /// IMPORTANT: This performs git reset --hard before injection per R-BLD-060.
+    /// Inject pre-test dependencies (Stage 1).
+    /// Test-specific dependencies injected before TestPreBuild.
     /// </summary>
-    Target PrepareClient => _ => _
-        .Description("Phase 2: Inject preparation into client (build-time only, performs git reset)")
+    Target InjectPreTest => _ => _
+        .Description("Stage 1: Inject test-specific dependencies")
         .DependsOn(PrepareCache)
+        .OnlyWhenDynamic(() => IsStageEnabled("preTest"))
         .Executes(() =>
         {
-            Serilog.Log.Information("=== Phase 2: Injecting to Client ===");
+            Serilog.Log.Information("=== Stage 1: Pre-Test Injection ===");
+            RunInjectionStage("preTest");
+        });
+
+    /// <summary>
+    /// Inject pre-build dependencies (Stage 2).
+    /// Core Unity build dependencies - equivalent to legacy PrepareClient.
+    /// </summary>
+    Target InjectPreBuild => _ => _
+        .Description("Stage 2: Inject core build dependencies")
+        .DependsOn(PrepareCache)
+        .OnlyWhenDynamic(() => IsStageEnabled("preBuild"))
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Stage 2: Pre-Build Injection ===");
 
             // R-BLD-060: Reset client before injection
             Serilog.Log.Information("Resetting client project (git reset --hard)...");
             Git("reset --hard", workingDirectory: ClientProject);
             Serilog.Log.Information("✅ Client reset complete");
 
-            // Inject from cache
-            Serilog.Log.Information("Injecting preparation...");
-            Serilog.Log.Information("Config: {Config}", PreparationConfig);
-            Serilog.Log.Information("Target: projects/client/");
+            RunInjectionStage("preBuild");
+        });
 
-            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
-            var relativeClient = RootDirectory.GetRelativePathTo(ClientProject);
+    /// <summary>
+    /// Inject post-build dependencies (Stage 3).
+    /// Runtime testing dependencies injected after Unity build.
+    /// </summary>
+    Target InjectPostBuild => _ => _
+        .Description("Stage 3: Inject post-build test dependencies")
+        .OnlyWhenDynamic(() => IsStageEnabled("postBuild"))
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Stage 3: Post-Build Injection ===");
+            RunInjectionStage("postBuild");
+        });
 
-            var process = StartProcess(
-                "dotnet",
-                $"run --project \"{PreparationToolProject}\" -- prepare inject --config {relativeConfig} --target {relativeClient} --verbose",
-                workingDirectory: RootDirectory
-            );
-            process.AssertZeroExitCode();
+    /// <summary>
+    /// Inject pre-native-build dependencies (Stage 4).
+    /// Platform-specific native dependencies (iOS/Android).
+    /// </summary>
+    Target InjectPreNativeBuild => _ => _
+        .Description("Stage 4: Inject platform-specific native dependencies")
+        .OnlyWhenDynamic(() => IsStageEnabled("preNativeBuild"))
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Stage 4: Pre-Native-Build Injection ===");
+            var platform = ((IUnityBuild)this).UnityBuildTarget?.ToString() ?? "StandaloneWindows64";
+            RunInjectionStage("preNativeBuild", platform);
+        });
 
-            Serilog.Log.Information("✅ Client preparation complete");
+    /// <summary>
+    /// Inject post-native-build dependencies (Stage 5).
+    /// Final packaging modifications.
+    /// </summary>
+    Target InjectPostNativeBuild => _ => _
+        .Description("Stage 5: Inject packaging dependencies")
+        .OnlyWhenDynamic(() => IsStageEnabled("postNativeBuild"))
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Stage 5: Post-Native-Build Injection ===");
+            RunInjectionStage("postNativeBuild");
+        });
+
+    // ========================================
+    // Cleanup Targets
+    // ========================================
+
+    /// <summary>
+    /// Cleanup pre-test injection (after pre-build tests).
+    /// </summary>
+    Target CleanupPreTest => _ => _
+        .Description("Cleanup pre-test injection")
+        .AssuredAfterFailure()
+        .After(((ITestBuild)this).TestPreBuild)
+        .OnlyWhenDynamic(() => ShouldCleanupStage("preTest"))
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Cleanup: Pre-Test Stage ===");
+            CleanupInjectionStage("preTest");
+        });
+
+    /// <summary>
+    /// Cleanup post-build injection (after post-build tests).
+    /// </summary>
+    Target CleanupPostBuild => _ => _
+        .Description("Cleanup post-build injection")
+        .AssuredAfterFailure()
+        .After(((ITestBuild)this).TestPostBuild)
+        .OnlyWhenDynamic(() => ShouldCleanupStage("postBuild"))
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Cleanup: Post-Build Stage ===");
+            CleanupInjectionStage("postBuild");
+        });
+
+    /// <summary>
+    /// Cleanup pre-native-build injection (after native build).
+    /// </summary>
+    Target CleanupPreNativeBuild => _ => _
+        .Description("Cleanup pre-native-build injection")
+        .AssuredAfterFailure()
+        .OnlyWhenDynamic(() => ShouldCleanupStage("preNativeBuild"))
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Cleanup: Pre-Native-Build Stage ===");
+            CleanupInjectionStage("preNativeBuild");
+        });
+
+    // ========================================
+    // Legacy Compatibility
+    // ========================================
+
+    /// <summary>
+    /// Phase 2: Inject preparation into Unity client project (build-time only).
+    /// LEGACY: Maintained for backward compatibility. Use InjectPreBuild for new workflows.
+    /// IMPORTANT: This performs git reset --hard before injection per R-BLD-060.
+    /// </summary>
+    Target PrepareClient => _ => _
+        .Description("Phase 2: Inject preparation into client (LEGACY - use InjectPreBuild)")
+        .DependsOn(InjectPreBuild)
+        .Executes(() =>
+        {
+            Serilog.Log.Information("✅ Client preparation complete (legacy mode)");
+            Serilog.Log.Information("Note: Consider using InjectPreBuild for multi-stage workflows");
         });
 
     /// <summary>
@@ -170,6 +291,41 @@ partial class Build
         });
 
     /// <summary>
+    /// Full Unity build with multi-stage injection workflow.
+    /// Executes: InjectPreTest → TestPreBuild → CleanupPreTest →
+    ///          InjectPreBuild → BuildUnity → InjectPostBuild →
+    ///          TestPostBuild → CleanupPostBuild → CleanupAfterBuild
+    /// </summary>
+    Target BuildWithMultiStage => _ => _
+        .Description("Full Unity build with multi-stage injection and testing")
+        .DependsOn(InjectPreTest)
+        .DependsOn(((ITestBuild)this).TestPreBuild)
+        .DependsOn(CleanupPreTest)
+        .DependsOn(InjectPreBuild)
+        .DependsOn(((IUnityBuild)this).BuildUnity)
+        .DependsOn(InjectPostBuild)
+        .DependsOn(((ITestBuild)this).TestPostBuild)
+        .DependsOn(CleanupPostBuild)
+        .DependsOn(CleanupAfterBuild)
+        .Executes(() =>
+        {
+            Serilog.Log.Information("✅ Multi-stage build workflow complete");
+
+            var allSucceeded = SucceededTargets.Contains(((ITestBuild)this).TestPreBuild) &&
+                SucceededTargets.Contains(((IUnityBuild)this).BuildUnity) &&
+                SucceededTargets.Contains(((ITestBuild)this).TestPostBuild);
+
+            if (allSucceeded)
+            {
+                Serilog.Log.Information("✅ All stages passed");
+            }
+            else
+            {
+                Serilog.Log.Warning("⚠️ Some stages failed - check logs for details");
+            }
+        });
+
+    /// <summary>
     /// Dry-run of preparation injection to see what would be changed.
     /// </summary>
     Target DryRunPreparation => _ => _
@@ -192,4 +348,96 @@ partial class Build
 
             Serilog.Log.Information("✅ Dry-run complete (no files modified)");
         });
+
+    // ========================================
+    // Helper Methods
+    // ========================================
+
+    /// <summary>
+    /// Check if a specific injection stage is enabled in configuration.
+    /// </summary>
+    bool IsStageEnabled(string stage)
+    {
+        // If stage is explicitly specified, only run that stage
+        if (!string.IsNullOrEmpty(InjectionStage))
+        {
+            return stage.Equals(InjectionStage, StringComparison.OrdinalIgnoreCase);
+        }
+
+        // TODO: Parse config to check if stage is enabled
+        // For now, preBuild is always enabled (legacy behavior)
+        if (stage == "preBuild")
+            return true;
+
+        Serilog.Log.Debug("Stage {Stage} not enabled", stage);
+        return false;
+    }
+
+    /// <summary>
+    /// Check if a specific injection stage should be cleaned up.
+    /// </summary>
+    bool ShouldCleanupStage(string stage)
+    {
+        // Only cleanup if stage was injected and succeeded
+        var injectionTarget = stage switch
+        {
+            "preTest" => InjectPreTest,
+            "postBuild" => InjectPostBuild,
+            "preNativeBuild" => InjectPreNativeBuild,
+            _ => null
+        };
+
+        if (injectionTarget == null)
+            return false;
+
+        // Check if target was executed and succeeded
+        bool wasInjected = ScheduledTargets.Contains(injectionTarget) || SucceededTargets.Contains(injectionTarget);
+        bool succeeded = SucceededTargets.Contains(injectionTarget);
+
+        Serilog.Log.Debug("Stage {Stage} cleanup check: injected={Injected}, succeeded={Succeeded}",
+            stage, wasInjected, succeeded);
+
+        return wasInjected && succeeded;
+    }
+
+    /// <summary>
+    /// Run injection for a specific stage.
+    /// </summary>
+    void RunInjectionStage(string stage, string platform = null)
+    {
+        Serilog.Log.Information("Injecting {Stage} stage...", stage);
+        Serilog.Log.Information("Config: {Config}", PreparationConfig);
+        Serilog.Log.Information("Target: projects/client/");
+
+        var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+        var relativeClient = RootDirectory.GetRelativePathTo(ClientProject);
+
+        var args = $"run --project \"{PreparationToolProject}\" -- prepare inject --config {relativeConfig} --target {relativeClient} --stage {stage}";
+
+        if (!string.IsNullOrEmpty(platform))
+        {
+            args += $" --platform {platform}";
+        }
+
+        args += " --verbose";
+
+        var process = StartProcess("dotnet", args, workingDirectory: RootDirectory);
+        process.AssertZeroExitCode();
+
+        Serilog.Log.Information("✅ {Stage} injection complete", stage);
+    }
+
+    /// <summary>
+    /// Cleanup injection for a specific stage.
+    /// </summary>
+    void CleanupInjectionStage(string stage)
+    {
+        Serilog.Log.Information("Cleaning up {Stage} stage...", stage);
+
+        // For now, use git reset for cleanup
+        // TODO: Implement stage-specific cleanup in preparation tool
+        Git("reset --hard", workingDirectory: ClientProject);
+
+        Serilog.Log.Information("✅ {Stage} cleanup complete", stage);
+    }
 }
