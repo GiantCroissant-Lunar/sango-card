@@ -183,7 +183,7 @@ public class PreparationService
         // 1) Copy Unity packages (supports both files and folders)
         foreach (var pkg in config.Packages)
         {
-            var src = _paths.Resolve(pkg.Source);
+            var src = ResolveCacheSource(pkg.Source);
             var dst = _paths.Resolve(pkg.Target);
 
             if (!dryRun)
@@ -218,7 +218,7 @@ public class PreparationService
         // 2) Copy assemblies (supports both files and folders)
         foreach (var asm in config.Assemblies)
         {
-            var src = _paths.Resolve(asm.Source);
+            var src = ResolveCacheSource(asm.Source);
             var dst = _paths.Resolve(asm.Target);
 
             if (!dryRun)
@@ -558,5 +558,69 @@ public class PreparationService
             File.Delete(dst);
         }
         _fileDeleted.Publish(new FileDeletedMessage(targetRelative));
+    }
+
+    /// <summary>
+    /// Resolves a cache source path with hash-tolerance.
+    /// For paths like "build/preparation/cache/com.cysharp.unitask",
+    /// this will match "build/preparation/cache/com.cysharp.unitask@15a4a7657f99".
+    /// </summary>
+    /// <param name="sourcePath">The source path from config.</param>
+    /// <returns>The resolved absolute path, with hash suffix if needed.</returns>
+    private string ResolveCacheSource(string sourcePath)
+    {
+        // First try exact match
+        var exactPath = _paths.Resolve(sourcePath);
+        if (File.Exists(exactPath) || Directory.Exists(exactPath))
+        {
+            return exactPath;
+        }
+
+        // If not found, look for cache folders with hash suffixes
+        var normalizedPath = sourcePath.Replace('\\', '/');
+        var lastSlash = normalizedPath.LastIndexOf('/');
+        if (lastSlash == -1)
+        {
+            return exactPath; // Return exact path if no directory separator
+        }
+
+        var parentDir = normalizedPath.Substring(0, lastSlash);
+        var baseName = normalizedPath.Substring(lastSlash + 1);
+
+        // Check if parent directory exists
+        if (!_paths.DirectoryExists(parentDir))
+        {
+            return exactPath; // Return exact path if parent doesn't exist
+        }
+
+        // Get the absolute parent path
+        var absoluteParent = _paths.Resolve(parentDir);
+
+        // Find folders that match the base name with optional @hash suffix
+        try
+        {
+            var matchingFolders = Directory.GetDirectories(absoluteParent)
+                .Where(dir =>
+                {
+                    var dirName = Path.GetFileName(dir);
+                    // Match exact name or name with @hash suffix
+                    return dirName == baseName ||
+                           (dirName.StartsWith(baseName + "@") && dirName.Length > baseName.Length + 1);
+                })
+                .ToList();
+
+            if (matchingFolders.Count > 0)
+            {
+                // Return the first match (should only be one in well-formed cache)
+                return matchingFolders[0];
+            }
+        }
+        catch
+        {
+            // Ignore errors and fall through to return exact path
+        }
+
+        // No match found, return exact path (will fail later with clear error)
+        return exactPath;
     }
 }

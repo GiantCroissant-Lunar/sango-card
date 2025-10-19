@@ -427,9 +427,73 @@ public class JsonPatcher : PatcherBase
 
     private string[] ParseJsonPath(string path)
     {
-        // Simple JSON path parser: "a.b.c" or "a[0].b"
-        return path.Split('.', StringSplitOptions.RemoveEmptyEntries)
-                   .Select(p => p.Replace("[", "").Replace("]", ""))
-                   .ToArray();
+        // Enhanced JSON path parser that supports:
+        // 1. Dot notation: "a.b.c"
+        // 2. Array notation: "a[0].b"
+        // 3. Bracket notation for properties with dots: "dependencies['com.cysharp.unitask']" or "dependencies[\"com.cysharp.unitask\"]"
+
+        var parts = new List<string>();
+        var currentPart = new System.Text.StringBuilder();
+        var inBracket = false;
+        var quoteChar = '\0';
+
+        for (int i = 0; i < path.Length; i++)
+        {
+            var c = path[i];
+
+            if (c == '[' && !inBracket)
+            {
+                // Start of bracket notation
+                if (currentPart.Length > 0)
+                {
+                    parts.Add(currentPart.ToString());
+                    currentPart.Clear();
+                }
+                inBracket = true;
+            }
+            else if (c == ']' && inBracket)
+            {
+                // End of bracket notation
+                if (currentPart.Length > 0)
+                {
+                    parts.Add(currentPart.ToString());
+                    currentPart.Clear();
+                }
+                inBracket = false;
+                quoteChar = '\0';
+            }
+            else if (inBracket && (c == '\'' || c == '"') && quoteChar == '\0')
+            {
+                // Start of quoted string in bracket
+                quoteChar = c;
+            }
+            else if (inBracket && c == quoteChar)
+            {
+                // End of quoted string in bracket
+                quoteChar = '\0';
+            }
+            else if (c == '.' && !inBracket && quoteChar == '\0')
+            {
+                // Dot separator (only when not in brackets)
+                if (currentPart.Length > 0)
+                {
+                    parts.Add(currentPart.ToString());
+                    currentPart.Clear();
+                }
+            }
+            else if (quoteChar != '\0' || c != ' ')
+            {
+                // Add character (skip spaces outside quotes)
+                currentPart.Append(c);
+            }
+        }
+
+        // Add final part
+        if (currentPart.Length > 0)
+        {
+            parts.Add(currentPart.ToString());
+        }
+
+        return parts.ToArray();
     }
 }

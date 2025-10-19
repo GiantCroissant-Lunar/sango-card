@@ -180,7 +180,7 @@ public class ValidationService
         {
             if (!string.IsNullOrWhiteSpace(package.Source))
             {
-                if (!_pathResolver.FileExists(package.Source))
+                if (!CacheSourceExists(package.Source))
                 {
                     AddError(
                         result,
@@ -197,7 +197,7 @@ public class ValidationService
         {
             if (!string.IsNullOrWhiteSpace(assembly.Source))
             {
-                if (!_pathResolver.FileExists(assembly.Source))
+                if (!CacheSourceExists(assembly.Source))
                 {
                     AddError(
                         result,
@@ -453,5 +453,61 @@ public class ValidationService
         _validationWarningFoundPublisher.Publish(new ValidationWarningFoundMessage(warning));
 
         _logger.LogDebug("Validation warning [{Code}]: {Message}", code, message);
+    }
+
+    /// <summary>
+    /// Checks if a cache source exists, tolerating hash suffixes in folder names.
+    /// For packages like "com.cysharp.unitask", this will match "com.cysharp.unitask@15a4a7657f99".
+    /// </summary>
+    /// <param name="sourcePath">The source path to check (e.g., "build/preparation/cache/com.cysharp.unitask").</param>
+    /// <returns>True if the exact path exists OR a path with hash suffix exists.</returns>
+    private bool CacheSourceExists(string sourcePath)
+    {
+        // First check exact match
+        if (_pathResolver.Exists(sourcePath))
+        {
+            return true;
+        }
+
+        // If not found, check for cache folders with hash suffixes
+        // Extract the parent directory and base name
+        var normalizedPath = sourcePath.Replace('\\', '/');
+        var lastSlash = normalizedPath.LastIndexOf('/');
+        if (lastSlash == -1)
+        {
+            return false; // No directory separator, can't be a cache path
+        }
+
+        var parentDir = normalizedPath.Substring(0, lastSlash);
+        var baseName = normalizedPath.Substring(lastSlash + 1);
+
+        // Check if parent directory exists
+        if (!_pathResolver.DirectoryExists(parentDir))
+        {
+            return false;
+        }
+
+        // Get the absolute parent path
+        var absoluteParent = _pathResolver.Resolve(parentDir);
+
+        // Check for folders that match the base name with optional @hash suffix
+        try
+        {
+            var matchingFolders = Directory.GetDirectories(absoluteParent)
+                .Where(dir =>
+                {
+                    var dirName = Path.GetFileName(dir);
+                    // Match exact name or name with @hash suffix
+                    return dirName == baseName ||
+                           (dirName.StartsWith(baseName + "@") && dirName.Length > baseName.Length + 1);
+                })
+                .ToList();
+
+            return matchingFolders.Count > 0;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
