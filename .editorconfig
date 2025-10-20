@@ -30,6 +30,11 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
+[*.DotSettings]
+# ReSharper settings files use tab indentation by default
+indent_style = tab
+indent_size = 1
+
 # C# Code Style Rules
 [*.cs]
 # Partial class organization (R-CODE-090)

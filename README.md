@@ -36,7 +36,16 @@ Use this README as the quick reference for the repository layout and the primary
 
 1. Clone the repository and restore submodules if added in the future.
 2. Install the prerequisites listed above.
-3. **Quick start with Task (recommended)**:
+3. **Build the preparation tool** (first-time only):
+
+   ```bash
+   task setup:build-tool
+   ```
+
+   This builds the `SangoCard.Build.Tool` executable used by the build preparation system.
+   The binary is not in source control - it's generated from source (103 MB self-contained exe).
+
+4. **Quick start with Task (recommended)**:
 
    ```bash
    # Install Task (see docs/task/ for platform-specific instructions)
@@ -51,7 +60,7 @@ Use this README as the quick reference for the repository layout and the primary
    - PowerShell: `./build.ps1`
    - Bash: `./build.sh`
    - Windows CMD: `build.cmd`
-4. Open `projects/client/` in Unity for client-side development.
+5. Open `projects/client/` in Unity for client-side development.
 
 ## Development workflow
 

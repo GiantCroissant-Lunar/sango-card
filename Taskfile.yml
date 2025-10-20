@@ -92,6 +92,7 @@ tasks:
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} BuildPreparationTool'
   # Clean tasks
+
   clean:
     desc: Clean all build artifacts
     cmds:
@@ -576,9 +577,9 @@ tasks:
       SEVERITY: '{{.SEVERITY | default "ERROR"}}'
     cmds:
       - echo "Running InspectCode on code-quality project (checking for MultipleTypeMembers)..."
-      - '{{if eq OS "windows"}}if not exist "output" mkdir output{{else}}mkdir -p output{{end}}'
+      - '{{if eq OS "windows"}}powershell -Command "if (!(Test-Path output)) { New-Item -ItemType Directory -Path output }"{{else}}mkdir -p output{{end}}'
       - jb inspectcode projects/code-quality/code-quality.sln --output={{.OUTPUT}} --format={{.FORMAT}} --severity={{.SEVERITY}} --settings=projects/code-quality/code-quality.sln.DotSettings --build
-      - echo "✓ InspectCode complete. Report saved to {{.OUTPUT}}"
+      - echo "[OK] InspectCode complete. Report saved to {{.OUTPUT}}"
   lint:dotnet:cleanupcode:
     desc: Run JetBrains CleanupCode to auto-fix code style issues
     summary: |
@@ -599,7 +600,7 @@ tasks:
       - echo "Running CleanupCode on code-quality project..."
       - jb cleanupcode projects/code-quality/code-quality.sln --settings=projects/code-quality/code-quality.sln.DotSettings --build
       - echo "✓ Code cleanup complete (formatting, usings, etc.)"
-      - echo "⚠ Note: Multiple types per file must be split manually in Rider (Alt+Enter → Move to separate file)"
+      - echo "Note - Multiple types per file must be split manually in Rider (Alt+Enter -> Move to separate file)"
   lint:dotnet:find-multiple-types:
     desc: Find C# files containing multiple type declarations
     summary: |
@@ -619,9 +620,9 @@ tasks:
     desc: Find multiple types in code-quality project (markdown report)
     cmds:
       - echo "Scanning code-quality project for multiple type declarations..."
-      - '{{if eq OS "windows"}}if not exist "output" mkdir output{{else}}mkdir -p output{{end}}'
+      - '{{if eq OS "windows"}}powershell -Command "if (!(Test-Path output)) { New-Item -ItemType Directory -Path output }"{{else}}mkdir -p output{{end}}'
       - python scripts/find_multiple_types.py projects/code-quality --format markdown --output output/code-quality-multiple-types.md
-      - echo "✓ Report saved to output/code-quality-multiple-types.md"
+      - echo "[OK] Report saved to output/code-quality-multiple-types.md"
   format:
     desc: Auto-fix formatting issues (markdown, YAML, whitespace)
     cmds:

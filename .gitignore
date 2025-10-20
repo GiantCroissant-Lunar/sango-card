@@ -9,6 +9,10 @@ obj/
 build/_artifacts/*  # Versioned artifacts (R-BLD-070)
 !build/_artifacts/.gitkeep
 
+# Build tool binary - Generated from source (rebuild with: task setup:build-tool)
+packages/scoped-6571/com.contractwork.sangocard.build/Tools/*.exe
+packages/scoped-6571/com.contractwork.sangocard.build/Tools/*.pdb
+
 # Spec-kit - Protect AI agent credentials and tokens
 # The .github/prompts/ directory contains slash command definitions (safe to commit)
 # But .github/copilot/ may contain auth tokens (excluded below)
