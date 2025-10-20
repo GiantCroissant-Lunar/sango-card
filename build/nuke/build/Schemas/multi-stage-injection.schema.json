@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://contractwork.com/schemas/sango-card/multi-stage-preparation.schema.json",
-  "title": "Multi-Stage Preparation Configuration",
-  "description": "Configuration for multi-stage dependency injection system supporting sequential injection phases throughout the build lifecycle",
+  "$id": "https://contractwork.com/schemas/sango-card/multi-stage-injection.schema.json",
+  "title": "Multi-Stage Injection Configuration",
+  "description": "Configuration for multi-stage dependency injection system supporting sequential injection phases throughout the build lifecycle (v2.0). Defines when to inject packages, assemblies, manipulate assets, patch code, and set scripting symbols.",
   "type": "object",
   "required": ["version", "injectionStages"],
   "properties": {

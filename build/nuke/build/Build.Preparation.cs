@@ -23,11 +23,11 @@ using static Nuke.Common.Tooling.ProcessTasks;
 /// </summary>
 partial class Build
 {
-    [Parameter("Path to preparation config (supports both v1 and v2 multi-stage)")]
+    [Parameter("Path to preparation config (v1.0 - cache population only)")]
     public AbsolutePath PreparationConfig = RootDirectory / "build" / "configs" / "preparation" / "preparation.json";
 
-    [Parameter("Path to multi-stage preparation config (v2.0)")]
-    public AbsolutePath MultiStageConfig = RootDirectory / "build" / "configs" / "preparation" / "multi-stage-preparation.json";
+    [Parameter("Path to multi-stage injection config (v2.0 - injection stages with operations)")]
+    public AbsolutePath MultiStageConfig = RootDirectory / "build" / "configs" / "preparation" / "multi-stage-injection.json";
 
     [Parameter("Enable multi-stage injection (default: auto-detect from config)")]
     public bool? UseMultiStage = null;

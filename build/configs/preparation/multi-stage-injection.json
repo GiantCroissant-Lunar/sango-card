@@ -1,7 +1,7 @@
 {
-  "$schema": "../../nuke/build/Schemas/multi-stage-preparation.schema.json",
+  "$schema": "../../nuke/build/Schemas/multi-stage-injection.schema.json",
   "version": "2.0",
-  "description": "Multi-stage injection configuration for Unity client build - populates cache from preparation.json, then injects build package and removes duplicate formatters",
+  "description": "Multi-stage injection configuration for Unity client build lifecycle - defines injection stages with packages, assemblies, asset manipulations, code patches, and scripting symbols",
   "cacheSource": "build/configs/preparation/preparation.json",
   "injectionStages": [
     {
