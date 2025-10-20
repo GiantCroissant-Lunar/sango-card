@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://contractwork.com/schemas/sango-card/multi-stage-preparation.schema.json",
+  "title": "Multi-Stage Preparation Configuration",
+  "description": "Configuration for multi-stage cache preparation system - defines when to populate cache from source projects",
+  "type": "object",
+  "required": ["version", "stages"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Configuration version (2.0 for multi-stage)",
+      "pattern": "^2\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of this configuration"
+    },
+    "stages": {
+      "type": "array",
+      "description": "Sequential array of preparation stages",
+      "items": {
+        "$ref": "#/definitions/preparationStage"
+      },
+      "minItems": 1
+    }
+  },
+  "definitions": {
+    "preparationStage": {
+      "type": "object",
+      "required": ["name", "enabled"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Stage name (e.g., initial, incremental, final)"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether this stage is active"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of this stage"
+        },
+        "packages": {
+          "type": "array",
+          "description": "Unity packages to cache from source",
+          "items": {
+            "$ref": "#/definitions/package"
+          }
+        },
+        "assemblies": {
+          "type": "array",
+          "description": "Assembly DLLs to cache from source",
+          "items": {
+            "$ref": "#/definitions/assembly"
+          }
+        }
+      }
+    },
+    "package": {
+      "type": "object",
+      "required": ["name", "source", "target"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Package identifier"
+        },
+        "version": {
+          "type": "string",
+          "description": "Package version"
+        },
+        "source": {
+          "type": "string",
+          "description": "Source path (relative to repository root)"
+        },
+        "target": {
+          "type": "string",
+          "description": "Cache target path (relative to repository root)"
+        }
+      }
+    },
+    "assembly": {
+      "type": "object",
+      "required": ["name", "source", "target"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Assembly name"
+        },
+        "version": {
+          "type": "string",
+          "description": "Assembly version"
+        },
+        "source": {
+          "type": "string",
+          "description": "Source path (relative to repository root)"
+        },
+        "target": {
+          "type": "string",
+          "description": "Cache target path (relative to repository root)"
+        }
+      }
+    }
+  }
+}
