@@ -736,21 +736,8 @@
       "assetManipulations": [
         {
           "type": "delete",
-          "target": "projects/client/Assets/Scripts/MessagePackGenerated/MessagePack_Formatters_Quest_Component_QuestComponentFormatter.cs",
-          "description": "Remove duplicate formatter for QuestDataComponent (conflicts with QuestDataComponentFormatter)"
-        },
-        {
-          "type": "delete",
-          "target": "projects/client/Assets/Scripts/MessagePackGenerated/MessagePack_Formatters_Quest_Component_QuestComponentFormatter.cs.meta"
-        },
-        {
-          "type": "delete",
-          "target": "projects/client/Assets/Scripts/MessagePackGenerated/MessagePack_Formatters_Shop_Component_ShopItemDataComponentFormatter.cs",
-          "description": "Remove duplicate formatter for ProductDataComponent (conflicts with ProductDataComponentFormatter)"
-        },
-        {
-          "type": "delete",
-          "target": "projects/client/Assets/Scripts/MessagePackGenerated/MessagePack_Formatters_Shop_Component_ShopItemDataComponentFormatter.cs.meta"
+          "target": "projects/client/Assets/Scripts/MessagePackGenerated",
+          "description": "Remove entire MessagePack generated folder to avoid duplicate formatters - will be regenerated during compile phase"
         }
       ]
     }
