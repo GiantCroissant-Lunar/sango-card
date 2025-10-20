@@ -279,24 +279,6 @@
           "version": "1.0.2"
         },
         {
-          "name": "com.unity.render-pipelines.core",
-          "target": "projects/client/Packages/com.unity.render-pipelines.core",
-          "source": "build/preparation/cache/com.unity.render-pipelines.core",
-          "version": "17.2.0"
-        },
-        {
-          "name": "com.unity.render-pipelines.universal-config",
-          "target": "projects/client/Packages/com.unity.render-pipelines.universal-config",
-          "source": "build/preparation/cache/com.unity.render-pipelines.universal-config",
-          "version": "17.0.3"
-        },
-        {
-          "name": "com.unity.render-pipelines.universal",
-          "target": "projects/client/Packages/com.unity.render-pipelines.universal",
-          "source": "build/preparation/cache/com.unity.render-pipelines.universal",
-          "version": "17.2.0"
-        },
-        {
           "name": "com.unity.rendering.light-transport",
           "target": "projects/client/Packages/com.unity.rendering.light-transport",
           "source": "build/preparation/cache/com.unity.rendering.light-transport",
@@ -307,12 +289,6 @@
           "target": "projects/client/Packages/com.unity.scriptablebuildpipeline",
           "source": "build/preparation/cache/com.unity.scriptablebuildpipeline",
           "version": "2.4.3"
-        },
-        {
-          "name": "com.unity.shadergraph",
-          "target": "projects/client/Packages/com.unity.shadergraph",
-          "source": "build/preparation/cache/com.unity.shadergraph",
-          "version": "17.2.0"
         },
         {
           "name": "com.unity.test-framework.performance",

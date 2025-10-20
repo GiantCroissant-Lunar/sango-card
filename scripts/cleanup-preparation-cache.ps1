@@ -53,12 +53,36 @@ if (-not (Test-Path $cacheDir)) {
 Write-Host "🔍 Analyzing cache contents..." -ForegroundColor Yellow
 $expectedFolders = @()
 
-foreach ($package in $config.packages) {
+# Support both v1.0 (packages/assemblies at root) and v2.0 (nested under stages/injectionStages)
+$packages = @()
+$assemblies = @()
+
+if ($config.PSObject.Properties.Name -contains "packages") {
+    # v1.0 format
+    $packages = $config.packages
+    $assemblies = $config.assemblies
+}
+elseif ($config.PSObject.Properties.Name -contains "stages") {
+    # v2.0 format - multi-stage-preparation.json (cache population)
+    foreach ($stage in $config.stages) {
+        if ($stage.packages) { $packages += $stage.packages }
+        if ($stage.assemblies) { $assemblies += $stage.assemblies }
+    }
+}
+elseif ($config.PSObject.Properties.Name -contains "injectionStages") {
+    # v2.0 format - multi-stage-injection.json
+    foreach ($stage in $config.injectionStages) {
+        if ($stage.packages) { $packages += $stage.packages }
+        if ($stage.assemblies) { $assemblies += $stage.assemblies }
+    }
+}
+
+foreach ($package in $packages) {
     $folderName = Split-Path $package.target -Leaf
     $expectedFolders += $folderName
 }
 
-foreach ($assembly in $config.assemblies) {
+foreach ($assembly in $assemblies) {
     $folderName = Split-Path $assembly.target -Leaf
     $expectedFolders += $folderName
 }

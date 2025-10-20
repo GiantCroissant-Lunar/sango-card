@@ -12,6 +12,7 @@
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishTrimmed>false</PublishTrimmed>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 
     <!-- Assembly Info -->
     <AssemblyName>SangoCard.Build.Tool</AssemblyName>
@@ -19,6 +20,9 @@
     <Version>1.0.0</Version>
     <Authors>Build System Team</Authors>
     <Description>Build preparation tool for Sango Card Unity project</Description>
+
+    <!-- Output directory for published single-file exe -->
+    <PackageToolsDir>$(MSBuildThisFileDirectory)..\..\..\Tools</PackageToolsDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,5 +49,50 @@
     <PackageReference Include="System.Text.Json" />
     <PackageReference Include="YamlDotNet" />
   </ItemGroup>
+
+  <!-- Copy published executable to Tools folder after publish -->
+  <Target Name="CopyToolToPackage" AfterTargets="Publish">
+    <PropertyGroup>
+      <PublishedExe>$(PublishDir)$(AssemblyName).exe</PublishedExe>
+      <ToolsDestination>$(PackageToolsDir)\$(AssemblyName).exe</ToolsDestination>
+    </PropertyGroup>
+
+    <Message Text="Copying published tool to Unity package Tools folder..." Importance="high" />
+    <Message Text="  Source: $(PublishedExe)" Importance="high" />
+    <Message Text="  Destination: $(ToolsDestination)" Importance="high" />
+
+    <!-- Create Tools directory if it doesn't exist -->
+    <MakeDir Directories="$(PackageToolsDir)" Condition="!Exists('$(PackageToolsDir)')" />
+
+    <!-- Copy the published single-file executable -->
+    <Copy SourceFiles="$(PublishedExe)"
+          DestinationFiles="$(ToolsDestination)"
+          SkipUnchangedFiles="false"
+          OverwriteReadOnlyFiles="true" />
+
+    <Message Text="✅ Tool copied successfully to $(ToolsDestination)" Importance="high" />
+  </Target>
+
+  <!-- Also support copying after regular build for development (non-published) -->
+  <Target Name="CopyToolToPackageAfterBuild" AfterTargets="Build" Condition="'$(PublishSingleFile)' != 'true' OR '$(Configuration)' == 'Debug'">
+    <PropertyGroup>
+      <BuiltExe>$(OutputPath)$(AssemblyName).exe</BuiltExe>
+      <ToolsDestinationDebug>$(PackageToolsDir)\$(AssemblyName)-debug.exe</ToolsDestinationDebug>
+    </PropertyGroup>
+
+    <Message Text="Copying debug build to Unity package Tools folder (for development)..." Importance="high" />
+
+    <!-- Create Tools directory if it doesn't exist -->
+    <MakeDir Directories="$(PackageToolsDir)" Condition="!Exists('$(PackageToolsDir)')" />
+
+    <!-- Copy the debug executable with -debug suffix -->
+    <Copy SourceFiles="$(BuiltExe)"
+          DestinationFiles="$(ToolsDestinationDebug)"
+          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true"
+          Condition="Exists('$(BuiltExe)')" />
+
+    <Message Text="✅ Debug tool copied to $(ToolsDestinationDebug)" Importance="high" Condition="Exists('$(BuiltExe)')" />
+  </Target>
 
 </Project>

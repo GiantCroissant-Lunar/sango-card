@@ -39,9 +39,63 @@ partial class Build
         "com.contractwork.sangocard.build" / "dotnet~" / "tool" / "SangoCard.Build.Tool" /
         "SangoCard.Build.Tool.csproj";
 
+    AbsolutePath PreparationToolOutput => RootDirectory / "packages" / "scoped-6571" /
+        "com.contractwork.sangocard.build" / "Tools";
+
     AbsolutePath ClientProject => RootDirectory / "projects" / "client";
 
     AbsolutePath CodeQualityProject => RootDirectory / "projects" / "code-quality";
+
+    /// <summary>
+    /// Build the SangoCard.Build.Tool as a single-file self-contained executable.
+    /// The MSBuild targets in the .csproj will automatically copy the exe to the Tools folder.
+    /// </summary>
+    Target BuildPreparationTool => _ => _
+        .Description("Build SangoCard.Build.Tool as single-file executable")
+        .Executes(() =>
+        {
+            Serilog.Log.Information("=== Building Preparation Tool ===");
+            Serilog.Log.Information("Project: {Project}", PreparationToolProject);
+            Serilog.Log.Information("Output: {Output}", PreparationToolOutput);
+
+            var runtime = Environment.GetEnvironmentVariable("PREP_TOOL_RUNTIME") ?? "win-x64";
+            var configuration = Environment.GetEnvironmentVariable("PREP_TOOL_CONFIG") ?? "Release";
+
+            Serilog.Log.Information("Configuration: {Config}", configuration);
+            Serilog.Log.Information("Runtime: {Runtime}", runtime);
+
+            // Publish as single-file self-contained executable
+            // The .csproj has a post-publish target that copies to Tools folder
+            DotNetPublish(s => s
+                .SetProject(PreparationToolProject)
+                .SetConfiguration(configuration)
+                .SetRuntime(runtime)
+                .EnableSelfContained()
+                .EnablePublishSingleFile()
+                .SetProperty("IncludeNativeLibrariesForSelfExtract", "true")
+                .SetProperty("PublishTrimmed", "false")
+            );
+
+            // Verify the tool was created
+            var exeName = runtime.StartsWith("win") ? "SangoCard.Build.Tool.exe" : "SangoCard.Build.Tool";
+            var toolPath = PreparationToolOutput / exeName;
+
+            if (System.IO.File.Exists(toolPath))
+            {
+                var fileInfo = new System.IO.FileInfo(toolPath);
+                var sizeMB = Math.Round(fileInfo.Length / (1024.0 * 1024.0), 2);
+
+                Serilog.Log.Information("✅ Tool built successfully!");
+                Serilog.Log.Information("   Location: {Path}", toolPath);
+                Serilog.Log.Information("   Size: {Size} MB", sizeMB);
+                Serilog.Log.Information("   Modified: {Time}", fileInfo.LastWriteTime);
+            }
+            else
+            {
+                Serilog.Log.Warning("⚠️  Tool published but not found at: {Path}", toolPath);
+                Serilog.Log.Warning("   Check the MSBuild CopyToolToPackage target");
+            }
+        });
 
     /// <summary>
     /// Phase 1: Populate preparation cache from code-quality project (safe anytime).
@@ -226,10 +280,10 @@ partial class Build
 
             // Inject from cache (legacy mode - no --stage parameter)
             Serilog.Log.Information("Injecting preparation...");
-            Serilog.Log.Information("Config: {Config}", PreparationConfig);
+            Serilog.Log.Information("Config: {Config}", MultiStagePreparationConfig);
             Serilog.Log.Information("Target: projects/client/");
 
-            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+            var relativeConfig = RootDirectory.GetRelativePathTo(MultiStagePreparationConfig);
             var relativeClient = RootDirectory.GetRelativePathTo(ClientProject);
 
             var process = StartProcess(
@@ -295,9 +349,9 @@ partial class Build
         .Executes(() =>
         {
             Serilog.Log.Information("=== Validating Preparation Config ===");
-            Serilog.Log.Information("Config: {Config}", PreparationConfig);
+            Serilog.Log.Information("Config: {Config}", MultiStagePreparationConfig);
 
-            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+            var relativeConfig = RootDirectory.GetRelativePathTo(MultiStagePreparationConfig);
 
             var process = StartProcess(
                 "dotnet",
@@ -372,9 +426,9 @@ partial class Build
         .Executes(() =>
         {
             Serilog.Log.Information("=== Dry-Run: Preparation Injection ===");
-            Serilog.Log.Information("Config: {Config}", PreparationConfig);
+            Serilog.Log.Information("Config: {Config}", MultiStagePreparationConfig);
 
-            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+            var relativeConfig = RootDirectory.GetRelativePathTo(MultiStagePreparationConfig);
             var relativeClient = RootDirectory.GetRelativePathTo(ClientProject);
 
             var process = StartProcess(

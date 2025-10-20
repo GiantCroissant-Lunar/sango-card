@@ -33,9 +33,33 @@ if (-not (Test-Path $ConfigPath)) {
 Write-Host "📄 Loading configuration: $ConfigPath" -ForegroundColor Yellow
 $config = Get-Content $ConfigPath | ConvertFrom-Json
 
+# Support both v1.0 and v2.0 config formats
+$packages = @()
+$assemblies = @()
+
+if ($config.PSObject.Properties.Name -contains "packages") {
+    # v1.0 format
+    $packages = $config.packages
+    $assemblies = $config.assemblies
+}
+elseif ($config.PSObject.Properties.Name -contains "stages") {
+    # v2.0 format - multi-stage-preparation.json (cache population)
+    foreach ($stage in $config.stages) {
+        if ($stage.packages) { $packages += $stage.packages }
+        if ($stage.assemblies) { $assemblies += $stage.assemblies }
+    }
+}
+elseif ($config.PSObject.Properties.Name -contains "injectionStages") {
+    # v2.0 format - multi-stage-injection.json
+    foreach ($stage in $config.injectionStages) {
+        if ($stage.packages) { $packages += $stage.packages }
+        if ($stage.assemblies) { $assemblies += $stage.assemblies }
+    }
+}
+
 # Count expected items
-$expectedPackages = $config.packages.Count
-$expectedAssemblies = $config.assemblies.Count
+$expectedPackages = $packages.Count
+$expectedAssemblies = $assemblies.Count
 $expectedTotal = $expectedPackages + $expectedAssemblies
 
 Write-Host "📊 Expected items:" -ForegroundColor Yellow
@@ -57,7 +81,7 @@ Write-Host "🔍 Verifying packages..." -ForegroundColor Yellow
 $missingPackages = @()
 $foundPackages = 0
 
-foreach ($package in $config.packages) {
+foreach ($package in $packages) {
     $targetPath = $package.target
     if (Test-Path $targetPath) {
         $foundPackages++
@@ -75,7 +99,7 @@ Write-Host "🔍 Verifying assemblies..." -ForegroundColor Yellow
 $missingAssemblies = @()
 $foundAssemblies = 0
 
-foreach ($assembly in $config.assemblies) {
+foreach ($assembly in $assemblies) {
     $targetPath = $assembly.target
     if (Test-Path $targetPath) {
         $foundAssemblies++

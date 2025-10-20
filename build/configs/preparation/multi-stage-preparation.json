@@ -2,8 +2,11 @@
   "version": "2.0",
   "description": "Multi-stage preparation configuration - cache population from code-quality project",
   "$schema": "../../nuke/build/Schemas/multi-stage-preparation.schema.json",
-  "stages": [
+  "injectionStages": [
     {
+      "name": "initial",
+      "enabled": true,
+      "description": "Default stage for cache population",
       "assemblies": [
         {
           "name": "CliWrap",
@@ -168,8 +171,6 @@
           "target": "build/preparation/cache/ZLinq.DropInGenerator.1.4.2"
         }
       ],
-      "description": "Populate cache with all packages and assemblies from code-quality project",
-      "enabled": true,
       "packages": [
         {
           "name": "com.contractwork.sangocard.cross",
@@ -280,24 +281,6 @@
           "target": "build/preparation/cache/com.unity.profiling.core"
         },
         {
-          "name": "com.unity.render-pipelines.core",
-          "version": "17.2.0",
-          "source": "projects/code-quality/Library/PackageCache/com.unity.render-pipelines.core@60896ea171dc",
-          "target": "build/preparation/cache/com.unity.render-pipelines.core"
-        },
-        {
-          "name": "com.unity.render-pipelines.universal-config",
-          "version": "17.0.3",
-          "source": "projects/code-quality/Library/PackageCache/com.unity.render-pipelines.universal-config@8dc1aab4af1d",
-          "target": "build/preparation/cache/com.unity.render-pipelines.universal-config"
-        },
-        {
-          "name": "com.unity.render-pipelines.universal",
-          "version": "17.2.0",
-          "source": "projects/code-quality/Library/PackageCache/com.unity.render-pipelines.universal@cc5029882822",
-          "target": "build/preparation/cache/com.unity.render-pipelines.universal"
-        },
-        {
           "name": "com.unity.rendering.light-transport",
           "version": "1.0.1",
           "source": "projects/code-quality/Library/PackageCache/com.unity.rendering.light-transport@2c9279f90d7c",
@@ -308,12 +291,6 @@
           "version": "2.4.3",
           "source": "projects/code-quality/Library/PackageCache/com.unity.scriptablebuildpipeline@ca3e2d96aa2f",
           "target": "build/preparation/cache/com.unity.scriptablebuildpipeline"
-        },
-        {
-          "name": "com.unity.shadergraph",
-          "version": "17.2.0",
-          "source": "projects/code-quality/Library/PackageCache/com.unity.shadergraph@2c9221ffedf4",
-          "target": "build/preparation/cache/com.unity.shadergraph"
         },
         {
           "name": "com.unity.test-framework.performance",
@@ -729,8 +706,7 @@
           "source": "projects/code-quality/Library/PackageCache/org.nuget.zlogger@b727ac9fa401",
           "target": "build/preparation/cache/org.nuget.zlogger"
         }
-      ],
-      "name": "initial"
+      ]
     }
   ]
 }

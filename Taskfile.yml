@@ -76,8 +76,22 @@ tasks:
         jb inspectcode --version && echo "✓ JetBrains InspectCode installed" || echo "⚠ JetBrains InspectCode not found"
         echo ""
         echo "✓ .NET tools setup complete!"
+  setup:build-tool:
+    desc: Build the SangoCard.Build.Tool as single-file executable
+    summary: |
+      Build and publish the build tool as a self-contained single-file executable.
+      The tool is automatically copied to the package Tools folder.
+      Usage: task setup:build-tool [CONFIG=Release] [RUNTIME=win-x64]
+      Example: task setup:build-tool CONFIG=Release RUNTIME=win-x64
+    vars:
+      CONFIG: '{{.CONFIG | default "Release"}}'
+      RUNTIME: '{{.RUNTIME | default "win-x64"}}'
+    env:
+      PREP_TOOL_CONFIG: '{{.CONFIG}}'
+      PREP_TOOL_RUNTIME: '{{.RUNTIME}}'
+    cmds:
+      - '{{.NUKE_BUILD_SCRIPT}} BuildPreparationTool'
   # Clean tasks
-
   clean:
     desc: Clean all build artifacts
     cmds:
@@ -135,10 +149,10 @@ tasks:
     desc: Populate build preparation cache (safe anytime)
     summary: |
       Populate build preparation cache from code-quality project
-      Usage: task build:prepare:cache [CONFIG=preparation]
-      Example: task build:prepare:cache CONFIG=preparation
+      Usage: task build:prepare:cache [CONFIG=multi-stage-preparation]
+      Example: task build:prepare:cache CONFIG=multi-stage-preparation
     vars:
-      CONFIG: '{{.CONFIG | default "preparation"}}'
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
       - '{{.NUKE_BUILD_SCRIPT}} PrepareCache --PreparationConfig build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:client:
@@ -190,32 +204,32 @@ tasks:
     desc: Clean orphaned items from preparation cache
     summary: |
       Remove folders not listed in the current preparation config
-      Usage: task build:prepare:cleanup [CONFIG=preparation]
+      Usage: task build:prepare:cleanup [CONFIG=multi-stage-preparation]
       Note: Prompts for confirmation before deleting
-      Example: task build:prepare:cleanup CONFIG=preparation
+      Example: task build:prepare:cleanup CONFIG=multi-stage-preparation
     vars:
-      CONFIG: '{{.CONFIG | default "preparation"}}'
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
       - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/configs/preparation/{{.CONFIG}}.json'
   build:prepare:cleanup-preview:
     desc: Preview what would be cleaned from cache (dry-run)
     summary: |
       Show what would be deleted without actually deleting
-      Usage: task build:prepare:cleanup-preview [CONFIG=preparation]
-      Example: task build:prepare:cleanup-preview CONFIG=preparation
+      Usage: task build:prepare:cleanup-preview [CONFIG=multi-stage-preparation]
+      Example: task build:prepare:cleanup-preview CONFIG=multi-stage-preparation
     vars:
-      CONFIG: '{{.CONFIG | default "preparation"}}'
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
       - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/configs/preparation/{{.CONFIG}}.json -DryRun'
   build:prepare:cleanup-force:
     desc: Clean orphaned items from cache without confirmation
     summary: |
       Remove folders not listed in the current preparation config (no prompt)
-      Usage: task build:prepare:cleanup-force [CONFIG=preparation]
+      Usage: task build:prepare:cleanup-force [CONFIG=multi-stage-preparation]
       Warning: Deletes immediately without confirmation!
-      Example: task build:prepare:cleanup-force CONFIG=preparation
+      Example: task build:prepare:cleanup-force CONFIG=multi-stage-preparation
     vars:
-      CONFIG: '{{.CONFIG | default "preparation"}}'
+      CONFIG: '{{.CONFIG | default "multi-stage-preparation"}}'
     cmds:
       - '{{if eq OS "windows"}}pwsh{{else}}pwsh{{end}} -NoProfile -ExecutionPolicy Bypass -File ./scripts/cleanup-preparation-cache.ps1 -ConfigPath build/configs/preparation/{{.CONFIG}}.json -Force'
   # Multi-stage injection tasks
@@ -554,6 +568,60 @@ tasks:
       - mkdir -p .inspectcode-temp
       - jb inspectcode {{.SOLUTION}} --output={{.OUTPUT}} --format={{.FORMAT}} --severity={{.SEVERITY}} --build
       - echo "✓ InspectCode analysis complete. Report saved to {{.OUTPUT}}"
+  lint:dotnet:inspectcode:code-quality:
+    desc: Run JetBrains InspectCode on code-quality project
+    vars:
+      OUTPUT: '{{.OUTPUT | default "output/code-quality-inspect.xml"}}'
+      FORMAT: '{{.FORMAT | default "Xml"}}'
+      SEVERITY: '{{.SEVERITY | default "ERROR"}}'
+    cmds:
+      - echo "Running InspectCode on code-quality project (checking for MultipleTypeMembers)..."
+      - '{{if eq OS "windows"}}if not exist "output" mkdir output{{else}}mkdir -p output{{end}}'
+      - jb inspectcode projects/code-quality/code-quality.sln --output={{.OUTPUT}} --format={{.FORMAT}} --severity={{.SEVERITY}} --settings=projects/code-quality/code-quality.sln.DotSettings --build
+      - echo "✓ InspectCode complete. Report saved to {{.OUTPUT}}"
+  lint:dotnet:cleanupcode:
+    desc: Run JetBrains CleanupCode to auto-fix code style issues
+    summary: |
+      Run cleanupcode to automatically fix code style violations (formatting, usings, etc.)
+      Note: Does NOT automatically split multiple types into separate files
+      Usage: task lint:dotnet:cleanupcode [SOLUTION=path] [PROFILE=profile-name]
+      Example: task lint:dotnet:cleanupcode SOLUTION=dotnet/SangoCard.sln
+    vars:
+      SOLUTION: '{{.SOLUTION | default "dotnet/SangoCard.sln"}}'
+      PROFILE: '{{.PROFILE | default ""}}'
+    cmds:
+      - echo "Running JetBrains CleanupCode on {{.SOLUTION}}..."
+      - jb cleanupcode {{.SOLUTION}}{{if .PROFILE}} --profile="{{.PROFILE}}"{{end}} --build
+      - echo "✓ CleanupCode complete. Files have been reformatted."
+  lint:dotnet:cleanupcode:code-quality:
+    desc: Run CleanupCode on code-quality project with custom profile
+    cmds:
+      - echo "Running CleanupCode on code-quality project..."
+      - jb cleanupcode projects/code-quality/code-quality.sln --settings=projects/code-quality/code-quality.sln.DotSettings --build
+      - echo "✓ Code cleanup complete (formatting, usings, etc.)"
+      - echo "⚠ Note: Multiple types per file must be split manually in Rider (Alt+Enter → Move to separate file)"
+  lint:dotnet:find-multiple-types:
+    desc: Find C# files containing multiple type declarations
+    summary: |
+      Scan C# files to identify files with multiple types (violates one-type-per-file rule)
+      Usage: task lint:dotnet:find-multiple-types [PATH=path] [FORMAT=console|json|markdown] [OUTPUT=file]
+      Examples:
+        task lint:dotnet:find-multiple-types
+        task lint:dotnet:find-multiple-types PATH=projects/code-quality
+        task lint:dotnet:find-multiple-types FORMAT=markdown OUTPUT=output/multiple-types.md
+    vars:
+      PATH: '{{.PATH | default "."}}'
+      FORMAT: '{{.FORMAT | default "console"}}'
+      OUTPUT: '{{.OUTPUT | default ""}}'
+    cmds:
+      - 'python scripts/find_multiple_types.py {{.PATH}} --format {{.FORMAT}}{{if .OUTPUT}} --output {{.OUTPUT}}{{end}}'
+  lint:dotnet:find-multiple-types:code-quality:
+    desc: Find multiple types in code-quality project (markdown report)
+    cmds:
+      - echo "Scanning code-quality project for multiple type declarations..."
+      - '{{if eq OS "windows"}}if not exist "output" mkdir output{{else}}mkdir -p output{{end}}'
+      - python scripts/find_multiple_types.py projects/code-quality --format markdown --output output/code-quality-multiple-types.md
+      - echo "✓ Report saved to output/code-quality-multiple-types.md"
   format:
     desc: Auto-fix formatting issues (markdown, YAML, whitespace)
     cmds:
