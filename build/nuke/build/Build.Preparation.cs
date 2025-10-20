@@ -23,8 +23,8 @@ using static Nuke.Common.Tooling.ProcessTasks;
 /// </summary>
 partial class Build
 {
-    [Parameter("Path to preparation config (v1.0 - cache population only)")]
-    public AbsolutePath PreparationConfig = RootDirectory / "build" / "configs" / "preparation" / "preparation.json";
+    [Parameter("Path to multi-stage preparation config (v2.0 - cache population)")]
+    public AbsolutePath MultiStagePreparationConfig = RootDirectory / "build" / "configs" / "preparation" / "multi-stage-preparation.json";
 
     [Parameter("Path to multi-stage injection config (v2.0 - injection stages with operations)")]
     public AbsolutePath MultiStageConfig = RootDirectory / "build" / "configs" / "preparation" / "multi-stage-injection.json";
@@ -46,17 +46,18 @@ partial class Build
     /// <summary>
     /// Phase 1: Populate preparation cache from code-quality project (safe anytime).
     /// This can be run independently without modifying the client project.
+    /// Uses v2.0 multi-stage-preparation.json config.
     /// </summary>
     Target PrepareCache => _ => _
-        .Description("Phase 1: Populate preparation cache (safe anytime, no client modification)")
+        .Description("Phase 1: Populate preparation cache using v2.0 multi-stage config")
         .Executes(() =>
         {
-            Serilog.Log.Information("=== Phase 1: Populating Cache ===");
+            Serilog.Log.Information("=== Phase 1: Populating Cache (V2.0) ===");
             Serilog.Log.Information("Source: {Source}", CodeQualityProject);
-            Serilog.Log.Information("Config: {Config}", PreparationConfig);
+            Serilog.Log.Information("Config: {Config}", MultiStagePreparationConfig);
 
             var relativeSource = RootDirectory.GetRelativePathTo(CodeQualityProject);
-            var relativeConfig = RootDirectory.GetRelativePathTo(PreparationConfig);
+            var relativeConfig = RootDirectory.GetRelativePathTo(MultiStagePreparationConfig);
 
             var process = StartProcess(
                 "dotnet",

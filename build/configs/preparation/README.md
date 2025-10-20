@@ -41,19 +41,19 @@ This directory contains configurations for the two-phase build preparation and i
 
 ## Quick Start
 
-### V2.0 Multi-Stage (Recommended)
+### Multi-Stage Workflow (V2.0)
 
 ```bash
-# Step 1: Populate cache from code-quality (uses preparation.json)
+# Step 1: Populate cache from code-quality
+nuke PrepareCache --MultiStagePreparationConfig build/configs/preparation/multi-stage-preparation.json
+
+# Step 2: Multi-stage injection + build
+nuke BuildWithMultiStage --MultiStageConfig build/configs/preparation/multi-stage-injection.json
+
+# Or use task shortcuts
 task build:cache
-# or: nuke PrepareCache
-
-# Step 2: Multi-stage injection + build (uses multi-stage-injection.json)
 task build:unity:multi-stage
-# or: nuke BuildWithMultiStage --MultiStageConfig build/configs/preparation/multi-stage-injection.json
 ```
-
-**Config:** `multi-stage-injection.json`
 
 **Features:**
 
