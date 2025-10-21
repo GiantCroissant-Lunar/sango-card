@@ -4,7 +4,7 @@ Multi-agent instruction system for Sango Card project.
 
 ## Structure
 
-```
+```text
 .agent/
 ├── README.md              # This file
 ├── base/                  # Canonical rules (source of truth)
@@ -26,9 +26,9 @@ Multi-agent instruction system for Sango Card project.
 
 Agents discover rules via pointer files:
 
-- `/CLAUDE.md` → `.agent/adapters/claude.md`
-- `/.github/copilot-instructions.md` → `.agent/adapters/copilot.md`
-- `/.windsurf/rules.md` → `.agent/adapters/windsurf.md`
+- `.agent/CLAUDE.md` → `.agent/adapters/claude.md`
+- `.github/copilot-instructions.md` → `.agent/adapters/copilot.md`
+- `.windsurf/rules.md` → `.agent/adapters/windsurf.md`
 
 ## Rule Categories
 

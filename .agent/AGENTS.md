@@ -6,7 +6,7 @@ Multi-agent project configuration for Sango Card.
 
 ### Claude Code
 
-**Pointer:** `CLAUDE.md` → `.agent/adapters/claude.md`
+**Pointer:** `.agent/CLAUDE.md` → `.agent/adapters/claude.md`
 
 Claude is the primary development agent for this project with full context awareness.
 

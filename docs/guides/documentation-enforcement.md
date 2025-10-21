@@ -149,10 +149,10 @@ task docs:validate
 **Root Level (Limited):**
 
 - `README.md` - Project overview
-- `AGENTS.md` - Agent configuration
-- `CLAUDE.md` - Claude instructions
 - `CODE_OF_CONDUCT.md` - Standard file
 - `CONTRIBUTING.md` - Standard file
+- `LICENSE` - License file
+- `CODEOWNERS` - GitHub code owners
 
 **Documentation System:**
 
