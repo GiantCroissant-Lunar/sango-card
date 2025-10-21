@@ -1,0 +1,57 @@
+# ✅ Configuration Separation Summary
+
+## Completed Refactoring
+
+Successfully separated preparation (cache population) and injection (build operations) concerns.
+
+## File Structure
+
+### Config Files (build/configs/preparation/)
+- ✅ preparation.json - Cache population sources (v1.0 - ACTIVE)
+- ✅ multi-stage-injection.json - Injection stages with operations (v2.0 - CURRENT)
+- ⚠️ injection.json - Legacy single-stage (v1.0 - DEPRECATED)
+
+### Schema Files (build/nuke/build/Schemas/)
+- ✅ preparation.schema.json - Cache population schema
+- ✅ multi-stage-injection.schema.json - Multi-stage injection schema
+- ⚠️ injection.schema.json - Legacy injection schema (DEPRECATED)
+
+## Clear Separation
+
+### 📦 preparation.json (Cache Population)
+**Purpose:** Define sources for cache population ONLY
+**Workflow:** code-quality → cache
+**Contains:**
+    - Package sources with hash
+    - Assembly sources
+**Does NOT contain:**
+    - Injection targets
+    - Asset manipulations
+    - Code patches
+    - Scripting define symbols
+
+### 🚀 multi-stage-injection.json (Injection + Operations)
+**Purpose:** Define injection stages WITH full build operations
+**Workflow:** cache → client + operations
+**Contains:**
+    - Package/assembly injection targets
+    - Asset manipulations (delete/copy/move)
+    - Code patches (search/replace)
+    - Scripting define symbols
+    - Platform-specific configurations
+**References:** preparation.json via cacheSource
+
+## Migration Commands
+
+Old (DEPRECATED):
+    nuke BuildWithMultiStage --MultiStageConfig build/configs/preparation/multi-stage-preparation.json
+
+New (CURRENT):
+    nuke BuildWithMultiStage --MultiStageConfig build/configs/preparation/multi-stage-injection.json
+
+## Commits
+- 906ec5c: Separate preparation and injection configs
+- a187afd: Fix messagepipe hash + remove duplicate .nuke
+- 598b843: Simplify assetManipulations
+- 9b66c73: Add complete packages/assemblies
+- 1d12309: Move schema to centralized location
