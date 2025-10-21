@@ -33,6 +33,7 @@
         "BuildiOS",
         "BuildLinux",
         "BuildMacOS",
+        "BuildPreparationTool",
         "BuildReport",
         "BuildUnity",
         "BuildUnityWithPreparation",
@@ -240,11 +241,11 @@
         },
         "MultiStageConfig": {
           "type": "string",
-          "description": "Path to multi-stage preparation config (v2.0)"
+          "description": "Path to multi-stage injection config (v2.0 - injection stages with operations)"
         },
-        "PreparationConfig": {
+        "MultiStagePreparationConfig": {
           "type": "string",
-          "description": "Path to preparation config (supports both v1 and v2 multi-stage)"
+          "description": "Path to multi-stage preparation config (v2.0 - cache population)"
         },
         "PrepConfigs": {
           "type": "string",

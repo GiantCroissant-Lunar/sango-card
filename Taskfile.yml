@@ -6,6 +6,7 @@ vars:
   NUKE_BUILD_SCRIPT: '{{if eq OS "windows"}}pwsh -NoProfile -ExecutionPolicy Bypass -File ./build/nuke/build.ps1{{else}}./build/nuke/build.sh{{end}}'
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  NODE_OPTIONS: "--max-old-space-size=8192"
 tasks:
   # Default task - shows help
   default:

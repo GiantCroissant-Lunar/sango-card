@@ -22,6 +22,7 @@ $DotNetChannel = "STS"
 
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = 1
 $env:DOTNET_NOLOGO = 1
+$env:NODE_OPTIONS = "--max-old-space-size=8192"
 
 ###########################################################################
 # EXECUTION
@@ -34,7 +35,7 @@ function ExecSafe([scriptblock] $cmd) {
 
 # If dotnet CLI is installed globally and it matches requested version, use for execution
 if ($null -ne (Get-Command "dotnet" -ErrorAction SilentlyContinue) -and `
-     $(dotnet --version) -and $LASTEXITCODE -eq 0) {
+    $(dotnet --version) -and $LASTEXITCODE -eq 0) {
     $env:DOTNET_EXE = (Get-Command "dotnet").Path
 }
 else {

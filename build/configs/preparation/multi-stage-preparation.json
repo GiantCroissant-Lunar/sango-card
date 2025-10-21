@@ -203,12 +203,6 @@
           "target": "build/preparation/cache/com.cysharp.messagepipe"
         },
         {
-          "name": "com.cysharp.r3",
-          "version": "1.3.0",
-          "source": "projects/code-quality/Library/PackageCache/com.cysharp.r3@fe2216b2d5c4",
-          "target": "build/preparation/cache/com.cysharp.r3"
-        },
-        {
           "name": "com.cysharp.unitask",
           "version": "2.5.10",
           "source": "projects/code-quality/Library/PackageCache/com.cysharp.unitask@15a4a7657f99",
@@ -539,22 +533,10 @@
           "target": "build/preparation/cache/org.nuget.microsoft.extensions.primitives"
         },
         {
-          "name": "org.nuget.observablecollections.r3",
-          "version": "3.3.4",
-          "source": "projects/code-quality/Library/PackageCache/org.nuget.observablecollections.r3@3a18ad61e6f5",
-          "target": "build/preparation/cache/org.nuget.observablecollections.r3"
-        },
-        {
           "name": "org.nuget.observablecollections",
           "version": "3.3.4",
           "source": "projects/code-quality/Library/PackageCache/org.nuget.observablecollections@74b5fa3451cc",
           "target": "build/preparation/cache/org.nuget.observablecollections"
-        },
-        {
-          "name": "org.nuget.r3",
-          "version": "1.3.0",
-          "source": "projects/code-quality/Library/PackageCache/org.nuget.r3@c98887a6d128",
-          "target": "build/preparation/cache/org.nuget.r3"
         },
         {
           "name": "org.nuget.system.buffers",

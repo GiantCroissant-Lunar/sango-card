@@ -55,11 +55,11 @@ interface IReportBuild : INukeBuild
     [Parameter("Preparation config files to apply (comma-separated, e.g., prep.json,production.json)")]
     string PrepConfigs => TryGetValue(() => PrepConfigs) ?? "preparation.json";
 
-    // Access PreparationConfig if available (from Build.Preparation.cs)
+    // Access MultiStagePreparationConfig if available (from Build.Preparation.cs)
     AbsolutePath ActualPreparationConfig =>
-        this is Build build && build.PreparationConfig != null
-            ? build.PreparationConfig
-            : RepoRoot / "build" / "preparation" / "configs" / "preparation.json";
+        this is Build build && build.MultiStagePreparationConfig != null
+            ? build.MultiStagePreparationConfig
+            : RepoRoot / "build" / "configs" / "preparation" / "multi-stage-preparation.json";
 
     // Project paths
     AbsolutePath ReportDirectory =>

@@ -87,6 +87,9 @@ interface IUnityBuild : INukeBuild
         {
             Directory.CreateDirectory(UnityBuildOutput);
 
+            // Set NODE_OPTIONS for Unity's internal Node.js processes (ShaderGraph, Addressables, etc.)
+            Environment.SetEnvironmentVariable("NODE_OPTIONS", "--max-old-space-size=8192");
+
             Serilog.Log.Information($"Building Unity project at: {UnityProjectPath}");
             Serilog.Log.Information($"Target platform: {UnityBuildTarget}");
             Serilog.Log.Information($"Output path: {UnityBuildOutput}");
@@ -132,6 +135,9 @@ interface IUnityBuild : INukeBuild
         .Executes(() =>
         {
             Serilog.Log.Information("=== Building for Windows (StandaloneWindows64) ===");
+
+            // Set NODE_OPTIONS for Unity's internal Node.js processes (ShaderGraph, Addressables, etc.)
+            Environment.SetEnvironmentVariable("NODE_OPTIONS", "--max-old-space-size=8192");
 
             var originalTarget = UnityBuildTarget;
             var originalProfile = UnityBuildProfileName;
@@ -186,6 +192,9 @@ interface IUnityBuild : INukeBuild
         {
             Serilog.Log.Information("=== Building for macOS (StandaloneOSX) ===");
 
+            // Set NODE_OPTIONS for Unity's internal Node.js processes
+            Environment.SetEnvironmentVariable("NODE_OPTIONS", "--max-old-space-size=8192");
+
             Directory.CreateDirectory(UnityBuildOutput);
 
             var arguments = new[]
@@ -221,6 +230,9 @@ interface IUnityBuild : INukeBuild
         .Executes(() =>
         {
             Serilog.Log.Information("=== Building for Linux (StandaloneLinux64) ===");
+
+            // Set NODE_OPTIONS for Unity's internal Node.js processes
+            Environment.SetEnvironmentVariable("NODE_OPTIONS", "--max-old-space-size=8192");
 
             Directory.CreateDirectory(UnityBuildOutput);
 
@@ -258,6 +270,9 @@ interface IUnityBuild : INukeBuild
         {
             Serilog.Log.Information("=== Building for Android ===");
 
+            // Set NODE_OPTIONS for Unity's internal Node.js processes
+            Environment.SetEnvironmentVariable("NODE_OPTIONS", "--max-old-space-size=8192");
+
             Directory.CreateDirectory(UnityBuildOutput);
 
             var arguments = new[]
@@ -294,6 +309,9 @@ interface IUnityBuild : INukeBuild
         {
             Serilog.Log.Information("=== Building for iOS ===");
 
+            // Set NODE_OPTIONS for Unity's internal Node.js processes
+            Environment.SetEnvironmentVariable("NODE_OPTIONS", "--max-old-space-size=8192");
+
             Directory.CreateDirectory(UnityBuildOutput);
 
             var arguments = new[]
@@ -329,6 +347,9 @@ interface IUnityBuild : INukeBuild
         .Executes(() =>
         {
             Serilog.Log.Information("=== Building for WebGL ===");
+
+            // Set NODE_OPTIONS for Unity's internal Node.js processes
+            Environment.SetEnvironmentVariable("NODE_OPTIONS", "--max-old-space-size=8192");
 
             Directory.CreateDirectory(UnityBuildOutput);
 
@@ -493,6 +514,9 @@ interface IUnityBuild : INukeBuild
         .Executes(() =>
         {
             Directory.CreateDirectory(UnityBuildOutput);
+
+            // Set NODE_OPTIONS for Unity's internal Node.js processes
+            Environment.SetEnvironmentVariable("NODE_OPTIONS", "--max-old-space-size=8192");
 
             var testResultsPath = UnityBuildOutput / "test-results.xml";
             var useIsolated = string.Equals(UseIsolatedTestsOption, "true", StringComparison.OrdinalIgnoreCase) || UseIsolatedTestsOption == "1";

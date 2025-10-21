@@ -12,7 +12,30 @@
         "**/Library/[!Package]*": true,
         "**/Library/[{com, ex}]*": true,
         "**/Library/PackageManager": true,
-        "**/Library/*.bin": true
+        "**/Library/*.bin": true,
+        "**/build/preparation/cache/**": true,
+        "**/projects/client/Library/**": true,
+        "**/projects/client/Temp/**": true,
+        "**/projects/client/Logs/**": true
+    },
+
+    "files.watcherExclude": {
+        "**/build/preparation/cache/**": true,
+        "**/projects/client/Library/**": true,
+        "**/projects/client/Temp/**": true,
+        "**/projects/client/Logs/**": true,
+        "**/projects/client/Packages/com.*/Runtime/**/*.dll": true,
+        "**/projects/client/Packages/com.*/Editor/**/*.dll": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true
+    },
+
+    "search.exclude": {
+        "**/build/preparation/cache/**": true,
+        "**/projects/client/Library/**": true,
+        "**/projects/client/Temp/**": true,
+        "**/projects/client/Logs/**": true
     },
 
     "window.zoomLevel": 2,
